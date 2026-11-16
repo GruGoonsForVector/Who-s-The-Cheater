@@ -4,27 +4,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Who's Cheating? | The Casino</title>
+<title>WHO'S CHEATING?</title>
 
-<!-- PeerJS: multiplayer connection -->
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+
 :root {
-    --bg: #171916;
-    --panel: #22251f;
-    --panel2: #292c25;
-    --cream: #eee7d5;
-    --muted: #a49d8c;
-    --gold: #c7a45b;
-    --gold2: #e2c783;
-    --red: #803d42;
-    --red2: #a64d50;
-    --green: #315d47;
-    --green2: #477b5d;
-    --border: #49483b;
-    --danger: #b65c56;
-    --shadow: 0 12px 35px #0006;
+    --bg: #090b0a;
+    --panel: #121713;
+    --panel2: #19211b;
+    --gold: #d8ad55;
+    --gold2: #f3d58c;
+    --green: #1b8b58;
+    --red: #c74747;
+    --text: #f3eee3;
+    --muted: #92988f;
+    --border: #30382f;
 }
 
 * {
@@ -35,30 +32,18 @@ body {
     margin: 0;
     min-height: 100vh;
     background:
-        radial-gradient(ellipse at 50% 0%, #333629 0%, transparent 60%),
+        radial-gradient(ellipse at top, #1b241b 0%, transparent 55%),
         var(--bg);
-    color: var(--cream);
-    font-family: Arial, sans-serif;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
 }
 
-button, input, select {
+button, input {
     font: inherit;
 }
 
 button {
     cursor: pointer;
-    border: 1px solid var(--border);
-    border-radius: 7px;
-    padding: 12px 18px;
-    color: var(--cream);
-    background: var(--panel2);
-    transition: .18s;
-}
-
-button:hover:not(:disabled) {
-    border-color: var(--gold);
-    transform: translateY(-1px);
-    filter: brightness(1.12);
 }
 
 button:disabled {
@@ -66,505 +51,443 @@ button:disabled {
     cursor: not-allowed;
 }
 
-.primary {
-    background: var(--gold);
-    color: #211e17;
-    border-color: var(--gold);
-    font-weight: bold;
+#app {
+    max-width: 1050px;
+    margin: auto;
+    padding: 24px;
 }
 
-.danger {
-    background: var(--red);
-    border-color: var(--red);
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0 22px;
+    margin-bottom: 35px;
 }
 
-.success {
-    background: var(--green);
-    border-color: var(--green);
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--gold2);
 }
 
-.small {
-    padding: 8px 12px;
-    font-size: 12px;
+.logo span {
+    color: var(--text);
 }
 
-input, select {
-    width: 100%;
-    background: #171a16;
-    color: var(--cream);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px;
-    outline: none;
-}
-
-input:focus, select:focus {
-    border-color: var(--gold);
-}
-
-label {
-    display: block;
+.status {
     color: var(--muted);
     font-size: 12px;
-    margin-bottom: 7px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-h1, h2, h3 {
-    font-family: Georgia, serif;
-    font-weight: normal;
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--red);
+}
+
+.dot.online {
+    background: #3ac47e;
+    box-shadow: 0 0 10px #3ac47e88;
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.hero {
+    text-align: center;
+    padding: 65px 15px 35px;
+}
+
+.eyebrow {
+    color: var(--gold);
+    letter-spacing: 4px;
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 18px;
 }
 
 h1 {
-    font-size: clamp(38px, 7vw, 66px);
-    margin: 0;
-    letter-spacing: 1px;
-}
-
-h2 {
-    font-size: 27px;
-    margin: 0 0 15px;
-}
-
-h3 {
-    font-size: 19px;
-}
-
-p {
-    line-height: 1.55;
-}
-
-.gold {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(42px, 8vw, 75px);
+    line-height: 1;
+    margin: 0 0 20px;
     color: var(--gold2);
+}
+
+.subtitle {
+    color: var(--muted);
+    max-width: 500px;
+    margin: auto;
+    line-height: 1.7;
+}
+
+.panel {
+    background: linear-gradient(145deg, #171e18, #101510);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 25px;
+    box-shadow: 0 15px 40px #0005;
+}
+
+.home-options {
+    max-width: 530px;
+    margin: 25px auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.primary, .secondary, .danger {
+    border: 0;
+    border-radius: 7px;
+    padding: 14px 20px;
+    font-weight: 800;
+    transition: .2s;
+}
+
+.primary {
+    color: #17130b;
+    background: linear-gradient(135deg, #f1d18a, #c4933c);
+}
+
+.primary:hover:not(:disabled) {
+    filter: brightness(1.12);
+    transform: translateY(-2px);
+}
+
+.secondary {
+    color: var(--gold2);
+    background: #242d24;
+    border: 1px solid #485044;
+}
+
+.secondary:hover:not(:disabled) {
+    background: #303c30;
+}
+
+.danger {
+    color: white;
+    background: #923939;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    background: #090d0a;
+    border: 1px solid #3b443a;
+    border-radius: 7px;
+    color: white;
+    outline: none;
+    margin: 8px 0 14px;
+}
+
+input:focus {
+    border-color: var(--gold);
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold2);
+    font-size: 27px;
+    margin: 0 0 8px;
 }
 
 .muted {
     color: var(--muted);
-}
-
-.hidden {
-    display: none !important;
-}
-
-.center {
-    text-align: center;
-}
-
-#app {
-    max-width: 1200px;
-    padding: 20px;
-    margin: auto;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0 18px;
-    margin-bottom: 25px;
-    gap: 15px;
-}
-
-.brand {
-    font-family: Georgia, serif;
-    font-size: 21px;
-    letter-spacing: 2px;
-}
-
-.brand span {
-    color: var(--gold);
-}
-
-.status {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--danger);
-}
-
-.dot.online {
-    background: #65b77c;
-    box-shadow: 0 0 9px #65b77c88;
-}
-
-.screen {
-    animation: appear .25s ease;
-}
-
-@keyframes appear {
-    from { opacity: 0; transform: translateY(7px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.panel {
-    background: linear-gradient(145deg, var(--panel), #1e211c);
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    padding: 22px;
-    box-shadow: var(--shadow);
-}
-
-.hero {
-    min-height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    padding: 35px 15px;
-}
-
-.hero-symbol {
-    color: var(--gold);
-    font-size: 55px;
-    margin-bottom: 12px;
-}
-
-.hero p {
-    max-width: 480px;
-    color: var(--muted);
-}
-
-.hero-actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 25px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.big-button {
-    min-width: 165px;
-    padding: 15px 22px;
-}
-
-.form-area {
-    width: 100%;
-    max-width: 360px;
-    margin: 25px auto 0;
-    text-align: left;
-}
-
-.field {
-    margin-bottom: 15px;
+    font-size: 13px;
+    line-height: 1.6;
 }
 
 .room-code {
-    font-family: monospace;
+    font-size: 34px;
     letter-spacing: 8px;
-    font-size: 28px;
     color: var(--gold2);
+    font-weight: 800;
     text-align: center;
-    padding: 13px;
-    background: #151813;
-    border: 1px dashed var(--gold);
-    border-radius: 7px;
-    margin: 12px 0;
+    margin: 15px 0;
 }
 
-.grid {
+.room-layout {
     display: grid;
-    grid-template-columns: 1fr 310px;
-    gap: 18px;
-}
-
-@media(max-width:750px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
 .player-list {
     display: flex;
     flex-direction: column;
     gap: 9px;
+    margin-top: 18px;
 }
 
 .player {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 12px;
-    background: #191c18;
-    border: 1px solid #3b3d33;
+    justify-content: space-between;
+    background: #0d120e;
+    padding: 13px;
+    border: 1px solid #283229;
     border-radius: 7px;
-    gap: 10px;
 }
 
 .player-name {
-    display: flex;
-    align-items: center;
-    gap: 9px;
+    font-weight: 700;
 }
 
-.avatar {
-    width: 32px;
-    height: 32px;
-    background: #393b30;
-    color: var(--gold2);
-    border-radius: 50%;
-    display: grid;
-    place-items: center;
-    font-family: Georgia, serif;
+.player-tag {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 1px;
 }
 
-.money {
-    color: var(--gold2);
-    font-family: Georgia, serif;
+.host-tag {
+    color: #6acb91;
 }
 
 .game-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.round-label {
+    color: var(--gold);
+    letter-spacing: 2px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.phase-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--gold2);
+    margin: 7px 0;
+}
+
+.stats {
+    display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 18px;
 }
 
-.round-tag {
-    background: #38372b;
-    border: 1px solid var(--gold);
-    color: var(--gold2);
-    border-radius: 20px;
-    padding: 7px 13px;
-    font-size: 12px;
-}
-
-.progress {
-    height: 5px;
-    background: #33352d;
-    border-radius: 5px;
-    margin: 15px 0 25px;
-    overflow: hidden;
-}
-
-.progress > div {
-    height: 100%;
-    background: var(--gold);
-    transition: width .3s;
-}
-
-.game-layout {
-    display: grid;
-    grid-template-columns: 1fr 290px;
-    gap: 18px;
-}
-
-@media(max-width:850px) {
-    .game-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-.game-card {
-    min-height: 270px;
-}
-
-.casino-table {
-    background:
-        radial-gradient(ellipse, #326348 0%, #234a37 68%, #173627 100%);
-    border: 8px solid #694d32;
-    border-radius: 100px;
-    min-height: 220px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    box-shadow: inset 0 0 30px #0006;
-    text-align: center;
-    padding: 25px;
-}
-
-.wheel-number {
-    font-family: Georgia, serif;
-    font-size: 68px;
-    color: var(--gold2);
-}
-
-.roulette-options {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.option {
-    padding: 14px 5px;
-    border-radius: 6px;
-    text-align: center;
+.stat {
+    background: #0b100c;
     border: 1px solid var(--border);
-    background: #191c18;
-    cursor: pointer;
+    padding: 10px 14px;
+    border-radius: 7px;
+    text-align: center;
+    min-width: 90px;
 }
 
-.option.selected {
-    border: 2px solid var(--gold);
-    background: #3b3423;
-}
-
-.red-option {
-    background: #592f32;
-}
-
-.black-option {
-    background: #151715;
-}
-
-.green-option {
-    background: #23583b;
-}
-
-.cards {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 22px 0;
-}
-
-.playing-card {
-    width: 48px;
-    height: 68px;
-    border-radius: 5px;
-    background: #eee9dc;
-    color: #25231e;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-family: Georgia, serif;
-    font-size: 18px;
-    box-shadow: 0 3px 6px #0005;
-}
-
-.playing-card.red-card {
-    color: #a33d42;
-}
-
-.playing-card.back {
-    background: linear-gradient(135deg, #713d40, #482b2d);
-    color: var(--gold2);
-    border: 2px solid #c3a35f;
-}
-
-.log {
-    max-height: 230px;
-    overflow-y: auto;
-    font-size: 12px;
+.stat small {
     color: var(--muted);
+    display: block;
+    font-size: 10px;
+    margin-bottom: 4px;
 }
 
-.log-entry {
-    padding: 8px 0;
-    border-bottom: 1px solid #34362d;
-}
-
-.log-entry:last-child {
-    border: none;
-}
-
-.ability {
-    border: 1px solid var(--gold);
-    background: linear-gradient(135deg, #3d3421, #27261e);
-    border-radius: 9px;
-    padding: 16px;
-    margin-top: 15px;
-}
-
-.ability button {
-    width: 100%;
-    margin-top: 10px;
-}
-
-.result-banner {
-    padding: 16px;
-    background: #30342a;
-    border-left: 4px solid var(--gold);
-    border-radius: 5px;
-    margin: 15px 0;
+.stat strong {
+    color: var(--gold2);
 }
 
 .role-card {
-    padding: 25px;
     text-align: center;
-    border: 1px solid var(--gold);
-    border-radius: 10px;
-    background: linear-gradient(140deg, #373020, #211f19);
-    margin: 18px 0;
+    padding: 35px 15px;
 }
 
 .role-icon {
-    font-size: 48px;
+    font-size: 55px;
+    margin-bottom: 15px;
 }
 
 .role-name {
+    font-family: 'Playfair Display', serif;
     color: var(--gold2);
-    font-family: Georgia, serif;
-    font-size: 29px;
+    font-size: 37px;
+    margin: 0 0 12px;
 }
 
-.vote-player {
-    width: 100%;
-    margin-bottom: 8px;
-    text-align: left;
-    display: flex;
-    justify-content: space-between;
-}
-
-.vote-player.selected {
-    border-color: var(--gold);
-    background: #3c3423;
-}
-
-.notice {
+.role-description {
     color: var(--muted);
-    font-size: 12px;
-    padding: 12px;
-    background: #191c18;
-    border-radius: 6px;
-    margin-top: 12px;
+    max-width: 440px;
+    line-height: 1.7;
+    margin: auto;
 }
 
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #39382d;
-    border: 1px solid var(--gold);
-    padding: 13px 20px;
-    border-radius: 7px;
-    z-index: 99;
-    box-shadow: var(--shadow);
-    max-width: 90%;
+.game-content {
+    display: grid;
+    grid-template-columns: 1.3fr .7fr;
+    gap: 18px;
+}
+
+.action-area {
+    min-height: 260px;
+}
+
+.choice-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.choice {
+    padding: 25px 10px;
+    border-radius: 9px;
+    border: 2px solid var(--border);
+    background: #0b100c;
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.choice.red {
+    border-color: #743535;
+    color: #ff8989;
+}
+
+.choice.black {
+    border-color: #555;
+    color: #eee;
+}
+
+.choice.selected {
+    border-color: var(--gold);
+    background: #2c281a;
+}
+
+.choice:hover:not(:disabled) {
+    border-color: var(--gold);
+}
+
+.wheel {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 20px auto;
+    border: 8px solid #bd9348;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 43px;
+    font-weight: 800;
+    background: conic-gradient(#b83b3b 0 25%, #151515 25% 50%, #b83b3b 50% 75%, #151515 75%);
+    box-shadow: 0 0 30px #d8ad5533;
+}
+
+.result-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 55px;
+    color: var(--gold2);
     text-align: center;
 }
 
-.footer {
-    text-align: center;
-    color: #77786d;
-    font-size: 11px;
-    padding: 30px 0 10px;
-}
-
-hr {
-    border: 0;
-    border-top: 1px solid var(--border);
+.vote-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     margin: 18px 0;
 }
 
-button:focus-visible {
-    outline: 2px solid var(--gold);
-    outline-offset: 3px;
+.vote-option {
+    padding: 14px;
+    background: #0b100c;
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vote-option.selected {
+    border-color: var(--gold);
+    background: #292619;
+}
+
+.log {
+    max-height: 240px;
+    overflow-y: auto;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.log div {
+    border-bottom: 1px solid #252d25;
+    padding: 5px 0;
+}
+
+.player-money {
+    color: var(--gold);
+    font-size: 12px;
+}
+
+.notice {
+    padding: 12px 14px;
+    border-radius: 7px;
+    background: #252518;
+    border: 1px solid #64552e;
+    color: #e9d49b;
+    font-size: 13px;
+    line-height: 1.5;
+    margin: 14px 0;
+}
+
+.error {
+    background: #321919;
+    border: 1px solid #793939;
+    color: #ffaaaa;
+    padding: 12px;
+    border-radius: 7px;
+    margin: 12px 0;
+    font-size: 13px;
+    display: none;
+}
+
+footer {
+    text-align: center;
+    color: #626a60;
+    font-size: 11px;
+    margin: 55px 0 20px;
+}
+
+@media(max-width:700px) {
+    #app {
+        padding: 15px;
+    }
+
+    .room-layout, .game-content {
+        grid-template-columns: 1fr;
+    }
+
+    .home-options {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 35px;
+    }
+
+    header {
+        margin-bottom: 20px;
+    }
 }
 </style>
 </head>
@@ -572,965 +495,726 @@ button:focus-visible {
 <body>
 <div id="app">
 
-<header class="header">
-    <div class="brand">THE <span>GOLDEN</span> TABLE</div>
+<header>
+    <div class="logo">WHO'S <span>CHEATING?</span></div>
     <div class="status">
-        <div id="connectionDot" class="dot"></div>
+        <span class="dot" id="connectionDot"></span>
         <span id="connectionText">NOT CONNECTED</span>
     </div>
 </header>
 
-<main id="main">
+<div id="errorBox" class="error"></div>
 
-<section id="homeScreen" class="screen">
-    <div class="panel hero">
-        <div class="hero-symbol">♠</div>
-        <h1>WHO'S <span class="gold">CHEATING?</span></h1>
-        <p>
-            Welcome to the casino. Everyone wants the money.
-            But someone isn't playing fair.
+<!-- HOME -->
+<section id="homeScreen" class="screen active">
+    <div class="hero">
+        <div class="eyebrow">THE ULTIMATE CASINO SOCIAL GAME</div>
+        <h1>TRUST<br>NO ONE.</h1>
+        <p class="subtitle">
+            One player is secretly cheating. Everyone else must work together
+            to find them before the casino gets robbed.
         </p>
-        <p class="muted">A multiplayer game of luck, deception and suspicion.</p>
+    </div>
 
-        <div class="hero-actions">
-            <button class="primary big-button" onclick="showCreate()">
+    <div class="home-options">
+        <div class="panel">
+            <h2 class="section-title">Host a game</h2>
+            <p class="muted">Create a room and invite 2 to 7 other players.</p>
+            <button class="primary" style="width:100%" data-action="create">
                 CREATE ROOM
             </button>
-            <button class="big-button" onclick="showJoin()">
+        </div>
+
+        <div class="panel">
+            <h2 class="section-title">Join a game</h2>
+            <p class="muted">Enter the room code from your host.</p>
+            <input id="joinCode" maxlength="6" placeholder="ROOM CODE">
+            <input id="playerName" maxlength="16" placeholder="YOUR NAME">
+            <button class="secondary" style="width:100%" data-action="join">
                 JOIN ROOM
             </button>
         </div>
-
-        <div id="createForm" class="form-area hidden">
-            <h3>Create a table</h3>
-            <div class="field">
-                <label>YOUR NAME</label>
-                <input id="createName" maxlength="16" placeholder="Enter your name">
-            </div>
-            <button class="primary" style="width:100%" onclick="createRoom()">
-                OPEN THE CASINO
-            </button>
-        </div>
-
-        <div id="joinForm" class="form-area hidden">
-            <h3>Join a table</h3>
-            <div class="field">
-                <label>YOUR NAME</label>
-                <input id="joinName" maxlength="16" placeholder="Enter your name">
-            </div>
-            <div class="field">
-                <label>ROOM CODE</label>
-                <input id="joinCode" maxlength="6" placeholder="ABC123"
-                       style="text-transform:uppercase;letter-spacing:5px;text-align:center">
-            </div>
-            <button class="primary" style="width:100%" onclick="joinRoom()">
-                ENTER THE CASINO
-            </button>
-        </div>
     </div>
+
+    <p class="muted" style="text-align:center">
+        3-8 PLAYERS &nbsp; • &nbsp; MULTIPLAYER &nbsp; • &nbsp; FREE TO PLAY
+    </p>
 </section>
 
-<section id="connectingScreen" class="screen hidden">
-    <div class="panel center" style="padding:65px 20px">
-        <div class="hero-symbol">♣</div>
-        <h2 id="connectingTitle">Connecting to the casino...</h2>
-        <p id="connectingMessage" class="muted">Establishing multiplayer connection.</p>
-        <div style="max-width:280px;margin:25px auto">
-            <div class="progress"><div style="width:65%"></div></div>
-        </div>
-        <button onclick="cancelConnection()">CANCEL</button>
-    </div>
-</section>
-
-<section id="lobbyScreen" class="screen hidden">
+<!-- LOBBY -->
+<section id="lobbyScreen" class="screen">
     <div class="game-top">
         <div>
-            <h2>The Casino Lobby</h2>
-            <div class="muted">Gather your players before opening the tables.</div>
+            <div class="round-label">PRIVATE CASINO ROOM</div>
+            <h2 class="phase-title">Waiting for players</h2>
+            <p class="muted">Share your room code with your friends.</p>
         </div>
-        <span class="round-tag">3-8 PLAYERS</span>
+        <button class="secondary" data-action="leave">LEAVE ROOM</button>
     </div>
 
-    <div class="grid">
+    <div class="room-layout">
         <div class="panel">
-            <label>YOUR ROOM CODE</label>
-            <div id="lobbyCode" class="room-code">------</div>
-            <button class="small" onclick="copyRoomCode()">COPY CODE</button>
-            <hr>
-            <h3>Players at the table</h3>
-            <div id="lobbyPlayers" class="player-list"></div>
-            <div class="notice" id="lobbyNotice">
-                Waiting for players. At least 3 players are required.
-            </div>
-        </div>
-
-        <div class="panel">
-            <h3>How to play</h3>
-            <p class="muted">
-                One player is secretly the Cheater. One player is Security.
-                Everyone else is innocent.
+            <div class="round-label">YOUR ROOM CODE</div>
+            <div class="room-code" id="roomCodeDisplay">------</div>
+            <button class="secondary" style="width:100%" data-action="copy">
+                COPY ROOM CODE
+            </button>
+            <p class="muted" style="text-align:center;margin-top:15px">
+                Players need this code to join your game.
             </p>
-            <hr>
-            <p><span class="gold">♠ Cheater</span><br>
-            Use secret information to make money and avoid being caught.</p>
-            <p><span class="gold">♣ Security</span><br>
-            Watch the other players and identify the Cheater.</p>
-            <p><span class="gold">♦ Innocents</span><br>
-            Make money and help identify the dishonest player.</p>
-            <hr>
-            <p class="muted">The Cheater aims to reach $20,000. Security and Innocents must catch them.</p>
-            <button id="startButton" class="primary" style="width:100%"
-                    onclick="startGame()" disabled>
-                START GAME
-            </button>
-            <p id="hostLabel" class="muted center" style="font-size:11px"></p>
         </div>
+
+        <div class="panel">
+            <h2 class="section-title">Players</h2>
+            <p class="muted" id="playerCount">0 / 8 players</p>
+            <div class="player-list" id="lobbyPlayers"></div>
+        </div>
+    </div>
+
+    <div class="panel" style="margin-top:18px;text-align:center">
+        <p class="muted" id="lobbyMessage">Waiting for at least 3 players...</p>
+        <button class="primary" id="startButton" style="min-width:220px"
+                data-action="start" disabled>
+            START GAME
+        </button>
     </div>
 </section>
 
-<section id="gameScreen" class="screen hidden">
-
+<!-- GAME -->
+<section id="gameScreen" class="screen">
     <div class="game-top">
         <div>
-            <h2>The Golden Table</h2>
-            <div class="muted" id="gameSubtitle">Place your bets carefully.</div>
+            <div class="round-label" id="roundLabel">ROUND 1 OF 5</div>
+            <h2 class="phase-title" id="phaseTitle">Your secret role</h2>
+            <p class="muted" id="phaseDescription"></p>
         </div>
-        <span class="round-tag" id="roundLabel">ROUND 1 / 6</span>
+        <button class="secondary" data-action="leave">LEAVE GAME</button>
     </div>
 
-    <div class="progress"><div id="gameProgress" style="width:10%"></div></div>
+    <div id="roleArea" class="panel role-card" style="display:none">
+        <div class="role-icon" id="roleIcon">🎭</div>
+        <h2 class="role-name" id="roleName">INNOCENT</h2>
+        <p class="role-description" id="roleDescription"></p>
+        <div class="notice" id="roleNotice"></div>
+        <button class="primary" data-action="ready" id="readyButton">
+            I'M READY
+        </button>
+        <p class="muted" id="readyCount" style="margin-top:15px"></p>
+    </div>
 
-    <div class="game-layout">
-        <div class="panel game-card">
-            <div id="gameContent"></div>
-        </div>
-
-        <div>
-            <div class="panel">
-                <h3>Players</h3>
-                <div id="gamePlayers" class="player-list"></div>
-                <hr>
-                <div class="muted" style="font-size:11px">YOUR BALANCE</div>
-                <div id="myMoney" class="money" style="font-size:29px;margin:5px 0">$5,000</div>
-                <div id="myRole" class="muted" style="font-size:12px">Role hidden</div>
-            </div>
-
-            <div class="panel" style="margin-top:15px">
-                <h3>Casino activity</h3>
-                <div id="gameLog" class="log"></div>
-            </div>
+    <div id="playArea" class="game-content">
+        <div class="panel action-area" id="mainAction"></div>
+        <div class="panel">
+            <h2 class="section-title">Casino players</h2>
+            <div class="player-list" id="gamePlayers"></div>
+            <h2 class="section-title" style="margin-top:25px">Casino activity</h2>
+            <div class="log" id="gameLog"></div>
         </div>
     </div>
-</section>
 
-<section id="gameOverScreen" class="screen hidden">
-    <div class="panel center" style="padding:40px 20px">
-        <div class="hero-symbol">♛</div>
-        <h1 id="winnerTitle">GAME OVER</h1>
-        <p id="winnerDescription" class="muted"></p>
-        <div id="finalResults"></div>
-        <div id="replayControls" style="margin-top:25px">
-            <button class="primary" onclick="rematch()">PLAY AGAIN</button>
-            <button onclick="returnToLobby()">RETURN TO LOBBY</button>
-        </div>
+    <div id="gameOverArea" class="panel" style="display:none;text-align:center;padding:40px 20px">
+        <div class="eyebrow">THE CASINO HAS SPOKEN</div>
+        <h2 class="role-name" id="gameOverTitle">GAME OVER</h2>
+        <p class="muted" id="gameOverText"></p>
+        <div id="finalRoles" class="player-list" style="max-width:450px;margin:25px auto"></div>
+        <button class="primary" data-action="rematch" id="rematchButton">
+            PLAY AGAIN
+        </button>
+        <button class="secondary" data-action="leave" style="margin-left:8px">
+            LEAVE
+        </button>
     </div>
 </section>
 
-</main>
-
-<div class="footer">
-    THE GOLDEN TABLE · WHO'S CHEATING? · MULTIPLAYER EDITION
+<footer>WHO'S CHEATING? &nbsp; • &nbsp; THE HOUSE ALWAYS WINS... OR DOES IT?</footer>
 </div>
-
-</div>
-
-<div id="toast" class="toast hidden"></div>
 
 <script>
-/* ########################################################
+"use strict";
+
+/* =========================================
    CONFIGURATION
-######################################################## */
+========================================= */
 
 const CONFIG = {
-    MIN_PLAYERS: 3,
     MAX_PLAYERS: 8,
-    STARTING_MONEY: 5000,
-    TARGET_MONEY: 20000,
-    MAX_ROUNDS: 6,
-    MIN_BET: 100,
-    MAX_BET: 1000,
-    CONNECTION_TIMEOUT: 18000,
-    RECONNECT_ATTEMPTS: 3,
-
-    ICE_SERVERS: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-        {
-            urls: "turn:openrelay.metered.ca:80",
-            username: "openrelayproject",
-            credential: "openrelayproject"
-        },
-        {
-            urls: "turn:openrelay.metered.ca:443",
-            username: "openrelayproject",
-            credential: "openrelayproject"
-        },
-        {
-            urls: "turn:openrelay.metered.ca:443?transport=tcp",
-            username: "openrelayproject",
-            credential: "openrelayproject"
-        }
-    ]
+    MIN_PLAYERS: 3,
+    MAX_ROUNDS: 5,
+    STARTING_MONEY: 1000,
+    BET_AMOUNT: 100,
+    PEER_PREFIX: "whos-cheating-"
 };
 
-const PEER_OPTIONS = {
-    debug: 1,
-    config: {
-        iceServers: CONFIG.ICE_SERVERS,
-        iceCandidatePoolSize: 10
-    }
-};
-
-/* ########################################################
-   GLOBAL STATE
-######################################################## */
+const RED_NUMBERS = new Set([
+    1,3,5,7,9,12,14,16,18,
+    19,21,23,25,27,30,32,34,36
+]);
 
 let peer = null;
 let hostConnection = null;
-let connections = {};
 let isHost = false;
-let myId = null;
-let myName = "";
+let myId = makeId();
+let myName = "Player";
 let roomCode = "";
 let roomState = null;
+let myPrivate = {
+    role: null,
+    peek: null
+};
+
+let connections = {};
 let secretRoles = {};
-let secretRound = null;
-let hasUsedXray = false;
-let selectedBet = null;
-let selectedVote = null;
-let connectionTimer = null;
-let reconnectCount = 0;
-let pendingJoin = false;
-let lastMessageTime = Date.now();
+let secretSpin = null;
+let readyPlayers = [];
+let currentBet = null;
+let currentVote = null;
+let connecting = false;
+let gameStarted = false;
 
-const CARD_SUITS = ["♠", "♥", "♦", "♣"];
-const CARD_VALUES = ["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
+/* =========================================
+   BASIC HELPERS
+========================================= */
 
-/* ########################################################
-   GENERAL UTILITIES
-######################################################## */
-
-function randomId(length = 12) {
-    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-        result += chars[Math.floor(Math.random() * chars.length)];
-    }
-    return result;
+function makeId() {
+    return "p_" + Math.random().toString(36).slice(2, 11);
 }
 
-function money(amount) {
-    return "$" + Math.floor(amount).toLocaleString("en-AU");
+function makeRoomCode() {
+    return Math.random().toString(36).slice(2, 8).toUpperCase();
 }
 
 function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, c => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-    })[c]);
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+    })[char]);
 }
 
-function notify(message) {
-    const el = document.getElementById("toast");
-    el.textContent = message;
-    el.classList.remove("hidden");
-    setTimeout(() => el.classList.add("hidden"), 2800);
+function showError(message) {
+    const box = document.getElementById("errorBox");
+    box.textContent = message;
+    box.style.display = "block";
 }
 
-function setConnection(online, text) {
-    document.getElementById("connectionDot").className =
-        online ? "dot online" : "dot";
-    document.getElementById("connectionText").textContent = text;
+function clearError() {
+    const box = document.getElementById("errorBox");
+    box.textContent = "";
+    box.style.display = "none";
 }
 
-function showScreen(id) {
-    document.querySelectorAll("main > section").forEach(s => {
-        s.classList.add("hidden");
-    });
-    document.getElementById(id).classList.remove("hidden");
+function setConnection(online, message) {
+    document.getElementById("connectionDot").classList.toggle("online", online);
+    document.getElementById("connectionText").textContent = message;
 }
 
-function showCreate() {
-    document.getElementById("createForm").classList.remove("hidden");
-    document.getElementById("joinForm").classList.add("hidden");
+function showScreen(screen) {
+    document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+    document.getElementById(screen + "Screen").classList.add("active");
 }
 
-function showJoin() {
-    document.getElementById("joinForm").classList.remove("hidden");
-    document.getElementById("createForm").classList.add("hidden");
+function getPlayer(id) {
+    return roomState?.players?.find(player => player.id === id);
 }
 
-function setConnecting(title, message) {
-    document.getElementById("connectingTitle").textContent = title;
-    document.getElementById("connectingMessage").textContent = message;
-    showScreen("connectingScreen");
+function getMyPlayer() {
+    return getPlayer(myId);
 }
 
-function clearConnectionTimer() {
-    if (connectionTimer) clearTimeout(connectionTimer);
-    connectionTimer = null;
+function addLog(message) {
+    if (!roomState) return;
+    roomState.log = roomState.log || [];
+    roomState.log.unshift(message);
+    roomState.log = roomState.log.slice(0, 35);
 }
 
-function copyRoomCode() {
-    if (!roomCode) return;
-    navigator.clipboard.writeText(roomCode).then(
-        () => notify("Room code copied!"),
-        () => notify("Room code: " + roomCode)
-    );
-}
-
-/* ########################################################
-   PEERJS CONNECTION
-######################################################## */
-
-function createPeer(id) {
-    return new Promise((resolve, reject) => {
-        try {
-            const p = new Peer(id || undefined, PEER_OPTIONS);
-
-            const timeout = setTimeout(() => {
-                p.destroy();
-                reject(new Error("Peer connection timed out"));
-            }, CONFIG.CONNECTION_TIMEOUT);
-
-            p.on("open", () => {
-                clearTimeout(timeout);
-                resolve(p);
-            });
-
-            p.on("error", error => {
-                clearTimeout(timeout);
-                reject(error);
-            });
-        } catch (error) {
-            reject(error);
-        }
-    });
-}
-
-async function createRoom() {
-    const name = document.getElementById("createName").value.trim();
-
-    if (!name) return notify("Enter your name first.");
-
-    myName = name.slice(0, 16);
-    isHost = true;
-    pendingJoin = false;
-    roomCode = randomId(6);
-    myId = randomId();
-
-    setConnecting("Opening your casino...", "Starting the multiplayer room.");
-
-    let success = false;
-
-    for (let attempt = 0; attempt < 5; attempt++) {
-        try {
-            peer = await createPeer("whos-cheating-" + roomCode.toLowerCase());
-            success = true;
-            break;
-        } catch (error) {
-            if (peer) {
-                try { peer.destroy(); } catch(e) {}
-            }
-            peer = null;
-            roomCode = randomId(6);
-        }
-    }
-
-    if (!success) {
-        notify("Could not open a multiplayer room. Try again.");
-        showScreen("homeScreen");
+function sendToHost(message) {
+    if (!hostConnection || !hostConnection.open) {
+        showError("You are not connected to the host.");
         return;
     }
 
-    roomState = {
-        room: roomCode,
-        host: myId,
-        phase: "lobby",
-        round: 0,
-        maxRounds: CONFIG.MAX_ROUNDS,
-        players: [{
-            id: myId,
-            name: myName,
-            money: CONFIG.STARTING_MONEY,
-            connected: true,
-            rouletteBet: null,
-            pokerBet: null,
-            vote: null
-        }],
-        log: ["The casino has opened."]
+    hostConnection.send(message);
+}
+
+function sendToPlayer(id, message) {
+    if (id === myId) {
+        handlePrivateMessage(message);
+        return;
+    }
+
+    const connection = connections[id];
+    if (connection && connection.open) {
+        connection.send(message);
+    }
+}
+
+/* =========================================
+   PEERJS CONNECTION SETUP
+========================================= */
+
+function peerOptions() {
+    return {
+        debug: 1,
+        config: {
+            iceServers: [
+                { urls: "stun:stun.l.google.com:19302" },
+                { urls: "stun:stun1.l.google.com:19302" }
+            ]
+        }
     };
-
-    connections = {};
-    secretRoles = {};
-    secretRound = null;
-
-    setupHostEvents();
-
-    setConnection(true, "HOSTING");
-    renderLobby();
-    showScreen("lobbyScreen");
-
-    notify("Casino opened! Share your room code.");
 }
 
+function createRoom() {
+    if (connecting) return;
 
-function setupHostEvents() {
-    peer.on("connection", conn => {
-        console.log("[HOST] Incoming connection:", conn.peer);
-
-        // IMPORTANT: Register listeners immediately.
-        // Do not wait for the open event.
-        conn.on("data", data => {
-            console.log("[HOST] Received:", data);
-            handleHostMessage(conn, data);
-        });
-
-        conn.on("open", () => {
-            console.log("[HOST] Connection opened:", conn.peer);
-        });
-
-        conn.on("close", () => {
-            console.log("[HOST] Connection closed:", conn.peer);
-            handleHostDisconnect(conn);
-        });
-
-        conn.on("error", error => {
-            console.error("[HOST] Connection error:", error);
-            handleHostDisconnect(conn);
-        });
-    });
-
-    peer.on("disconnected", () => {
-        console.log("[HOST] Signalling disconnected");
-        setConnection(false, "RECONNECTING");
-
-        if (!peer.destroyed) {
-            peer.reconnect();
-        }
-    });
-
-    peer.on("error", error => {
-        console.error("[HOST] Peer error:", error);
-
-        if (error.type !== "peer-unavailable") {
-            notify("Connection error: " + error.type);
-        }
-    });
-
-    console.log("[HOST] Multiplayer listeners registered");
-}
-
-
-    peer.on("disconnected", () => {
-        setConnection(false, "RECONNECTING");
-        peer.reconnect();
-    });
-
-    peer.on("error", error => {
-        console.error("Peer error:", error);
-        if (error.type !== "peer-unavailable") {
-            notify("Connection issue: " + error.type);
-        }
-    });
-}
-
-async function joinRoom() {
-    const name = document.getElementById("joinName").value.trim();
-    const code = document.getElementById("joinCode").value.trim().toUpperCase();
-
-    if (!name) return notify("Enter your name first.");
-    if (!/^[A-Z2-9]{6}$/.test(code)) {
-        return notify("Enter a valid six-character room code.");
-    }
-
-    myName = name.slice(0, 16);
-    roomCode = code;
-    isHost = false;
-    pendingJoin = true;
-    myId = randomId();
-
-    const savedToken = localStorage.getItem("wc-token-" + roomCode);
-    if (savedToken) myId = savedToken;
-
-    setConnecting("Joining the casino...", "Finding the room and establishing a connection.");
-
-    clearConnectionTimer();
-
-    try {
-        peer = await createPeer();
-        setConnection(true, "SIGNALLING");
-
-        connectToHost();
-    } catch (error) {
-        console.error(error);
-        notify("Could not connect to the multiplayer service. Try again.");
-        showScreen("homeScreen");
-    }
-}
-
-function connectToHost() {
-    if (!peer || peer.destroyed) return;
-
-    clearConnectionTimer();
-
-    setConnecting("Connecting to room " + roomCode, "Waiting for the host to respond.");
-
-    const conn = peer.connect(
-        "whos-cheating-" + roomCode.toLowerCase(),
-        {
-            reliable: true,
-            serialization: "json"
-        }
-    );
-
-    hostConnection = conn;
-
-    connectionTimer = setTimeout(() => {
-        if (pendingJoin) {
-            conn.close();
-            retryJoin();
-        }
-    }, CONFIG.CONNECTION_TIMEOUT);
-
-    conn.on("open", () => {
-        clearConnectionTimer();
-        reconnectCount = 0;
-
-        conn.send({
-            type: "JOIN",
-            id: myId,
-            name: myName
-        });
-
-        setConnection(true, "CONNECTED");
-    });
-
-    conn.on("data", data => handleGuestMessage(data));
-
-    conn.on("close", () => {
-        clearConnectionTimer();
-        setConnection(false, "DISCONNECTED");
-
-        if (pendingJoin) {
-            retryJoin();
-        } else {
-            notify("Disconnected from the host.");
-        }
-    });
-
-    conn.on("error", error => {
-        console.error(error);
-        if (pendingJoin) retryJoin();
-    });
-}
-
-function retryJoin() {
-    if (!pendingJoin) return;
-
-    clearConnectionTimer();
-
-    if (reconnectCount >= CONFIG.RECONNECT_ATTEMPTS) {
-        pendingJoin = false;
-        notify("Could not join this room. Check the code and try again.");
-        showScreen("homeScreen");
+    if (typeof Peer === "undefined") {
+        showError("PeerJS could not load. Check your internet connection and refresh the page.");
         return;
     }
 
-    reconnectCount++;
+    clearError();
+    connecting = true;
+    isHost = true;
+    setConnection(false, "CREATING ROOM");
 
-    setConnecting(
-        "Retrying connection...",
-        "Attempt " + reconnectCount + " of " + CONFIG.RECONNECT_ATTEMPTS
-    );
+    roomCode = makeRoomCode();
+    const peerId = CONFIG.PEER_PREFIX + roomCode.toLowerCase();
 
-    setTimeout(() => {
-        if (peer && !peer.destroyed) connectToHost();
-    }, 1300);
-}
+    peer = new Peer(peerId, peerOptions());
 
-function cancelConnection() {
-    pendingJoin = false;
-    clearConnectionTimer();
+    peer.on("open", id => {
+        connecting = false;
+        myId = makeId();
+        myName = "Host";
 
-    if (peer) {
-        peer.destroy();
-        peer = null;
-    }
-
-    if (hostConnection) {
-        hostConnection.close();
-        hostConnection = null;
-    }
-
-    setConnection(false, "NOT CONNECTED");
-    showScreen("homeScreen");
-}
-
-/* ########################################################
-   HOST MESSAGE HANDLING
-######################################################## */
-
-
-function handleHostMessage(conn, data) {
-    if (!data || typeof data !== "object") return;
-
-    console.log("[HOST MESSAGE]", data.type);
-
-    if (data.type === "JOIN") {
-        if (typeof data.name !== "string" ||
-            typeof data.id !== "string") return;
-
-        let player = roomState.players.find(
-            p => p.id === data.id
-        );
-
-        if (!player) {
-            if (roomState.phase !== "lobby" ||
-                roomState.players.length >= CONFIG.MAX_PLAYERS) {
-                conn.send({
-                    type: "REJECT",
-                    reason: "Room is full or already playing."
-                });
-                return;
-            }
-
-            player = {
-                id: data.id,
-                name: data.name.slice(0, 16),
+        roomState = {
+            phase: "lobby",
+            round: 1,
+            players: [{
+                id: myId,
+                name: myName,
                 money: CONFIG.STARTING_MONEY,
                 connected: true,
-                rouletteBet: null,
-                pokerBet: null,
+                bet: null,
                 vote: null
-            };
+            }],
+            log: ["The host opened the casino."],
+            spin: null,
+            votes: {},
+            result: null,
+            winner: null
+        };
 
-            roomState.players.push(player);
-            addLog(player.name + " joined the casino.");
+        secretRoles = {};
+        connections = {};
+        setConnection(true, "ROOM OPEN");
+        showScreen("lobby");
+        render();
+    });
+
+    peer.on("connection", connection => {
+        setupIncomingConnection(connection);
+    });
+
+    peer.on("error", error => {
+        console.error("[HOST PEER ERROR]", error);
+        connecting = false;
+
+        if (error.type === "unavailable-id") {
+            showError("That room code is already being used. Try creating another room.");
         } else {
-            player.connected = true;
-            player.name = data.name.slice(0, 16);
+            showError("Could not create room: " + error.type);
         }
 
-        connections[player.id] = conn;
-        conn._playerId = player.id;
+        setConnection(false, "CONNECTION ERROR");
+    });
 
-        // Confirm the connection first.
-        conn.send({
+    peer.on("disconnected", () => {
+        setConnection(false, "RECONNECTING");
+        if (peer && !peer.destroyed) peer.reconnect();
+    });
+}
+
+function setupIncomingConnection(connection) {
+    console.log("[HOST] Incoming connection");
+
+    // Attach the data listener immediately.
+    // This avoids missing the first JOIN message.
+    connection.on("data", data => {
+        handleHostMessage(connection, data);
+    });
+
+    connection.on("open", () => {
+        console.log("[HOST] Connection opened");
+    });
+
+    connection.on("close", () => {
+        handleDisconnect(connection);
+    });
+
+    connection.on("error", error => {
+        console.error("[HOST] Connection error", error);
+        handleDisconnect(connection);
+    });
+}
+
+function joinRoom() {
+    if (connecting) return;
+
+    if (typeof Peer === "undefined") {
+        showError("PeerJS could not load. Check your internet connection and refresh.");
+        return;
+    }
+
+    const code = document.getElementById("joinCode").value.trim().toUpperCase();
+    const name = document.getElementById("playerName").value.trim();
+
+    if (!/^[A-Z0-9]{6}$/.test(code)) {
+        showError("Enter a valid 6-character room code.");
+        return;
+    }
+
+    if (!name) {
+        showError("Enter your player name.");
+        return;
+    }
+
+    clearError();
+    connecting = true;
+    isHost = false;
+    roomCode = code;
+    myName = name.slice(0, 16);
+    myId = makeId();
+
+    setConnection(false, "CONNECTING");
+
+    peer = new Peer(undefined, peerOptions());
+
+    peer.on("open", () => {
+        const hostId = CONFIG.PEER_PREFIX + code.toLowerCase();
+
+        hostConnection = peer.connect(hostId, {
+            reliable: true
+        });
+
+        hostConnection.on("open", () => {
+            console.log("[GUEST] Connected to host");
+            hostConnection.send({
+                type: "JOIN",
+                id: myId,
+                name: myName
+            });
+            setConnection(true, "CONNECTED");
+        });
+
+        hostConnection.on("data", data => {
+            handleGuestMessage(data);
+        });
+
+        hostConnection.on("close", () => {
+            setConnection(false, "HOST DISCONNECTED");
+            showError("The host disconnected.");
+        });
+
+        hostConnection.on("error", error => {
+            console.error("[GUEST CONNECTION ERROR]", error);
+            showError("Connection error. Check the room code and try again.");
+            setConnection(false, "CONNECTION ERROR");
+        });
+
+        // A little extra time for the PeerJS connection to report failure.
+        setTimeout(() => {
+            if (connecting && (!hostConnection || !hostConnection.open)) {
+                showError("Could not connect. Check the room code and make sure the host is online.");
+                connecting = false;
+            }
+        }, 12000);
+    });
+
+    peer.on("error", error => {
+        console.error("[GUEST PEER ERROR]", error);
+        connecting = false;
+
+        if (error.type === "peer-unavailable") {
+            showError("Room not found. Check the code and make sure the host has created the room.");
+        } else {
+            showError("Connection failed: " + error.type);
+        }
+
+        setConnection(false, "CONNECTION ERROR");
+    });
+}
+
+/* =========================================
+   HOST MESSAGE HANDLING
+========================================= */
+
+function handleHostMessage(connection, data) {
+    if (!data || typeof data !== "object") return;
+
+    if (data.type === "JOIN") {
+        if (typeof data.id !== "string" || typeof data.name !== "string") return;
+
+        if (roomState.phase !== "lobby") {
+            connection.send({
+                type: "REJECT",
+                reason: "This game has already started."
+            });
+            return;
+        }
+
+        if (roomState.players.length >= CONFIG.MAX_PLAYERS) {
+            connection.send({
+                type: "REJECT",
+                reason: "This room is full."
+            });
+            return;
+        }
+
+        if (roomState.players.some(player => player.id === data.id)) return;
+
+        const player = {
+            id: data.id,
+            name: data.name.slice(0, 16),
+            money: CONFIG.STARTING_MONEY,
+            connected: true,
+            bet: null,
+            vote: null
+        };
+
+        roomState.players.push(player);
+        connections[player.id] = connection;
+        connection._playerId = player.id;
+
+        addLog(player.name + " joined the casino.");
+
+        connection.send({
             type: "JOINED",
-            id: player.id,
             room: roomCode
         });
 
-        // Then send the latest room state.
-        conn.send({
-            type: "STATE",
-            state: getPublicState(),
-            private: {
-                role: secretRoles[player.id] || null
-            }
-        });
+        sendStateTo(player.id);
+        broadcastState();
+        render();
 
         console.log("[HOST] Player joined:", player.name);
-
-        renderLobby();
         return;
     }
 
-    const playerId = conn._playerId;
-
-    if (!playerId) {
-        console.warn("[HOST] Message from unidentified player");
-        return;
-    }
-
-    if (!roomState.players.some(p => p.id === playerId)) return;
+    const playerId = connection._playerId;
+    if (!playerId || !getPlayer(playerId)) return;
 
     if (data.type === "ACTION") {
         processAction(playerId, data.action);
     }
 }
 
+function handleDisconnect(connection) {
+    const id = connection._playerId;
+    if (!id || !roomState) return;
 
-    const playerId = conn._playerId;
-
-    if (!playerId || !roomState.players.some(p => p.id === playerId)) return;
-
-    if (data.type === "ACTION") {
-        processAction(playerId, data.action);
-    }
-}
-
-function handleHostDisconnect(conn) {
-    if (!conn._playerId || !roomState) return;
-
-    const player = roomState.players.find(p => p.id === conn._playerId);
-
-    if (player) {
+    const player = getPlayer(id);
+    if (player && player.connected) {
         player.connected = false;
         addLog(player.name + " disconnected.");
         broadcastState();
-        renderCurrent();
+        render();
     }
 
-    delete connections[conn._playerId];
+    delete connections[id];
 }
 
-/* ########################################################
+/* =========================================
    GUEST MESSAGE HANDLING
-######################################################## */
+========================================= */
 
 function handleGuestMessage(data) {
     if (!data || typeof data !== "object") return;
 
     if (data.type === "REJECT") {
-        pendingJoin = false;
-        clearConnectionTimer();
-        notify(data.reason || "Room rejected your connection.");
-        showScreen("homeScreen");
+        connecting = false;
+        showError(data.reason || "You cannot join this room.");
         return;
     }
 
     if (data.type === "JOINED") {
-        clearConnectionTimer();
-        pendingJoin = false;
-        myId = data.id;
-
-        localStorage.setItem("wc-token-" + roomCode, myId);
-
+        connecting = false;
         setConnection(true, "CONNECTED");
-        notify("Successfully joined the casino!");
         return;
     }
 
     if (data.type === "STATE") {
+        connecting = false;
         roomState = data.state;
-        myPrivate = data.private || {};
-        renderCurrent();
+
+        if (data.private) {
+            if (data.private.role) myPrivate.role = data.private.role;
+
+            if (Object.prototype.hasOwnProperty.call(data.private, "peek")) {
+                myPrivate.peek = data.private.peek;
+            }
+        }
+
+        clearError();
+        setConnection(true, "CONNECTED");
+
+        if (roomState.phase === "lobby") {
+            showScreen("lobby");
+        } else {
+            showScreen("game");
+        }
+
+        render();
         return;
     }
 
     if (data.type === "PRIVATE") {
-        handlePrivate(data);
-        return;
+        handlePrivateMessage(data);
     }
 }
 
-let myPrivate = {};
+function handlePrivateMessage(data) {
+    if (data.role) myPrivate.role = data.role;
 
-function handlePrivate(data) {
-    if (data.action === "ROLE") {
-        myPrivate.role = data.role;
-        myPrivate.instructions = data.instructions;
-        renderCurrent();
+    if (Object.prototype.hasOwnProperty.call(data, "peek")) {
+        myPrivate.peek = data.peek;
     }
 
-    if (data.action === "XRAY") {
-        myPrivate.xray = data.data;
-        myPrivate.xrayRound = data.round;
-        renderCurrent();
-        notify("X-Ray information received!");
-    }
-
-    if (data.action === "ROLE_CLEAR") {
-        myPrivate = {};
-    }
+    render();
 }
 
-/* ########################################################
-   NETWORK BROADCASTING
-######################################################## */
+/* =========================================
+   STATE SYNC
+========================================= */
 
 function getPublicState() {
     return {
-        room: roomState.room,
-        host: roomState.host,
         phase: roomState.phase,
         round: roomState.round,
-        maxRounds: roomState.maxRounds,
-        players: roomState.players.map(p => ({
-            id: p.id,
-            name: p.name,
-            money: p.money,
-            connected: p.connected,
-            rouletteBet: p.rouletteBet ? true : false,
-            pokerBet: p.pokerBet ? true : false,
-            vote: p.vote ? true : false,
-            rouletteResult: p.rouletteResult || null,
-            pokerResult: p.pokerResult || null
+        players: roomState.players.map(player => ({
+            id: player.id,
+            name: player.name,
+            money: player.money,
+            connected: player.connected,
+            bet: player.bet,
+            vote: player.vote
         })),
-        result: roomState.result || null,
-        log: roomState.log.slice(-30),
-        winner: roomState.winner || null
+        log: roomState.log,
+        spin: roomState.spin,
+        votes: roomState.votes,
+        result: roomState.result,
+        winner: roomState.winner,
+        ready: readyPlayers.slice()
     };
+}
+
+function sendStateTo(id) {
+    const privateData = {
+        role: secretRoles[id] || null,
+        peek: id === getCheaterId() && roomState.phase === "bet"
+            ? secretSpin
+            : null
+    };
+
+    if (id === myId) {
+        roomState = roomState;
+        myPrivate.role = privateData.role;
+        myPrivate.peek = privateData.peek;
+        return;
+    }
+
+    const connection = connections[id];
+
+    if (connection && connection.open) {
+        connection.send({
+            type: "STATE",
+            state: getPublicState(),
+            private: privateData
+        });
+    }
 }
 
 function broadcastState() {
     if (!isHost || !roomState) return;
 
-    const publicState = getPublicState();
+    for (const player of roomState.players) {
+        sendStateTo(player.id);
+    }
 
-    roomState.players.forEach(player => {
-        const privateData = {
-            role: secretRoles[player.id] || null,
-            xray: null
-        };
-
-        const conn = connections[player.id];
-
-        if (conn && conn.open) {
-            try {
-                conn.send({
-                    type: "STATE",
-                    state: publicState,
-                    private: privateData
-                });
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        if (player.id === myId) {
-            roomState._myPrivate = privateData;
-        }
-    });
-
-    renderCurrent();
+    render();
 }
 
-function sendPrivate(playerId, action, data = {}) {
-    if (playerId === myId) {
-        handlePrivate({
-            action,
-            ...data
+function hostAction(action) {
+    if (!isHost) {
+        sendToHost({
+            type: "ACTION",
+            action: action
         });
+    } else {
+        processAction(myId, action);
+    }
+}
+
+/* =========================================
+   GAME SETUP
+========================================= */
+
+function startGame() {
+    if (!isHost || roomState.phase !== "lobby") return;
+
+    const players = roomState.players.filter(player => player.connected);
+
+    if (players.length < CONFIG.MIN_PLAYERS) {
+        showError("You need at least 3 connected players.");
         return;
     }
 
-    const conn = connections[playerId];
+    if (players.length > CONFIG.MAX_PLAYERS) return;
 
-    if (conn && conn.open) {
-        conn.send({
-            type: "PRIVATE",
-            action,
-            ...data
-        });
-    }
-}
-
-function sendAction(action) {
-    if (!action) return;
-
-    if (isHost) {
-        processAction(myId, action);
-    } else if (hostConnection && hostConnection.open) {
-        hostConnection.send({
-            type: "ACTION",
-            action
-        });
-    } else {
-        notify("You are disconnected.");
-    }
-}
-
-/* ########################################################
-   GAME SETUP AND ROLE ASSIGNMENT
-######################################################## */
-
-function startGame() {
-    if (!isHost) return;
-
-    const connected = roomState.players.filter(p => p.connected);
-
-    if (connected.length < CONFIG.MIN_PLAYERS) {
-        return notify("You need at least 3 connected players.");
-    }
-
-    const players = connected.slice();
-
-    players.forEach(p => {
-        p.money = CONFIG.STARTING_MONEY;
-    });
+    const shuffled = [...players].sort(() => Math.random() - 0.5);
+    const cheater = shuffled[0];
 
     secretRoles = {};
 
-    const shuffled = [...players].sort(() => Math.random() - .5);
-
-    secretRoles[shuffled[0].id] = "CHEATER";
-    secretRoles[shuffled[1].id] = "SECURITY";
-
-    shuffled.slice(2).forEach(p => {
-        secretRoles[p.id] = "INNOCENT";
+    shuffled.forEach((player, index) => {
+        secretRoles[player.id] = index === 0
+            ? "CHEATER"
+            : index === 1
+                ? "SECURITY"
+                : "INNOCENT";
     });
 
-    roomState.players = players;
-    roomState.round = 0;
     roomState.phase = "role";
-    roomState.result = null;
+    roomState.round = 1;
     roomState.winner = null;
+    roomState.result = null;
+    readyPlayers = [];
 
-    addLog("The game has begun.");
-
-    roomState.players.forEach(p => {
-        sendPrivate(p.id, "ROLE", {
-            role: secretRoles[p.id],
-            instructions: roleInstructions(secretRoles[p.id])
-        });
-    });
+    addLog("The casino game has begun.");
 
     broadcastState();
 }
 
-function roleInstructions(role) {
-    if (role === "CHEATER") {
-        return "Your job is to use secret information to reach $20,000 before Security catches you. Use your X-Ray Specs carefully.";
-    }
-
-    if (role === "SECURITY") {
-        return "Watch the other players. Look for suspicious betting patterns and try to identify the Cheater during the accusation phase.";
-    }
-
-    return "You are innocent. Make money at the casino and help Security identify the Cheater.";
+function getCheaterId() {
+    return Object.keys(secretRoles).find(id => secretRoles[id] === "CHEATER");
 }
 
 function startRound() {
     if (!isHost) return;
 
-    roomState.round++;
-    roomState.phase = "roulette";
+    roomState.phase = "bet";
+    roomState.spin = null;
     roomState.result = null;
-    roomState.winner = null;
+    roomState.votes = {};
 
-    hasUsedXray = false;
-    secretRound = {
-        wheel: Math.floor(Math.random() * 37),
-        hands: {},
-        wheelColour: null
-    };
+    secretSpin = Math.floor(Math.random() * 37);
 
-    secretRound.wheelColour = rouletteColour(secretRound.wheel);
-
-    roomState.players.forEach(p => {
-        p.rouletteBet = null;
-        p.pokerBet = null;
-        p.vote = null;
-        p.rouletteResult = null;
-        p.pokerResult = null;
-
-        secretRound.hands[p.id] = createHand();
+    roomState.players.forEach(player => {
+        player.bet = null;
+        player.vote = null;
     });
 
     addLog("Round " + roomState.round + " has started.");
@@ -1538,1263 +1222,669 @@ function startRound() {
     broadcastState();
 }
 
-/* ########################################################
-   ROULETTE
-######################################################## */
-
-function rouletteColour(number) {
-    if (number === 0) return "green";
-
-    const reds = [
-        1,3,5,7,9,12,14,16,18,
-        19,21,23,25,27,30,32,34,36
-    ];
-
-    return reds.includes(number) ? "red" : "black";
-}
-
-function placeRouletteBet(playerId, amount, choice) {
-    const player = roomState.players.find(p => p.id === playerId);
-
-    if (!player || roomState.phase !== "roulette") return;
-    if (player.rouletteBet) return;
-    if (!Number.isInteger(amount) || amount < CONFIG.MIN_BET ||
-        amount > CONFIG.MAX_BET || amount > player.money) return;
-
-    if (choice.type === "number" &&
-        (!Number.isInteger(choice.value) || choice.value < 0 || choice.value > 36)) return;
-
-    if (choice.type === "colour" &&
-        !["red","black"].includes(choice.value)) return;
-
-    player.money -= amount;
-    player.rouletteBet = {
-        amount,
-        type: choice.type,
-        value: choice.value
-    };
-
-    addLog(player.name + " placed a roulette bet.");
-
-    if (roomState.players.every(p => p.rouletteBet)) {
-        resolveRoulette();
-    } else {
-        broadcastState();
-    }
-}
-
-function resolveRoulette() {
-    if (!isHost || roomState.phase !== "roulette") return;
-
-    const result = secretRound.wheel;
-
-    roomState.players.forEach(player => {
-        const bet = player.rouletteBet;
-
-        if (!bet) return;
-
-        let payout = 0;
-
-        if (bet.type === "number" && bet.value === result) {
-            payout = bet.amount * 36;
-        }
-
-        if (bet.type === "colour" &&
-            bet.value === secretRound.wheelColour) {
-            payout = bet.amount * 2;
-        }
-
-        player.money += payout;
-        player.rouletteResult = payout;
-    });
-
-    roomState.result = {
-        wheel: result,
-        colour: secretRound.wheelColour
-    };
-
-    roomState.phase = "rouletteResult";
-
-    addLog("The roulette wheel stopped on " + result + ".");
-
-    if (checkCheaterTarget()) return;
-
-    broadcastState();
-}
-
-function rouletteChoiceLabel(bet) {
-    if (!bet) return "No bet";
-    if (bet.type === "number") return "Number " + bet.value;
-    return bet.value.toUpperCase();
-}
-
-/* ########################################################
-   POKER
-######################################################## */
-
-function createHand() {
-    const deck = [];
-
-    for (const suit of CARD_SUITS) {
-        for (const value of CARD_VALUES) {
-            deck.push({ suit, value });
-        }
-    }
-
-    for (let i = deck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [deck[i], deck[j]] = [deck[j], deck[i]];
-    }
-
-    return deck.slice(0, 5);
-}
-
-function cardValue(value) {
-    return CARD_VALUES.indexOf(value) + 2;
-}
-
-function evaluateHand(hand) {
-    const values = hand.map(c => cardValue(c.value)).sort((a,b) => b-a);
-    const suits = hand.map(c => c.suit);
-    const counts = {};
-
-    values.forEach(v => counts[v] = (counts[v] || 0) + 1);
-
-    const groups = Object.entries(counts)
-        .map(([v,c]) => ({value:Number(v), count:c}))
-        .sort((a,b) => b.count-a.count || b.value-a.value);
-
-    const flush = suits.every(s => s === suits[0]);
-
-    let straight = values.every((v,i) => i === 0 || values[i-1] === v+1);
-
-    if (!straight && values.join(",") === "14,5,4,3,2") {
-        straight = true;
-    }
-
-    const top = values[0];
-
-    if (straight && flush) return [8,top];
-    if (groups[0].count === 4) return [7,groups[0].value,groups[1].value];
-    if (groups[0].count === 3 && groups[1].count === 2) {
-        return [6,groups[0].value,groups[1].value];
-    }
-    if (flush) return [5,...values];
-    if (straight) return [4,top];
-    if (groups[0].count === 3) {
-        return [3,groups[0].value,...groups.slice(1).map(g=>g.value)];
-    }
-    if (groups[0].count === 2 && groups[1].count === 2) {
-        return [2,groups[0].value,groups[1].value,groups[2].value];
-    }
-    if (groups[0].count === 2) {
-        return [1,groups[0].value,...groups.slice(1).map(g=>g.value)];
-    }
-
-    return [0,...values];
-}
-
-const HAND_NAMES = [
-    "High Card",
-    "One Pair",
-    "Two Pair",
-    "Three of a Kind",
-    "Straight",
-    "Flush",
-    "Full House",
-    "Four of a Kind",
-    "Straight Flush"
-];
-
-function compareHands(a,b) {
-    const aa = evaluateHand(a);
-    const bb = evaluateHand(b);
-
-    for (let i = 0; i < Math.max(aa.length,bb.length); i++) {
-        const x = aa[i] || 0;
-        const y = bb[i] || 0;
-        if (x !== y) return x-y;
-    }
-
-    return 0;
-}
-
-function handName(hand) {
-    return HAND_NAMES[evaluateHand(hand)[0]];
-}
-
-function cardHTML(card) {
-    const red = card.suit === "♥" || card.suit === "♦";
-
-    return `
-        <div class="playing-card ${red ? "red-card" : ""}">
-            <strong>${escapeHTML(card.value)}</strong>
-            <span>${escapeHTML(card.suit)}</span>
-        </div>
-    `;
-}
-
-function placePokerBet(playerId, amount) {
-    const player = roomState.players.find(p => p.id === playerId);
-
-    if (!player || roomState.phase !== "poker") return;
-    if (player.pokerBet !== null) return;
-
-    if (!Number.isInteger(amount) || amount < 0 ||
-        amount > CONFIG.MAX_BET || amount > player.money) return;
-
-    player.money -= amount;
-    player.pokerBet = amount;
-
-    addLog(player.name + " entered the poker table.");
-
-    if (roomState.players.every(p => p.pokerBet !== null)) {
-        resolvePoker();
-    } else {
-        broadcastState();
-    }
-}
-
-function resolvePoker() {
-    if (!isHost || roomState.phase !== "poker") return;
-
-    const active = roomState.players.filter(p => p.pokerBet > 0);
-    const pot = active.reduce((sum,p) => sum + p.pokerBet, 0);
-
-    let winners = [];
-
-    if (active.length) {
-        let best = null;
-
-        active.forEach(player => {
-            const hand = secretRound.hands[player.id];
-
-            if (best === null || compareHands(hand,best) > 0) {
-                best = hand;
-                winners = [player];
-            } else if (compareHands(hand,best) === 0) {
-                winners.push(player);
-            }
-        });
-
-        const share = Math.floor(pot / winners.length);
-
-        winners.forEach(p => p.money += share);
-    }
-
-    const results = roomState.players.map(p => ({
-        id: p.id,
-        hand: secretRound.hands[p.id],
-        name: handName(secretRound.hands[p.id])
-    }));
-
-    roomState.result = {
-        ...(roomState.result || {}),
-        poker: results.map(r => ({
-            id: r.id,
-            name: r.name
-        })),
-        pokerWinners: winners.map(p => p.id),
-        pot
-    };
-
-    roomState.phase = "pokerResult";
-
-    addLog("The poker table has settled its bets.");
-
-    if (checkCheaterTarget()) return;
-
-    broadcastState();
-}
-
-/* ########################################################
-   XRAY ABILITY
-######################################################## */
-
-function useXray(playerId) {
-    if (roomState.phase !== "roulette") return;
-    if (secretRoles[playerId] !== "CHEATER") return;
-    if (hasUsedXray) return;
-
-    hasUsedXray = true;
-
-    const data = {
-        wheel: secretRound.wheel,
-        colour: secretRound.wheelColour,
-        hands: roomState.players.map(p => ({
-            id: p.id,
-            name: p.name,
-            hand: secretRound.hands[p.id],
-            rank: handName(secretRound.hands[p.id])
-        }))
-    };
-
-    sendPrivate(playerId, "XRAY", {
-        data,
-        round: roomState.round
-    });
-
-    addLog("A mysterious player used an unknown ability.");
-
-    broadcastState();
-}
-
-/* ########################################################
-   VOTING AND GAME END
-######################################################## */
-
-function submitVote(playerId, targetId) {
-    if (roomState.phase !== "vote") return;
-
-    const player = roomState.players.find(p => p.id === playerId);
-    if (!player || player.vote) return;
-
-    if (!roomState.players.some(p => p.id === targetId)) return;
-    if (targetId === playerId) return;
-
-    player.vote = targetId;
-
-    addLog(player.name + " submitted a vote.");
-
-    if (roomState.players.every(p => p.vote)) {
-        resolveVotes();
-    } else {
-        broadcastState();
-    }
-}
-
-function resolveVotes() {
-    const counts = {};
-
-    roomState.players.forEach(p => {
-        counts[p.vote] = (counts[p.vote] || 0) + 1;
-    });
-
-    const max = Math.max(...Object.values(counts));
-    const leaders = Object.keys(counts).filter(id => counts[id] === max);
-
-    const suspect = leaders.length === 1 ? leaders[0] : null;
-    const caught = suspect && secretRoles[suspect] === "CHEATER";
-
-    roomState.result = {
-        ...(roomState.result || {}),
-        votes: counts,
-        suspect,
-        caught: !!caught
-    };
-
-    if (caught) {
-        finishGame("GOOD", "Security identified the Cheater!");
-        return;
-    }
-
-    addLog(suspect
-        ? "The group accused the wrong player."
-        : "The group could not agree on a suspect.");
-
-    if (roomState.round >= CONFIG.MAX_ROUNDS) {
-        finishGame("CHEATER", "The Cheater escaped detection.");
-        return;
-    }
-
-    roomState.phase = "roundEnd";
-    broadcastState();
-}
-
-function checkCheaterTarget() {
-    const cheater = roomState.players.find(p =>
-        secretRoles[p.id] === "CHEATER"
-    );
-
-    if (cheater && cheater.money >= CONFIG.TARGET_MONEY) {
-        finishGame("CHEATER", "The Cheater reached $20,000!");
-        return true;
-    }
-
-    return false;
-}
-
-function finishGame(winner, description) {
-    roomState.phase = "over";
-    roomState.winner = winner;
-    roomState.result = {
-        ...(roomState.result || {}),
-        description
-    };
-
-    addLog(description);
-
-    roomState.players.forEach(p => {
-        sendPrivate(p.id, "ROLE", {
-            role: secretRoles[p.id],
-            instructions: roleInstructions(secretRoles[p.id])
-        });
-    });
-
-    broadcastState();
-}
-
-/* ########################################################
-   HOST ACTION PROCESSING
-######################################################## */
+/* =========================================
+   GAME ACTIONS
+========================================= */
 
 function processAction(playerId, action) {
-    if (!isHost || !action || !roomState) return;
+    if (!isHost || !action || !getPlayer(playerId)) return;
+
+    const player = getPlayer(playerId);
 
     switch (action.type) {
-        case "ROLE_READY":
-            if (roomState.phase === "role") {
-                startRound();
+
+        case "READY":
+            if (roomState.phase !== "role") return;
+
+            if (!readyPlayers.includes(playerId)) {
+                readyPlayers.push(playerId);
             }
-            break;
 
-        case "ROULETTE_BET":
-            placeRouletteBet(playerId, action.amount, action.choice);
-            break;
+            addLog(player.name + " is ready.");
 
-        case "POKER_CONTINUE":
-            if (roomState.phase === "rouletteResult") {
-                roomState.phase = "poker";
+            const connectedPlayers = roomState.players.filter(p => p.connected);
+
+            if (connectedPlayers.every(p => readyPlayers.includes(p.id))) {
+                startRound();
+            } else {
                 broadcastState();
             }
             break;
 
-        case "POKER_BET":
-            placePokerBet(playerId, action.amount);
+        case "BET":
+            if (roomState.phase !== "bet") return;
+            if (!["RED", "BLACK"].includes(action.choice)) return;
+            if (player.bet !== null) return;
+
+            player.bet = action.choice;
+
+            addLog(player.name + " placed a bet.");
+
+            if (roomState.players.filter(p => p.connected).every(p => p.bet !== null)) {
+                resolveSpin();
+            } else {
+                broadcastState();
+            }
             break;
 
         case "VOTE":
-            submitVote(playerId, action.target);
-            break;
+            if (roomState.phase !== "vote") return;
+            if (player.vote !== null) return;
 
-        case "XRAY":
-            useXray(playerId);
-            break;
+            if (!roomState.players.some(p => p.id === action.target && p.connected)) return;
+            if (action.target === playerId) return;
 
-        case "NEXT_ROUND":
-            if (roomState.phase === "roundEnd") {
-                startRound();
+            player.vote = action.target;
+            roomState.votes[playerId] = action.target;
+
+            addLog(player.name + " cast a vote.");
+
+            if (roomState.players.filter(p => p.connected).every(p => p.vote !== null)) {
+                resolveVote();
+            } else {
+                broadcastState();
             }
             break;
     }
 }
 
-/* ########################################################
-   ACTIVITY LOG
-######################################################## */
+/* =========================================
+   ROULETTE
+========================================= */
 
-function addLog(message) {
-    if (!roomState) return;
+function getSpinColour(number) {
+    if (number === 0) return "GREEN";
+    return RED_NUMBERS.has(number) ? "RED" : "BLACK";
+}
 
-    if (!roomState.log) roomState.log = [];
+function resolveSpin() {
+    if (!isHost || roomState.phase !== "bet") return;
 
-    roomState.log.push(message);
+    const number = secretSpin;
+    const colour = getSpinColour(number);
 
-    if (roomState.log.length > 50) {
-        roomState.log.shift();
+    roomState.spin = {
+        number: number,
+        colour: colour
+    };
+
+    const connectedPlayers = roomState.players.filter(p => p.connected);
+
+    connectedPlayers.forEach(player => {
+        if (player.bet === colour) {
+            player.money += CONFIG.BET_AMOUNT;
+        } else {
+            player.money -= CONFIG.BET_AMOUNT;
+        }
+    });
+
+    roomState.phase = "spinResult";
+    roomState.result = {
+        number: number,
+        colour: colour
+    };
+
+    addLog("The roulette wheel landed on " + number + " " + colour + ".");
+
+    broadcastState();
+}
+
+function openVoting() {
+    if (!isHost || roomState.phase !== "spinResult") return;
+
+    roomState.phase = "vote";
+    roomState.votes = {};
+
+    roomState.players.forEach(player => {
+        player.vote = null;
+    });
+
+    addLog("Voting has started. Find the cheater.");
+
+    broadcastState();
+}
+
+/* =========================================
+   VOTING AND WIN CONDITIONS
+========================================= */
+
+function resolveVote() {
+    if (!isHost || roomState.phase !== "vote") return;
+
+    const connectedPlayers = roomState.players.filter(p => p.connected);
+    const counts = {};
+
+    connectedPlayers.forEach(player => {
+        if (player.vote) {
+            counts[player.vote] = (counts[player.vote] || 0) + 1;
+        }
+    });
+
+    let highest = 0;
+    let selected = null;
+    let tied = false;
+
+    for (const [id, count] of Object.entries(counts)) {
+        if (count > highest) {
+            highest = count;
+            selected = id;
+            tied = false;
+        } else if (count === highest) {
+            tied = true;
+        }
+    }
+
+    const majority = Math.floor(connectedPlayers.length / 2) + 1;
+    const caught = !tied && highest >= majority && selected === getCheaterId();
+
+    roomState.phase = "voteResult";
+    roomState.result = {
+        selected: selected,
+        votes: counts,
+        caught: caught,
+        majority: majority
+    };
+
+    if (caught) {
+        roomState.winner = "SECURITY";
+        roomState.phase = "gameOver";
+        addLog("The cheater was caught. The casino wins!");
+    } else {
+        addLog("The vote failed. The cheater escaped.");
+
+        if (roomState.round >= CONFIG.MAX_ROUNDS) {
+            roomState.winner = "CHEATER";
+            roomState.phase = "gameOver";
+            addLog("The cheater survived all five rounds.");
+        }
+    }
+
+    broadcastState();
+}
+
+function nextRound() {
+    if (!isHost || roomState.phase !== "voteResult") return;
+
+    roomState.round++;
+    startRound();
+}
+
+/* =========================================
+   BUTTON ACTIONS
+========================================= */
+
+function handleAction(action, value) {
+    clearError();
+
+    switch (action) {
+        case "create":
+            createRoom();
+            break;
+
+        case "join":
+            joinRoom();
+            break;
+
+        case "copy":
+            if (roomCode && navigator.clipboard) {
+                navigator.clipboard.writeText(roomCode)
+                    .then(() => showError("Room code copied!"))
+                    .catch(() => showError("Your room code is: " + roomCode));
+            } else {
+                showError("Your room code is: " + roomCode);
+            }
+            break;
+
+        case "start":
+            if (isHost) startGame();
+            break;
+
+        case "leave":
+            leaveRoom();
+            break;
+
+        case "ready":
+            hostAction({ type: "READY" });
+            break;
+
+        case "bet":
+            currentBet = value;
+            hostAction({
+                type: "BET",
+                choice: value
+            });
+            break;
+
+        case "openVoting":
+            if (isHost) openVoting();
+            break;
+
+        case "vote":
+            currentVote = value;
+            hostAction({
+                type: "VOTE",
+                target: value
+            });
+            break;
+
+        case "nextRound":
+            if (isHost) nextRound();
+            break;
+
+        case "rematch":
+            if (isHost) resetLobby();
+            else showError("Only the host can start a rematch.");
+            break;
     }
 }
 
-/* ########################################################
-   RENDERING
-######################################################## */
+document.addEventListener("click", event => {
+    const button = event.target.closest("[data-action]");
+    if (!button || button.disabled) return;
 
-function renderCurrent() {
-    if (!roomState) return;
+    handleAction(button.dataset.action, button.dataset.value);
+});
 
-    if (roomState.phase === "lobby") {
-        renderLobby();
-        showScreen("lobbyScreen");
-        return;
-    }
-
-    if (roomState.phase === "over") {
-        renderGameOver();
-        showScreen("gameOverScreen");
-        return;
-    }
-
-    renderGame();
-    showScreen("gameScreen");
-}
+/* =========================================
+   LOBBY RENDERING
+========================================= */
 
 function renderLobby() {
     if (!roomState) return;
 
-    document.getElementById("lobbyCode").textContent = roomCode;
+    document.getElementById("roomCodeDisplay").textContent = roomCode;
+    document.getElementById("playerCount").textContent =
+        roomState.players.length + " / " + CONFIG.MAX_PLAYERS + " players";
 
-    const list = document.getElementById("lobbyPlayers");
+    const container = document.getElementById("lobbyPlayers");
 
-    list.innerHTML = roomState.players.map((p,i) => `
+    container.innerHTML = roomState.players.map((player, index) => `
         <div class="player">
-            <div class="player-name">
-                <div class="avatar">${i+1}</div>
-                <div>
-                    <strong>${escapeHTML(p.name)}</strong>
-                    <div class="muted" style="font-size:11px">
-                        ${p.id === roomState.host ? "ROOM HOST" : "PLAYER"}
-                    </div>
+            <div>
+                <div class="player-name">${escapeHTML(player.name)}</div>
+                <div class="player-tag ${index === 0 ? "host-tag" : ""}">
+                    ${index === 0 ? "HOST" : "PLAYER"}
                 </div>
             </div>
-            <span class="${p.connected ? "gold" : "muted"}">
-                ${p.connected ? "● ONLINE" : "○ OFFLINE"}
-            </span>
+            <div class="player-tag">
+                ${player.connected ? "CONNECTED" : "DISCONNECTED"}
+            </div>
         </div>
     `).join("");
 
-    const connected = roomState.players.filter(p => p.connected).length;
+    const startButton = document.getElementById("startButton");
+    startButton.disabled = !isHost ||
+        roomState.players.filter(p => p.connected).length < CONFIG.MIN_PLAYERS;
 
-    document.getElementById("lobbyNotice").textContent =
-        connected + " / 8 players connected. " +
-        (connected >= 3 ? "The casino is ready." : "Waiting for at least 3 players.");
+    startButton.textContent = isHost ? "START GAME" : "WAITING FOR HOST";
 
-    document.getElementById("startButton").disabled =
-        !isHost || connected < 3;
-
-    document.getElementById("hostLabel").textContent =
-        isHost ? "YOU ARE THE HOST" : "WAITING FOR THE HOST TO START";
+    document.getElementById("lobbyMessage").textContent = isHost
+        ? "You need at least 3 connected players to begin."
+        : "Waiting for the host to start the game...";
 }
 
-function renderGame() {
-    const phase = roomState.phase;
-    const round = roomState.round;
+/* =========================================
+   GAME RENDERING
+========================================= */
+
+function render() {
+    if (!roomState) return;
+
+    if (roomState.phase === "lobby") {
+        showScreen("lobby");
+        renderLobby();
+        return;
+    }
+
+    showScreen("game");
 
     document.getElementById("roundLabel").textContent =
-        "ROUND " + round + " / " + CONFIG.MAX_ROUNDS;
-
-    document.getElementById("gameProgress").style.width =
-        (round / CONFIG.MAX_ROUNDS * 100) + "%";
-
-    const me = roomState.players.find(p => p.id === myId);
-
-    document.getElementById("myMoney").textContent =
-        money(me ? me.money : 0);
-
-    document.getElementById("myRole").textContent =
-        myPrivate.role ? "ROLE: " + myPrivate.role : "Role hidden";
+        "ROUND " + roomState.round + " OF " + CONFIG.MAX_ROUNDS;
 
     document.getElementById("gamePlayers").innerHTML =
-        roomState.players.map((p,i) => `
+        roomState.players.map(player => `
             <div class="player">
-                <div class="player-name">
-                    <div class="avatar">${i+1}</div>
-                    <div style="min-width:0">
-                        <strong>${escapeHTML(p.name)}</strong>
-                        <div class="muted" style="font-size:10px">
-                            ${p.connected ? "ONLINE" : "OFFLINE"}
-                        </div>
+                <div>
+                    <div class="player-name">${escapeHTML(player.name)}</div>
+                    <div class="player-tag">
+                        ${player.connected ? "ONLINE" : "OFFLINE"}
                     </div>
                 </div>
-                <span class="money">${money(p.money)}</span>
+                <div class="player-money">$${player.money}</div>
             </div>
         `).join("");
 
     document.getElementById("gameLog").innerHTML =
-        roomState.log.slice().reverse().map(item =>
-            `<div class="log-entry">${escapeHTML(item)}</div>`
+        (roomState.log || []).map(item =>
+            `<div>${escapeHTML(item)}</div>`
         ).join("");
 
-    const titles = {
-        role: "Your secret role",
-        roulette: "Roulette",
-        rouletteResult: "Roulette results",
-        poker: "Poker",
-        pokerResult: "Poker results",
-        vote: "Accusation",
-        roundEnd: "Round complete"
-    };
+    const roleArea = document.getElementById("roleArea");
+    const playArea = document.getElementById("playArea");
+    const gameOverArea = document.getElementById("gameOverArea");
 
-    document.getElementById("gameSubtitle").textContent =
-        titles[phase] || "The casino is open.";
+    roleArea.style.display = "none";
+    playArea.style.display = "grid";
+    gameOverArea.style.display = "none";
 
-    const content = document.getElementById("gameContent");
-
-    if (phase === "role") renderRole(content);
-    if (phase === "roulette") renderRoulette(content);
-    if (phase === "rouletteResult") renderRouletteResult(content);
-    if (phase === "poker") renderPoker(content);
-    if (phase === "pokerResult") renderPokerResult(content);
-    if (phase === "vote") renderVote(content);
-    if (phase === "roundEnd") renderRoundEnd(content);
+    if (roomState.phase === "role") {
+        renderRole();
+    } else if (roomState.phase === "bet") {
+        renderBet();
+    } else if (roomState.phase === "spinResult") {
+        renderSpinResult();
+    } else if (roomState.phase === "vote") {
+        renderVote();
+    } else if (roomState.phase === "voteResult") {
+        renderVoteResult();
+    } else if (roomState.phase === "gameOver") {
+        renderGameOver();
+    }
 }
 
-/* ########################################################
-   ROLE SCREEN
-######################################################## */
+function setPhase(title, description) {
+    document.getElementById("phaseTitle").textContent = title;
+    document.getElementById("phaseDescription").textContent = description;
+}
 
-function renderRole(el) {
-    const role = myPrivate.role || "UNKNOWN";
+function renderRole() {
+    document.getElementById("roleArea").style.display = "block";
+    document.getElementById("playArea").style.display = "none";
 
-    const descriptions = {
-        CHEATER: "You are the Cheater. Your goal is to reach $20,000 without being caught. Use your secret X-Ray ability to gain an advantage.",
-        SECURITY: "You are Security. Watch the bets and behaviour of everyone at the table. Find the Cheater before they escape.",
-        INNOCENT: "You are innocent. Make money through the casino games and help Security find the Cheater."
+    setPhase("Your secret role", "Keep your identity hidden from the other players.");
+
+    const role = myPrivate.role || "INNOCENT";
+
+    const roles = {
+        CHEATER: {
+            icon: "🃏",
+            description: "You are secretly cheating. You can see the roulette result before placing your bet. Avoid being caught by the other players.",
+            notice: "Your goal: survive all five rounds without being voted out."
+        },
+        SECURITY: {
+            icon: "🛡️",
+            description: "You are casino security. Work out who is cheating and convince the others to vote for them.",
+            notice: "Your goal: catch the cheater before the game ends."
+        },
+        INNOCENT: {
+            icon: "🎲",
+            description: "You are an innocent gambler. Watch how everyone behaves and help security find the cheater.",
+            notice: "Your goal: help identify the cheater."
+        }
     };
 
-    const icons = {
-        CHEATER: "♠",
-        SECURITY: "♜",
-        INNOCENT: "♦"
-    };
+    const info = roles[role];
 
-    el.innerHTML = `
-        <div class="center">
-            <div class="muted">YOUR SECRET ROLE</div>
-            <div class="role-card">
-                <div class="role-icon">${icons[role] || "?"}</div>
-                <div class="role-name">${role}</div>
-                <p>${descriptions[role] || "Waiting for your role."}</p>
+    document.getElementById("roleIcon").textContent = info.icon;
+    document.getElementById("roleName").textContent = role;
+    document.getElementById("roleDescription").textContent = info.description;
+    document.getElementById("roleNotice").textContent = info.notice;
+
+    const ready = roomState.ready || [];
+    const alreadyReady = ready.includes(myId);
+
+    document.getElementById("readyButton").disabled = alreadyReady;
+    document.getElementById("readyButton").textContent =
+        alreadyReady ? "WAITING FOR PLAYERS" : "I'M READY";
+
+    document.getElementById("readyCount").textContent =
+        ready.length + " / " +
+        roomState.players.filter(p => p.connected).length +
+        " players ready";
+}
+
+function renderBet() {
+    setPhase("Place your bet", "Choose which colour you think the roulette wheel will land on.");
+
+    const player = getMyPlayer();
+    const area = document.getElementById("mainAction");
+
+    if (!player) return;
+
+    if (myPrivate.role === "CHEATER" && myPrivate.peek !== null) {
+        area.innerHTML = `
+            <div class="notice">
+                🃏 CHEATER INFORMATION: The next result is
+                <strong>${myPrivate.peek === 0 ? "GREEN" : getSpinColour(myPrivate.peek)}</strong>.
+                Only you can see this.
             </div>
-            <p class="muted">Do not reveal your role to the other players.</p>
-            <button class="primary" onclick="readyForRound()">
-                ENTER THE CASINO
-            </button>
+        `;
+    } else {
+        area.innerHTML = "";
+    }
+
+    if (player.bet !== null) {
+        area.innerHTML += `
+            <h2 class="section-title">Bet placed</h2>
+            <p class="muted">You chose ${player.bet}. Waiting for the other players...</p>
+            <div class="wheel">?</div>
+            <p class="muted">${roomState.players.filter(p => p.bet !== null).length}
+            / ${roomState.players.filter(p => p.connected).length} players have bet.</p>
+        `;
+        return;
+    }
+
+    area.innerHTML += `
+        <h2 class="section-title">Choose your colour</h2>
+        <p class="muted">Each bet is worth $${CONFIG.BET_AMOUNT}. Correct bets win $${CONFIG.BET_AMOUNT}.</p>
+        <div class="choice-grid">
+            <button class="choice red" data-action="bet" data-value="RED">🔴 RED</button>
+            <button class="choice black" data-action="bet" data-value="BLACK">⚫ BLACK</button>
         </div>
+        <div class="wheel">?</div>
+        <p class="muted" style="text-align:center">Waiting for everyone to place their bets.</p>
     `;
 }
 
-function readyForRound() {
-    if (isHost) {
-        startRound();
-    } else {
-        sendAction({type:"ROLE_READY"});
-    }
-}
+function renderSpinResult() {
+    setPhase("The wheel has stopped", "Check the result and see who won their bet.");
 
-/* ########################################################
-   ROULETTE SCREEN
-######################################################## */
-
-function renderRoulette(el) {
-    const me = roomState.players.find(p => p.id === myId);
-    const submitted = me && me.rouletteBet;
-    const allSubmitted = roomState.players.filter(p => p.rouletteBet).length;
-
-    const xrayAvailable =
-        myPrivate.role === "CHEATER" &&
-        myPrivate.xrayRound !== roomState.round;
-
-    let xrayHTML = "";
-
-    if (myPrivate.role === "CHEATER") {
-        xrayHTML = `
-            <div class="ability">
-                <strong class="gold">♠ X-RAY SPECS</strong>
-                <p class="muted">Reveal the roulette result and everyone's poker cards for this round.</p>
-                <button class="primary small"
-                    onclick="useXrayButton()"
-                    ${xrayAvailable ? "" : "disabled"}>
-                    ${xrayAvailable ? "USE X-RAY SPECS" : "ABILITY USED"}
-                </button>
-            </div>
-        `;
-    }
-
-    const xray = myPrivate.xrayRound === roomState.round ?
-        myPrivate.xray : null;
-
-    let xrayResult = "";
-
-    if (xray) {
-        xrayResult = `
-            <div class="result-banner">
-                <strong class="gold">X-RAY INFORMATION</strong>
-                <p>Roulette will land on <strong>${xray.wheel}</strong> (${xray.colour}).</p>
-                <strong>POKER CARDS</strong>
-                ${xray.hands.map(h => `
-                    <div class="log-entry">
-                        ${escapeHTML(h.name)}: ${escapeHTML(h.rank)}
-                        <div class="cards">${h.hand.map(cardHTML).join("")}</div>
-                    </div>
-                `).join("")}
-            </div>
-        `;
-    }
-
-    el.innerHTML = `
-        <div class="center">
-            <div class="muted">THE ROULETTE TABLE</div>
-            <div class="casino-table" style="margin-top:15px">
-                <div style="font-size:35px">🎰</div>
-                <div class="wheel-number">?</div>
-                <div>PLACE YOUR BET</div>
-            </div>
-        </div>
-
-        ${xrayHTML}
-        ${xrayResult}
-
-        <hr>
-
-        <div>
-            <h3>Choose your bet</h3>
-            ${submitted ? `
-                <div class="result-banner">
-                    <strong class="gold">BET PLACED</strong>
-                    <p>You selected ${escapeHTML(rouletteChoiceLabel(me.rouletteBet))}.</p>
-                    <p>Waiting for other players...</p>
-                </div>
-            ` : `
-                <div class="field">
-                    <label>BET AMOUNT ($100-$1,000)</label>
-                    <input id="rouletteAmount" type="number" min="100" max="1000"
-                        step="100" value="500">
-                </div>
-
-                <div class="field">
-                    <label>BET TYPE</label>
-                    <select id="rouletteType" onchange="updateRouletteOptions()">
-                        <option value="colour">Colour</option>
-                        <option value="number">Exact number</option>
-                    </select>
-                </div>
-
-                <div class="field" id="rouletteColourField">
-                    <label>CHOOSE COLOUR</label>
-                    <div class="roulette-options">
-                        <div class="option red-option selected"
-                             onclick="selectRoulette('red',this)">RED</div>
-                        <div class="option black-option"
-                             onclick="selectRoulette('black',this)">BLACK</div>
-                        <div class="option green-option"
-                             onclick="selectRoulette('green',this)"
-                             style="opacity:.45;cursor:not-allowed">GREEN</div>
-                    </div>
-                </div>
-
-                <div class="field hidden" id="rouletteNumberField">
-                    <label>CHOOSE NUMBER (0-36)</label>
-                    <input type="number" id="rouletteNumber" min="0" max="36" value="17">
-                </div>
-
-                <button class="primary" style="width:100%"
-                    onclick="submitRoulette()">PLACE BET</button>
-            `}
-        </div>
-
-        <div class="notice">
-            ${allSubmitted} of ${roomState.players.length} players have placed their bets.
-            <br>Correct colour: 2x payout. Exact number: 36x payout.
-        </div>
-    `;
-
-    selectedBet = "red";
-}
-
-function selectRoulette(choice, el) {
-    if (choice === "green") return;
-
-    selectedBet = choice;
-
-    document.querySelectorAll("#gameContent .option").forEach(o => {
-        o.classList.remove("selected");
-    });
-
-    el.classList.add("selected");
-}
-
-function updateRouletteOptions() {
-    const type = document.getElementById("rouletteType").value;
-
-    document.getElementById("rouletteColourField").classList.toggle(
-        "hidden", type !== "colour"
-    );
-
-    document.getElementById("rouletteNumberField").classList.toggle(
-        "hidden", type !== "number"
-    );
-}
-
-function submitRoulette() {
-    const amount = Number(document.getElementById("rouletteAmount").value);
-    const type = document.getElementById("rouletteType").value;
-
-    let choice;
-
-    if (type === "colour") {
-        if (!["red","black"].includes(selectedBet)) {
-            return notify("Select red or black.");
-        }
-
-        choice = {type:"colour", value:selectedBet};
-    } else {
-        const number = Number(document.getElementById("rouletteNumber").value);
-
-        if (!Number.isInteger(number) || number < 0 || number > 36) {
-            return notify("Choose a number from 0 to 36.");
-        }
-
-        choice = {type:"number",value:number};
-    }
-
-    if (!Number.isInteger(amount) || amount < 100 || amount > 1000) {
-        return notify("Bet must be between $100 and $1,000.");
-    }
-
-    sendAction({
-        type:"ROULETTE_BET",
-        amount,
-        choice
-    });
-}
-
-function useXrayButton() {
-    sendAction({type:"XRAY"});
-}
-
-/* ########################################################
-   ROULETTE RESULTS
-######################################################## */
-
-function renderRouletteResult(el) {
     const result = roomState.result;
-    const me = roomState.players.find(p => p.id === myId);
+    const player = getMyPlayer();
 
-    el.innerHTML = `
-        <div class="center">
-            <div class="muted">THE WHEEL HAS STOPPED</div>
-            <div class="casino-table" style="margin-top:15px">
-                <div class="wheel-number">${result.wheel}</div>
-                <div style="font-size:20px;text-transform:uppercase">
-                    ${result.colour}
-                </div>
-            </div>
-            <div class="result-banner">
-                <strong class="gold">YOUR RESULT</strong>
-                <h2>${me && me.rouletteResult > 0 ?
-                    "YOU WON " + money(me.rouletteResult) :
-                    "NO WINNINGS"}</h2>
-                <p class="muted">Your roulette bet has been settled.</p>
-            </div>
+    const colourClass = result.colour === "RED" ? "red" : "black";
+
+    document.getElementById("mainAction").innerHTML = `
+        <h2 class="section-title" style="text-align:center">Roulette result</h2>
+        <div class="wheel" style="background:${result.colour === "RED" ? "#a83333" : result.colour === "GREEN" ? "#16864d" : "#151515"}">
+            ${result.number}
         </div>
-
-        <h3>Players' results</h3>
-
-        ${roomState.players.map(p => `
-            <div class="player">
-                <strong>${escapeHTML(p.name)}</strong>
-                <span class="${p.rouletteResult > 0 ? "gold" : "muted"}">
-                    ${p.rouletteResult > 0 ?
-                        "+" + money(p.rouletteResult) :
-                        "No winnings"}
-                </span>
-            </div>
-        `).join("")}
-
-        <button class="primary" style="width:100%;margin-top:20px"
-            onclick="continueToPoker()">
-            CONTINUE TO POKER
-        </button>
+        <div class="result-number">${result.colour}</div>
+        <p class="muted" style="text-align:center">
+            Your bet: ${player?.bet || "NONE"}<br>
+            ${player?.bet === result.colour ? "You won $100!" : "You lost $100."}
+        </p>
+        ${isHost
+            ? `<button class="primary" style="width:100%;margin-top:15px" data-action="openVoting">CONTINUE TO VOTING</button>`
+            : `<p class="notice">Waiting for the host to continue...</p>`
+        }
     `;
 }
 
-function continueToPoker() {
-    sendAction({type:"POKER_CONTINUE"});
-}
+function renderVote() {
+    setPhase("Find the cheater", "Discuss what happened and vote for the player you suspect.");
 
-/* ########################################################
-   POKER SCREEN
-######################################################## */
+    const player = getMyPlayer();
+    const area = document.getElementById("mainAction");
 
-function renderPoker(el) {
-    const me = roomState.players.find(p => p.id === myId);
-    const submitted = me && me.pokerBet !== null;
-
-    const hand = myPrivate.xrayRound === roomState.round &&
-                 myPrivate.xray ?
-                 myPrivate.xray.hands.find(h => h.id === myId)?.hand :
-                 null;
-
-    const myCards = hand || null;
-
-    el.innerHTML = `
-        <div class="center">
-            <div class="muted">FIVE CARD POKER</div>
-            <div class="casino-table" style="margin-top:15px">
-                <div style="font-size:35px">♠ ♥ ♦ ♣</div>
-                <h2 style="margin:5px">THE POKER TABLE</h2>
-                <div class="muted">Highest hand wins the pot.</div>
+    if (player?.vote) {
+        area.innerHTML = `
+            <h2 class="section-title">Vote submitted</h2>
+            <p class="muted">You voted for ${escapeHTML(getPlayer(player.vote)?.name || "a player")}.</p>
+            <div class="notice">
+                ${roomState.players.filter(p => p.vote !== null).length}
+                / ${roomState.players.filter(p => p.connected).length}
+                players have voted.
             </div>
-        </div>
-
-        <div class="result-banner">
-            <strong class="gold">YOUR CARDS</strong>
-            <div class="cards">
-                ${myCards ?
-                    myCards.map(cardHTML).join("") :
-                    '<div class="playing-card back">?</div>'.repeat(5)}
-            </div>
-            <p class="muted">
-                ${myCards ?
-                    "X-Ray information has revealed your hand." :
-                    "Your hand is hidden until the game is resolved."}
-            </p>
-        </div>
-
-        ${submitted ? `
-            <div class="result-banner">
-                <strong class="gold">BET SUBMITTED</strong>
-                <p>You wagered ${money(me.pokerBet)}.</p>
-                <p>Waiting for the other players...</p>
-            </div>
-        ` : `
-            <h3>Enter the poker game</h3>
-            <div class="field">
-                <label>POKER BET</label>
-                <input type="number" id="pokerAmount"
-                    min="0" max="${Math.min(CONFIG.MAX_BET,me.money)}"
-                    step="100" value="${Math.min(500,me.money)}">
-            </div>
-            <button class="primary" style="width:100%"
-                onclick="submitPoker()">PLACE POKER BET</button>
-            <p class="muted" style="font-size:11px">
-                Minimum bet is $0. Maximum bet is $1,000.
-            </p>
-        `}
-
-        <div class="notice">
-            ${roomState.players.filter(p => p.pokerBet !== null).length}
-            of ${roomState.players.length} players have entered poker.
-        </div>
-    `;
-}
-
-function submitPoker() {
-    const amount = Number(document.getElementById("pokerAmount").value);
-
-    if (!Number.isInteger(amount) || amount < 0 || amount > 1000) {
-        return notify("Invalid poker bet.");
+            <p class="muted">Waiting for everyone else...</p>
+        `;
+        return;
     }
 
-    sendAction({
-        type:"POKER_BET",
-        amount
-    });
-}
+    const choices = roomState.players.filter(p => p.connected && p.id !== myId);
 
-/* ########################################################
-   POKER RESULTS
-######################################################## */
-
-function renderPokerResult(el) {
-    const results = roomState.result.poker || [];
-    const winners = roomState.result.pokerWinners || [];
-    const me = roomState.players.find(p => p.id === myId);
-
-    el.innerHTML = `
-        <div class="center">
-            <div class="muted">THE CARDS HAVE BEEN REVEALED</div>
-            <h2>POKER RESULTS</h2>
-            <div class="result-banner">
-                <strong class="gold">TOTAL POT</strong>
-                <div class="wheel-number">${money(roomState.result.pot || 0)}</div>
-            </div>
-        </div>
-
-        ${results.map(r => {
-            const p = roomState.players.find(p => p.id === r.id);
-            const hand = secretRound && secretRound.hands ?
-                secretRound.hands[r.id] : null;
-
-            return `
-                <div class="player" style="display:block">
-                    <div style="display:flex;justify-content:space-between;gap:8px">
-                        <strong>${escapeHTML(p ? p.name : "Player")}</strong>
-                        <span class="${winners.includes(r.id) ? "gold" : "muted"}">
-                            ${winners.includes(r.id) ? "WINNER" : ""}
-                        </span>
-                    </div>
-                    <div class="muted" style="font-size:12px">${escapeHTML(r.name)}</div>
-                    <div class="cards">
-                        ${hand ?
-                            hand.map(cardHTML).join("") :
-                            '<div class="muted">Cards hidden</div>'}
-                    </div>
-                </div>
-            `;
-        }).join("")}
-
-        <div class="result-banner">
-            ${winners.length ?
-                "Poker winner: " + winners.map(id => {
-                    const p = roomState.players.find(x => x.id === id);
-                    return escapeHTML(p ? p.name : "Player");
-                }).join(", ") :
-                "Nobody entered poker."}
-        </div>
-
-        <button class="primary" style="width:100%"
-            onclick="continueToVote()">
-            CONTINUE TO ACCUSATIONS
-        </button>
-    `;
-
-    // The host already has the cards. Guests receive a private
-    // copy of the completed round's cards below.
-    if (!isHost && roomState.result.pokerCards) {
-        // Reserved for compatibility with future card synchronization.
-    }
-}
-
-function continueToVote() {
-    sendAction({type:"NEXT_ROUND"});
-    if (!isHost) {
-        // The host will change to the accusation phase after this request.
-        // Voting is handled by the action below.
-        sendAction({type:"OPEN_VOTE"});
-    }
-}
-
-/* ########################################################
-   ACCUSATIONS
-######################################################## */
-
-function renderVote(el) {
-    const me = roomState.players.find(p => p.id === myId);
-    const voted = me && me.vote;
-
-    el.innerHTML = `
-        <div class="center">
-            <div class="hero-symbol">♜</div>
-            <h2>WHO IS CHEATING?</h2>
-            <p class="muted">
-                The casino has finished its games.
-                Now decide who has been cheating.
-            </p>
-        </div>
-
-        <div class="result-banner">
-            <strong class="gold">DISCUSS YOUR SUSPECTS</strong>
-            <p class="muted">
-                Look at betting behaviour and compare the players'
-                winnings. The Cheater is still hiding among you.
-            </p>
-        </div>
-
-        ${voted ? `
-            <div class="result-banner">
-                <strong class="gold">YOUR VOTE HAS BEEN CAST</strong>
-                <p>Waiting for the other players.</p>
-            </div>
-        ` : `
-            <h3>Choose a suspect</h3>
-            ${roomState.players.filter(p => p.id !== myId).map(p => `
-                <button class="vote-player"
-                    onclick="chooseVote('${p.id}',this)">
+    area.innerHTML = `
+        <h2 class="section-title">Who is cheating?</h2>
+        <p class="muted">Choose one player. You cannot vote for yourself.</p>
+        <div class="vote-list">
+            ${choices.map(p => `
+                <button class="vote-option" data-action="vote" data-value="${p.id}">
                     <span>${escapeHTML(p.name)}</span>
-                    <span class="muted">SELECT →</span>
+                    <span>VOTE →</span>
                 </button>
             `).join("")}
+        </div>
+        <p class="muted">
+            ${roomState.players.filter(p => p.vote !== null).length}
+            / ${roomState.players.filter(p => p.connected).length} votes submitted.
+        </p>
+    `;
+}
 
-            <button id="submitVoteButton" class="primary"
-                style="width:100%;margin-top:12px"
-                disabled onclick="submitMyVote()">
-                CONFIRM ACCUSATION
-            </button>
-        `}
+function renderVoteResult() {
+    const result = roomState.result;
+    setPhase("Voting results", "The votes have been counted.");
 
+    const selectedPlayer = getPlayer(result.selected);
+    const voteLines = Object.entries(result.votes || {}).map(([id, count]) => {
+        const player = getPlayer(id);
+        return `<div class="player">
+            <span>${escapeHTML(player?.name || "Unknown")}</span>
+            <strong>${count} votes</strong>
+        </div>`;
+    }).join("");
+
+    document.getElementById("mainAction").innerHTML = `
+        <h2 class="section-title">Vote breakdown</h2>
+        ${voteLines || "<p class='muted'>No votes were cast.</p>"}
         <div class="notice">
-            ${roomState.players.filter(p => p.vote).length}
-            of ${roomState.players.length} votes submitted.
-            <br>Votes are hidden until everyone has voted.
+            ${result.caught
+                ? "The cheater has been caught!"
+                : selectedPlayer
+                    ? selectedPlayer.name + " was voted for, but the cheater escaped."
+                    : "The vote was tied. Nobody was caught."
+            }
         </div>
-    `;
-
-    selectedVote = null;
-}
-
-function chooseVote(id, el) {
-    selectedVote = id;
-
-    document.querySelectorAll(".vote-player").forEach(b => {
-        b.classList.remove("selected");
-    });
-
-    el.classList.add("selected");
-
-    document.getElementById("submitVoteButton").disabled = false;
-}
-
-function submitMyVote() {
-    if (!selectedVote) return notify("Select a suspect.");
-    sendAction({type:"VOTE",target:selectedVote});
-}
-
-/* ########################################################
-   ROUND END
-######################################################## */
-
-function renderRoundEnd(el) {
-    const suspect = roomState.result && roomState.result.suspect;
-    const accused = roomState.players.find(p => p.id === suspect);
-
-    el.innerHTML = `
-        <div class="center">
-            <div class="hero-symbol">♛</div>
-            <h2>THE ACCUSATION FAILED</h2>
-            <p class="muted">
-                The Cheater is still in the casino.
-            </p>
-        </div>
-
-        <div class="result-banner">
-            <strong class="gold">VOTING RESULTS</strong>
-            <p>
-                ${accused ?
-                    escapeHTML(accused.name) + " received the most votes." :
-                    "There was a tie between the players."}
-            </p>
-            <p class="muted">
-                The Cheater has not been caught.
-            </p>
-        </div>
-
-        <h3>Player balances</h3>
-        ${roomState.players.map(p => `
-            <div class="player">
-                <strong>${escapeHTML(p.name)}</strong>
-                <span class="money">${money(p.money)}</span>
-            </div>
-        `).join("")}
-
-        ${isHost ? `
-            <button class="primary" style="width:100%;margin-top:20px"
-                onclick="nextRound()">START NEXT ROUND</button>
-        ` : `
-            <div class="notice">Waiting for the host to start the next round.</div>
-        `}
+        ${isHost
+            ? `<button class="primary" style="width:100%" data-action="nextRound">
+                NEXT ROUND
+               </button>`
+            : `<p class="muted">Waiting for the host...</p>`
+        }
     `;
 }
-
-function nextRound() {
-    sendAction({type:"NEXT_ROUND"});
-}
-
-/* ########################################################
-   GAME OVER
-######################################################## */
 
 function renderGameOver() {
-    const goodWon = roomState.winner === "GOOD";
+    document.getElementById("roleArea").style.display = "none";
+    document.getElementById("playArea").style.display = "none";
+    document.getElementById("gameOverArea").style.display = "block";
 
-    document.getElementById("winnerTitle").textContent =
-        goodWon ? "CHEATER CAUGHT!" : "THE CHEATER WINS!";
+    setPhase("Game over", "The casino has revealed the truth.");
 
-    document.getElementById("winnerDescription").textContent =
-        roomState.result.description || "";
+    const cheaterId = getCheaterId();
+    const cheater = getPlayer(cheaterId);
 
-    document.getElementById("finalResults").innerHTML = `
-        <div class="result-banner">
-            <h2 class="gold">
-                ${goodWon ? "SECURITY AND THE INNOCENTS WIN" : "THE CASINO HAS BEEN CHEATED"}
-            </h2>
-            <p>${goodWon ?
-                "The dishonest player has been identified." :
-                "The Cheater successfully avoided detection."}</p>
-        </div>
+    const securityWon = roomState.winner === "SECURITY";
 
-        <h3>Secret roles revealed</h3>
+    document.getElementById("gameOverTitle").textContent =
+        securityWon ? "CHEATER CAUGHT!" : "CHEATER ESCAPED!";
 
-        ${roomState.players.map(p => {
-            const role = p.id === myId ?
-                myPrivate.role :
-                (isHost ? secretRoles[p.id] : null);
+    document.getElementById("gameOverText").textContent =
+        securityWon
+            ? "The players successfully identified the cheater. The casino wins!"
+            : "The cheater survived all five rounds. The casino has been robbed!";
 
-            return `
-                <div class="player">
-                    <strong>${escapeHTML(p.name)}</strong>
-                    <span class="gold">${escapeHTML(role || "REVEALED")}</span>
-                </div>
-                <div class="muted" style="text-align:right;font-size:12px">
-                    ${money(p.money)}
-                </div>
-            `;
-        }).join("")}
-    `;
+    document.getElementById("finalRoles").innerHTML =
+        roomState.players.map(player => `
+            <div class="player">
+                <span>${escapeHTML(player.name)}</span>
+                <strong class="player-tag">
+                    ${secretRoles[player.id] || (player.id === myId ? myPrivate.role : "REVEALED")}
+                </strong>
+            </div>
+        `).join("");
 
-    document.getElementById("replayControls").innerHTML = isHost ? `
-        <button class="primary" onclick="rematch()">PLAY AGAIN</button>
-        <button onclick="returnToLobby()">RETURN TO LOBBY</button>
-    ` : `
-        <div class="notice">Waiting for the host to organise another game.</div>
-    `;
+    document.getElementById("rematchButton").disabled = !isHost;
+    document.getElementById("rematchButton").textContent =
+        isHost ? "PLAY AGAIN" : "WAITING FOR HOST";
 }
 
-function rematch() {
-    if (!isHost) return;
+/* =========================================
+   RESET AND LEAVE
+========================================= */
 
-    roomState.players.forEach(p => {
-        p.money = CONFIG.STARTING_MONEY;
-        p.rouletteBet = null;
-        p.pokerBet = null;
-        p.vote = null;
-    });
-
-    secretRoles = {};
-    secretRound = null;
-    myPrivate = {};
+function resetLobby() {
+    if (!isHost || !roomState) return;
 
     roomState.phase = "lobby";
-    roomState.round = 0;
+    roomState.round = 1;
+    roomState.spin = null;
     roomState.result = null;
     roomState.winner = null;
+    roomState.votes = {};
 
-    addLog("A new game is being prepared.");
+    secretRoles = {};
+    secretSpin = null;
+    readyPlayers = [];
 
-    roomState.players.forEach(p => {
-        sendPrivate(p.id, "ROLE_CLEAR");
+    roomState.players.forEach(player => {
+        player.money = CONFIG.STARTING_MONEY;
+        player.bet = null;
+        player.vote = null;
     });
 
+    addLog("The host started a new game.");
+
     broadcastState();
-    renderLobby();
-    showScreen("lobbyScreen");
+    showScreen("lobby");
 }
 
-function returnToLobby() {
-    if (!isHost) return;
-
-    rematch();
-}
-
-/* ########################################################
-   ROOM RECOVERY AND CLEANUP
-######################################################## */
-
-window.addEventListener("beforeunload", () => {
-    clearConnectionTimer();
+function leaveRoom() {
+    connecting = false;
 
     if (hostConnection) {
-        try { hostConnection.close(); } catch(e) {}
+        try {
+            hostConnection.close();
+        } catch (e) {}
     }
 
     if (peer) {
-        try { peer.destroy(); } catch(e) {}
+        try {
+            peer.destroy();
+        } catch (e) {}
     }
+
+    peer = null;
+    hostConnection = null;
+    roomState = null;
+    connections = {};
+    secretRoles = {};
+    secretSpin = null;
+    readyPlayers = [];
+    myPrivate = { role: null, peek: null };
+    roomCode = "";
+    isHost = false;
+    currentBet = null;
+    currentVote = null;
+
+    clearError();
+    setConnection(false, "NOT CONNECTED");
+    showScreen("home");
+}
+
+/* =========================================
+   MAIN INITIALISATION
+========================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("WHO'S CHEATING? loaded successfully.");
+
+    setConnection(false, "NOT CONNECTED");
+
+    document.getElementById("joinCode").addEventListener("input", event => {
+        event.target.value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    });
 });
-
-window.addEventListener("online", () => {
-    if (peer && peer.disconnected) {
-        peer.reconnect();
-    }
-});
-
-window.addEventListener("offline", () => {
-    setConnection(false, "INTERNET OFFLINE");
-});
-
-document.getElementById("joinCode").addEventListener("input", e => {
-    e.target.value = e.target.value.toUpperCase().replace(/[^A-Z2-9]/g,"").slice(0,6);
-});
-
-/* ########################################################
-   INITIALIZATION
-######################################################## */
-
-setConnection(false, "NOT CONNECTED");
-
-console.log("Who's Cheating? Multiplayer initialized.");
-console.log("PeerJS:", typeof Peer !== "undefined" ? "Loaded" : "Not loaded");
-
 </script>
 </body>
 </html>
