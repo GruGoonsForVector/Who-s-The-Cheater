@@ -1,341 +1,2231 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Who's The Cheater? | The Grand Casino</title>
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-<style>
-:root{--bg:#171714;--panel:#24231f;--panel2:#302e27;--gold:#c5a36a;--light:#e6d1a5;--muted:#aaa394;--line:#454137;--green:#476447;--red:#a64d43}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#eeeae0;font-family:Arial,Helvetica,sans-serif}
-button,input,select{font:inherit}button{background:#40392e;color:#eeeae0;border:1px solid #756044;padding:11px 15px;border-radius:5px;cursor:pointer;transition:.15s}button:hover{background:#594a34;border-color:var(--gold)}button:disabled{opacity:.45;cursor:not-allowed}.primary{background:#82663e;border-color:#b18d58}.danger{background:#713e37;border-color:#a35c50}.goldbtn{border-color:#a88a55;color:#ead09c}
-input,select{width:100%;padding:12px;background:#171714;border:1px solid #514d42;border-radius:5px;color:#fff}
-header{height:64px;background:#211f1b;border-bottom:1px solid #514735;display:flex;justify-content:space-between;align-items:center;padding:0 22px;position:sticky;top:0;z-index:5}
-.logo{font:22px Georgia,serif;letter-spacing:2px;color:var(--light)}.logo span{color:white}.status{font-size:11px;color:var(--muted);letter-spacing:1px}
-.screen{display:none;max-width:1200px;margin:auto;padding:30px 20px}.screen.active{display:block}
-.hero{padding:40px;background:linear-gradient(110deg,#30291e,#443a29);border:1px solid #77603e;border-radius:8px;margin-bottom:20px}
-.eyebrow{font-size:11px;letter-spacing:3px;color:var(--gold);margin-bottom:12px}
-h1,h2,h3{font-family:Georgia,serif;font-weight:normal}h1{font-size:42px;margin:0 0 12px}h2{font-size:25px}p{color:var(--muted);line-height:1.55}
-.panel{background:var(--panel);border:1px solid #3c3a32;border-radius:7px;padding:20px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.field{margin:14px 0}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px;letter-spacing:1px}
-.notice{font-size:11px;color:var(--muted)}.roomcode{font:40px Georgia,serif;letter-spacing:9px;color:var(--light);margin:18px 0}
-.row{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid #3b3933;font-size:13px}.row:last-child{border:0}
-.titlebar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}.stats{display:flex;gap:9px;flex-wrap:wrap}.stat{background:var(--panel);border:1px solid #3c3931;padding:10px 13px;border-radius:5px;font-size:12px}.stat strong{color:var(--light);margin-left:5px}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 285px;gap:15px}.casino{min-height:540px;position:relative;overflow:hidden;border:9px solid #29251e;border-radius:8px;background:radial-gradient(ellipse at center,#536348 0%,#354532 67%,#293328 100%)}
-.casino:before{content:"";position:absolute;inset:14px;border:2px solid #b99b6255;pointer-events:none}
-.roomlabel{position:absolute;font:13px Georgia,serif;letter-spacing:2px;color:#dfd0ad;text-shadow:0 2px 3px #000}
-.table{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;background:#31543d;border:7px solid #674c32;box-shadow:0 7px 14px #0007;color:#e5d6b2;font:13px Georgia,serif}
-.token{position:absolute;width:38px;height:38px;border-radius:50%;border:3px solid #f3e4c0;background:#c5a36a;color:#242018;display:flex;align-items:center;justify-content:center;font-weight:bold;transform:translate(-50%,-50%);z-index:3;box-shadow:0 3px 9px #0009;transition:left .14s linear,top .14s linear}
-.token.me{background:#f1d69b;border-color:white}.tokenlabel{position:absolute;top:42px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10px;color:white;text-shadow:0 2px 3px #000}
-.sidebar{display:flex;flex-direction:column;gap:12px}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:15px}.actionpanel{min-height:190px}.actionpanel h3{margin-top:0}
-.result{background:#343128;border-radius:5px;padding:11px;margin-top:11px;font-size:13px;color:var(--light);line-height:1.5;min-height:38px;overflow-wrap:anywhere}
-.cards{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.playingcard{width:42px;height:59px;background:#f2efe8;color:#27251f;border-radius:5px;display:flex;align-items:center;justify-content:center;font:17px Georgia,serif}.playingcard.red{color:#b23f3f}
-#chatMessages{height:125px;overflow:auto;background:#171714;padding:10px;border-radius:5px;font-size:12px}.chatline{margin-bottom:8px;color:#ddd}.chatline strong{color:var(--light)}
-.modal{position:fixed;inset:0;background:#000b;z-index:20;display:none;align-items:center;justify-content:center;padding:15px}.modal.show{display:flex}.modalbox{width:min(440px,100%);background:#26241f;border:1px solid #92754a;border-radius:8px;padding:26px}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#302b22;border:1px solid var(--gold);padding:12px 20px;border-radius:5px;display:none;z-index:30;font-size:13px;max-width:90%;text-align:center}
-hr{border:0;border-top:1px solid #464239;margin:18px 0}.rolebanner{margin:14px 0}
-@media(max-width:850px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr 1fr}.casino{min-height:440px}}
-@media(max-width:570px){.grid,.bottom,.sidebar{grid-template-columns:1fr}h1{font-size:32px}.hero{padding:25px}header{padding:0 12px}.casino{min-height:390px}.roomcode{font-size:31px;letter-spacing:6px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WHO'S THE CHEATER?</title>
+
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+  <style>
+    /* ##############
+       GLOBAL STYLES
+       ############## */
+
+    :root {
+      --bg: #080d12;
+      --panel: #111b22;
+      --panel2: #17252e;
+      --gold: #e8bd62;
+      --gold2: #ffe5a1;
+      --red: #e65353;
+      --green: #4bd69a;
+      --blue: #55aaff;
+      --text: #f1f3f4;
+      --muted: #9baab3;
+      --border: #2b3b45;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 50% -20%, #243c43 0%, transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .45;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .gold {
+      color: var(--gold);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .small {
+      font-size: 12px;
+    }
+
+    .panel {
+      background: linear-gradient(145deg, var(--panel2), var(--panel));
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 17px;
+      box-shadow: 0 12px 35px #0004;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, #f2d18b, #c99339);
+      color: #201707;
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 17px;
+      font-weight: 900;
+      transition: .15s;
+    }
+
+    .primary:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .secondary {
+      background: #263741;
+      color: white;
+      border: 1px solid #40545f;
+      border-radius: 8px;
+      padding: 11px 15px;
+      font-weight: bold;
+    }
+
+    .secondary:hover {
+      background: #354b57;
+    }
+
+    .danger {
+      background: #682c32;
+      color: white;
+      border: 1px solid #a94b54;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      color: white;
+      background: #091116;
+      border: 1px solid #344953;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+    }
+
+    /* ##############
+       MAIN MENU
+       ############## */
+
+    #menuScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .menu-card {
+      width: min(470px, 100%);
+      padding: 30px;
+      text-align: center;
+      background: linear-gradient(155deg, #192a31, #0b1217);
+      border: 1px solid #59604b;
+      border-radius: 17px;
+      box-shadow: 0 25px 90px #0009;
+    }
+
+    .logo {
+      font-size: clamp(32px, 8vw, 53px);
+      line-height: .95;
+      font-weight: 1000;
+      letter-spacing: -2px;
+      color: var(--gold2);
+      text-shadow: 0 4px 20px #e6b64c55;
+    }
+
+    .logo span {
+      color: #f3f4f4;
+    }
+
+    .menu-subtitle {
+      color: var(--muted);
+      margin: 14px 0 25px;
+      line-height: 1.5;
+    }
+
+    .menu-card input {
+      margin-bottom: 10px;
+    }
+
+    .menu-card button {
+      width: 100%;
+      margin-top: 9px;
+    }
+
+    #menuStatus {
+      min-height: 20px;
+      margin-top: 15px;
+      color: var(--gold);
+      font-size: 13px;
+    }
+
+    /* ##############
+       LOBBY
+       ############## */
+
+    #lobbyScreen {
+      max-width: 1000px;
+      margin: auto;
+      padding: 25px;
+    }
+
+    .lobby-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .room-code {
+      font-size: 27px;
+      letter-spacing: 5px;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .player-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .player-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #0c151b;
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 9px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, #e5bd6c, #9a692b);
+      color: #1a1408;
+      font-weight: 1000;
+    }
+
+    .lobby-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 15px;
+    }
+
+    /* ##############
+       GAME SCREEN
+       ############## */
+
+    #gameScreen {
+      min-height: 100vh;
+      padding: 12px;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      background: #111b22;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      flex-wrap: wrap;
+    }
+
+    .game-title {
+      font-weight: 1000;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .game-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 12px;
+      max-width: 1500px;
+      margin: auto;
+    }
+
+    .casino {
+      min-height: 610px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 13px;
+      border: 2px solid #4d5545;
+      background:
+        radial-gradient(ellipse at center, #245344 0%, #12382f 65%, #0b211d 100%);
+      box-shadow: inset 0 0 90px #0009;
+    }
+
+    .casino::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 2px solid #d5b66a55;
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .floor-label {
+      position: absolute;
+      color: #f0d38a66;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      pointer-events: none;
+    }
+
+    .station {
+      position: absolute;
+      width: 150px;
+      min-height: 105px;
+      transform: translate(-50%, -50%);
+      background: linear-gradient(145deg, #273a43, #101a20);
+      border: 2px solid #d3ad5e;
+      border-radius: 13px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0 9px 20px #0008;
+      cursor: pointer;
+      transition: .15s;
+      z-index: 2;
+    }
+
+    .station:hover {
+      border-color: #fff0b5;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    .station-icon {
+      font-size: 29px;
+    }
+
+    .station-name {
+      font-weight: 900;
+      color: var(--gold2);
+      font-size: 12px;
+    }
+
+    .station-description {
+      font-size: 10px;
+      color: #b7c5c9;
+    }
+
+    .station.done {
+      border-color: var(--green);
+      opacity: .55;
+    }
+
+    .station.done::after {
+      content: "COMPLETED";
+      color: var(--green);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .player-token {
+      position: absolute;
+      width: 43px;
+      height: 43px;
+      transform: translate(-50%, -50%);
+      border: 3px solid white;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #d5a94e;
+      color: #201708;
+      font-size: 12px;
+      font-weight: 1000;
+      box-shadow: 0 4px 12px #0009;
+      z-index: 5;
+      transition: left .25s, top .25s;
+      pointer-events: none;
+    }
+
+    .player-token.me {
+      border-color: #76d9ff;
+      box-shadow: 0 0 15px #52caff;
+    }
+
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .side-panel h3 {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 15px;
+    }
+
+    .role-box {
+      border: 1px solid #79653d;
+      background: #2c2618;
+      border-radius: 9px;
+      padding: 13px;
+    }
+
+    .role-name {
+      font-size: 21px;
+      font-weight: 1000;
+      margin-bottom: 5px;
+    }
+
+    .role-description {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #d4c9ae;
+    }
+
+    .score-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #283740;
+      font-size: 13px;
+    }
+
+    .chat-box {
+      height: 180px;
+      overflow-y: auto;
+      background: #080f14;
+      border: 1px solid #263740;
+      border-radius: 8px;
+      padding: 9px;
+      font-size: 12px;
+    }
+
+    .chat-message {
+      margin-bottom: 8px;
+      overflow-wrap: anywhere;
+    }
+
+    .chat-name {
+      color: var(--gold);
+      font-weight: 900;
+    }
+
+    .chat-form {
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .chat-form input {
+      min-width: 0;
+      padding: 9px;
+    }
+
+    .chat-form button {
+      padding: 8px 12px;
+    }
+
+    .task-area {
+      margin-top: 12px;
+      padding: 14px;
+      background: #101a20;
+      border: 1px solid #3b4c55;
+      border-radius: 10px;
+    }
+
+    .task-area h3 {
+      color: var(--gold);
+      margin: 0 0 8px;
+    }
+
+    .task-area p {
+      color: #c3cdd0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .task-options {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .task-options button {
+      flex: 1;
+      min-width: 90px;
+    }
+
+    /* ##############
+       MODALS
+       ############## */
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 15px;
+      background: #000b;
+    }
+
+    .modal {
+      width: min(450px, 100%);
+      background: #14232b;
+      border: 1px solid #7d704e;
+      border-radius: 14px;
+      padding: 23px;
+      box-shadow: 0 25px 80px #000c;
+    }
+
+    .modal h2 {
+      color: var(--gold);
+      margin-top: 0;
+    }
+
+    .modal p {
+      color: #c3cdd0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+    }
+
+    /* ##############
+       RESPONSIVE
+       ############## */
+
+    @media (max-width: 850px) {
+      .game-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .casino {
+        min-height: 560px;
+      }
+
+      .side-panel {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      }
+    }
+
+    @media (max-width: 500px) {
+      .casino {
+        min-height: 480px;
+      }
+
+      .station {
+        width: 115px;
+        min-height: 85px;
+      }
+
+      .station-icon {
+        font-size: 23px;
+      }
+
+      .station-name {
+        font-size: 10px;
+      }
+
+      .station-description {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header><div class="logo">THE <span>GRAND</span> CASINO</div><div class="status" id="status">READY</div></header>
 
-<section id="home" class="screen active">
- <div class="hero"><div class="eyebrow">THE GRAND CASINO PRESENTS</div><h1>Who's The Cheater?</h1><p>Fortune favours the bold. But in this casino, someone isn't playing fair.</p><p style="color:var(--light)">3-8 PLAYERS · PRIVATE ROOMS · SOCIAL DEDUCTION</p></div>
- <div class="grid">
-  <div class="panel"><h2>Create a room</h2><p>Host a private game and invite your friends.</p><div class="field"><label>YOUR NAME</label><input id="createName" maxlength="16" placeholder="Your name"></div><button class="primary" id="createBtn">Create room</button></div>
-  <div class="panel"><h2>Join a room</h2><p>Enter the six-character code from the host.</p><div class="field"><label>YOUR NAME</label><input id="joinName" maxlength="16" placeholder="Your name"></div><div class="field"><label>ROOM CODE</label><input id="joinCode" maxlength="6" placeholder="ABC123" autocomplete="off"></div><button id="joinBtn">Join room</button></div>
- </div><p class="notice">Fictional game credits only. No real-money gambling. Peer-to-peer connection requires an internet connection.</p>
-</section>
+  <!-- ##############
+       MAIN MENU HTML
+       ############## -->
 
-<section id="waiting" class="screen">
- <div class="panel"><div class="eyebrow">PRIVATE GAME</div><h1>Guest Lounge</h1><p>Share this code with your friends.</p><div class="roomcode" id="roomCodeDisplay">------</div><button id="copyBtn">Copy room code</button><hr><div class="titlebar"><h2>Guests</h2><span class="notice" id="playerCount">0 / 8</span></div><div id="waitingPlayers"></div><div class="actions"><button class="primary" id="startBtn" disabled>Waiting for players</button><button id="leaveWaitingBtn">Leave room</button></div><p class="notice">At least three players are needed. The host starts the game when everyone is ready.</p></div>
-</section>
+  <section id="menuScreen">
+    <div class="menu-card">
+      <div class="logo">WHO'S THE<br><span>CHEATER?</span></div>
 
-<section id="game" class="screen">
- <div class="titlebar"><div><div class="eyebrow">THE GRAND CASINO</div><h2 style="margin:0">The Casino Floor</h2></div><div class="stats"><div class="stat">BALANCE <strong id="cash">$5,000</strong></div><div class="stat">PLAYERS <strong id="count">3</strong></div><div class="stat">TARGET <strong>$20,000</strong></div></div></div>
- <div id="roleBanner" class="result rolebanner"></div>
- <div class="layout">
-  <div class="casino" id="casino">
-   <div class="roomlabel" style="top:7%;left:5%">THE GRAND HALL</div><div class="roomlabel" style="top:16%;left:6%">ROULETTE</div><div class="table" style="top:20%;left:5%;width:155px;height:100px">ROULETTE</div>
-   <div class="roomlabel" style="top:16%;right:14%">POKER ROOM</div><div class="table" style="top:20%;right:7%;width:170px;height:115px">POKER</div>
-   <div class="roomlabel" style="bottom:24%;left:9%">LOUNGE</div><div class="table" style="bottom:12%;left:7%;width:125px;height:72px;background:#64452f">LOUNGE</div>
-   <div class="roomlabel" style="bottom:24%;right:12%">CASHIER</div><div class="table" style="bottom:12%;right:8%;width:130px;height:72px;background:#705238">CASHIER</div>
-   <div id="tokens"></div>
+      <div class="menu-subtitle">
+        A multiplayer casino-floor social deduction game.
+        Complete challenges, uncover suspicious players and protect the casino.
+      </div>
+
+      <input id="playerName" maxlength="16" placeholder="Your player name">
+
+      <button class="primary" onclick="createRoom()">CREATE ROOM</button>
+
+      <div style="height:15px"></div>
+
+      <input id="joinCode" maxlength="6" placeholder="ENTER ROOM CODE">
+
+      <button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
+
+      <div id="menuStatus"></div>
+
+      <p class="small muted">
+        3 to 8 players · Private room codes · No real-money gambling
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ##############
+       LOBBY HTML
+       ############## -->
+
+  <section id="lobbyScreen" class="hidden">
+    <div class="lobby-header">
+      <div>
+        <div class="game-title">CASINO LOBBY</div>
+        <div class="muted small">Waiting for players to connect</div>
+      </div>
+
+      <div>
+        <div class="small muted">ROOM CODE</div>
+        <div class="room-code" id="displayRoomCode">------</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Players</h2>
+      <div id="lobbyPlayers" class="player-list"></div>
+
+      <div class="lobby-actions">
+        <button class="secondary" onclick="copyRoomCode()">COPY ROOM CODE</button>
+        <button class="primary hidden" id="startButton" onclick="startGame()">
+          START GAME
+        </button>
+        <button class="danger" onclick="leaveGame()">LEAVE ROOM</button>
+      </div>
+
+      <p class="small muted" id="lobbyMessage">
+        At least 3 players are required to start.
+      </p>
+    </div>
+  </section>
+
+
+  <!-- ##############
+       GAME HTML
+       ############## -->
+
+  <section id="gameScreen" class="hidden">
+
+    <header class="game-header">
+      <div class="game-title">WHO'S THE CHEATER?</div>
+      <div>
+        <span class="muted small">ROOM </span>
+        <strong id="gameRoomCode" class="gold"></strong>
+      </div>
+      <div>
+        <span class="muted small">ROUND </span>
+        <strong id="roundNumber">1</strong>
+      </div>
+      <button class="danger" onclick="leaveGame()">LEAVE</button>
+    </header>
+
+    <div class="game-layout">
+
+      <div>
+        <div class="casino" id="casinoFloor">
+
+          <div class="floor-label" style="top:8%;left:36%">THE GRAND CASINO</div>
+
+          <div class="station" style="left:23%;top:30%"
+               onclick="visitStation('memory')">
+            <div class="station-icon">🧠</div>
+            <div class="station-name">MEMORY ROOM</div>
+            <div class="station-description">Remember the sequence</div>
+          </div>
+
+          <div class="station" style="left:76%;top:30%"
+               onclick="visitStation('pattern')">
+            <div class="station-icon">🔐</div>
+            <div class="station-name">CODE VAULT</div>
+            <div class="station-description">Solve the pattern</div>
+          </div>
+
+          <div class="station" style="left:23%;top:70%"
+               onclick="visitStation('reaction')">
+            <div class="station-icon">⚡</div>
+            <div class="station-name">REACTION DESK</div>
+            <div class="station-description">Test your timing</div>
+          </div>
+
+          <div class="station" style="left:76%;top:70%"
+               onclick="visitStation('sorting')">
+            <div class="station-icon">🎴</div>
+            <div class="station-name">CARD ARCHIVE</div>
+            <div class="station-description">Sort the symbols</div>
+          </div>
+
+          <div class="floor-label" style="left:43%;top:47%">MAIN FLOOR</div>
+
+          <div id="playerTokens"></div>
+        </div>
+
+        <div class="task-area" id="taskArea">
+          <h3>Casino Floor</h3>
+          <p>
+            Choose a station to complete a challenge.
+            Innocent players and Security earn points by completing tasks.
+          </p>
+        </div>
+      </div>
+
+      <aside class="side-panel">
+
+        <div class="panel">
+          <h3>YOUR SECRET ROLE</h3>
+          <div class="role-box">
+            <div id="roleName" class="role-name">UNKNOWN</div>
+            <div id="roleDescription" class="role-description">
+              Your role will appear when the game starts.
+            </div>
+          </div>
+          <div id="specialAbility" class="small gold" style="margin-top:10px"></div>
+        </div>
+
+        <div class="panel">
+          <h3>PLAYER SCORES</h3>
+          <div id="scoreboard"></div>
+        </div>
+
+        <div class="panel">
+          <h3>CASINO CHAT</h3>
+          <div id="chatMessages" class="chat-box"></div>
+          <form class="chat-form" onsubmit="sendChat(event)">
+            <input id="chatInput" maxlength="180" placeholder="Type a message...">
+            <button class="primary">SEND</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>GAME ACTIONS</h3>
+          <button class="secondary" style="width:100%" onclick="requestMeeting()">
+            CALL SECURITY MEETING
+          </button>
+          <button class="secondary" style="width:100%;margin-top:8px"
+                  onclick="showPlayers()">
+            VIEW PLAYERS
+          </button>
+          <button class="danger" style="width:100%;margin-top:8px"
+                  onclick="leaveGame()">
+            LEAVE GAME
+          </button>
+        </div>
+
+      </aside>
+    </div>
+  </section>
+
+
+  <!-- ##############
+       MODAL HTML
+       ############## -->
+
+  <div id="modalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <h2 id="modalTitle">Notice</h2>
+      <p id="modalText"></p>
+      <div id="modalExtra"></div>
+      <div class="modal-actions">
+        <button class="primary" onclick="closeModal()">OK</button>
+      </div>
+    </div>
   </div>
-  <div class="sidebar">
-   <div class="panel"><h3>Casino guests</h3><div id="gamePlayers"></div></div>
-   <div class="panel"><h3>Movement</h3><p>Use WASD, arrow keys or these controls.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;max-width:155px;margin:auto"><span></span><button data-move="0,-4">↑</button><span></span><button data-move="-4,0">←</button><button data-move="0,4">↓</button><button data-move="4,0">→</button></div></div>
-   <div class="panel"><h3>Guest conversation</h3><div id="chatMessages"></div><div class="actions"><input id="chatInput" maxlength="140" placeholder="Message..."><button id="chatSend">Send</button></div></div>
-  </div>
- </div>
- <div class="bottom">
-  <div class="panel actionpanel"><h3>Roulette</h3><p>Bet red or black. Numbers run from 0-36. A correct colour pays 2x your stake, including your original stake.</p><div class="field"><label>BET AMOUNT</label><input type="number" id="rouletteBet" min="100" max="5000" step="100" value="500"></div><div class="actions"><button id="prepareBtn">Prepare wheel</button><button class="danger" id="redBtn">Bet red</button><button id="blackBtn">Bet black</button><button class="primary" id="spinBtn">Spin wheel</button><button class="goldbtn" id="xrayBtn" style="display:none">Activate X-Ray Specs</button></div><div id="wheelResult" class="result">The wheel is waiting.</div><div id="wheelVision" class="result" style="display:none"></div></div>
-  <div class="panel actionpanel"><h3>Poker</h3><p>Five-card poker. Each player pays a $500 ante. The best hand wins the pot.</p><div class="actions"><button class="primary" id="dealBtn">Deal cards · $500</button><button id="showdownBtn">Showdown</button><button class="goldbtn" id="cardVisionBtn" style="display:none">View other cards</button></div><div id="myCards" class="cards"></div><div id="pokerResult" class="result">Waiting for a hand.</div><div id="cardVision" class="result" style="display:none"></div></div>
-  <div class="panel actionpanel"><h3>Security desk</h3><p>Watch the guests and trust your instincts. There is no automatic cheating detector.</p><div class="field"><label>YOUR SUSPECT</label><select id="suspect"></select></div><button class="danger" id="accuseBtn">Accuse player</button><div id="securityResult" class="result">Only Security can make an accusation.</div></div>
-  <div class="panel actionpanel"><h3>Casino announcements</h3><div id="gameLog" class="result">Welcome to the casino.</div><hr><button id="leaveGameBtn">Leave casino</button><p class="notice">Leaving removes you from the room. If the host leaves, the room closes.</p></div>
- </div>
-</section>
 
-<div class="modal" id="endModal"><div class="modalbox"><div class="eyebrow">THE GRAND CASINO</div><h1 id="endTitle">Game over</h1><p id="endDescription"></p><button class="primary" id="returnBtn">Return to lobby</button></div></div>
-<div id="toast"></div>
 
-<script>
-"use strict";
-const $=id=>document.getElementById(id);
-let peer=null,host=false,roomCode="",myId="",myName="",hostConn=null;
-let connections={},game=null,myView=null,cardVision=false,ending=false,lastMove=0;
-const reds=new Set([1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]);
-const handNames=["High card","One pair","Two pair","Three of a kind","Straight","Flush","Full house","Four of a kind","Straight flush"];
+  <script>
 
-function toast(s){const el=$("toast");el.textContent=s;el.style.display="block";clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display="none",2800)}
-function status(s){$("status").textContent=s}
-function money(n){return "$"+Math.floor(n||0).toLocaleString("en-AU")}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active")}
-function newPlayer(id,name){return{id,name,cash:5000,x:45+Math.random()*10,y:72+Math.random()*7,online:true,glasses:false}}
-function randomCode(){return Math.random().toString(36).slice(2,8).toUpperCase()}
-function peerOpen(id){return new Promise((resolve,reject)=>{const p=id?new Peer(id):new Peer();let done=false;const t=setTimeout(()=>{if(!done){done=true;p.destroy();reject(new Error("Peer connection timed out"))}},15000);p.on("open",v=>{if(done)return;done=true;clearTimeout(t);resolve(p)});p.on("error",e=>{if(done)return;done=true;clearTimeout(t);reject(e)})})}
-function playerCount(){return Object.keys(game.players).length}
+    /* ##############
+       GAME CONFIGURATION
+       ############## */
 
-async function createRoom(){
- $("createBtn").disabled=true;status("CONNECTING...");
- myName=$("createName").value.trim().slice(0,16)||"Guest";
- if(!window.Peer){toast("PeerJS failed to load. Check your internet connection.");$("createBtn").disabled=false;return}
- try{
-  let p=null,code="";
-  for(let i=0;i<8&&!p;i++){code=randomCode();try{p=await peerOpen(code)}catch(e){}}
-  if(!p)throw new Error("Could not reserve a room code. Please try again.");
-  peer=p;host=true;myId=code;roomCode=code;
-  game={hostId:myId,started:false,ended:false,players:{[myId]:newPlayer(myId,myName)},roles:{},roulette:{next:null,last:null,bets:{},resolved:true,message:""},poker:{active:false,hands:{},pot:0,finished:false,message:""},chat:[],log:"The casino is preparing to open.",winner:null};
-  peer.on("connection",conn=>{conn.on("data",data=>hostReceive(conn,data));conn.on("close",()=>removePlayer(conn.peer));});
-  peer.on("disconnected",()=>status("RECONNECTING..."));
-  peer.on("error",e=>toast("Network issue: "+(e.type||"connection")));
-  status("HOSTING ROOM");renderWaiting();showScreen("waiting");
- }catch(e){status("READY");toast(e.message||"Could not create room")}
- $("createBtn").disabled=false;
-}
+    const CONFIG = {
+      minPlayers: 3,
+      maxPlayers: 8,
+      startingPoints: 0,
+      pointsPerTask: 100,
+      meetingCooldown: 30000,
+      peerTimeout: 25000
+    };
 
-async function joinRoom(){
- $("joinBtn").disabled=true;
- myName=$("joinName").value.trim().slice(0,16)||"Guest";
- roomCode=$("joinCode").value.trim().toUpperCase();
- if(!/^[A-Z0-9]{6}$/.test(roomCode)){toast("Enter a six-character room code.");$("joinBtn").disabled=false;return}
- if(!window.Peer){toast("PeerJS failed to load. Check your internet connection.");$("joinBtn").disabled=false;return}
- status("CONNECTING...");
- try{
-  peer=await peerOpen();host=false;myId=peer.id;
-  peer.on("disconnected",()=>status("DISCONNECTED"));
-  peer.on("error",e=>toast("Network issue: "+(e.type||"connection")));
-  hostConn=peer.connect(roomCode,{reliable:true});
-  let gotResponse=false;
-  const timeout=setTimeout(()=>{if(!gotResponse){toast("No response from that room. Check the code and try again.");cleanup(false)}},18000);
-  hostConn.on("open",()=>{status("CONTACTING HOST");hostConn.send({type:"join",name:myName})});
-  hostConn.on("data",data=>{
-   if(data.type==="reject"){gotResponse=true;clearTimeout(timeout);toast(data.reason||"Could not join room.");cleanup(false);return}
-   if(data.type==="snapshot"){gotResponse=true;clearTimeout(timeout);myView=data.view;render()}
-  });
-  hostConn.on("close",()=>{status("HOST DISCONNECTED");toast("The host connection was lost.")});
-  hostConn.on("error",()=>toast("Could not connect to the host."));
- }catch(e){status("READY");toast(e.message||"Could not join room")}
- $("joinBtn").disabled=false;
-}
+    const ROLE_INFO = {
+      Innocent: {
+        description:
+          "Complete the casino challenges and help identify the Cheater.",
+        ability: "ABILITY: Complete challenges to earn points."
+      },
 
-function hostReceive(conn,data){
- if(!data||typeof data!=="object")return;
- if(data.type==="join"){
-  const id=conn.peer,name=String(data.name||"Guest").trim().slice(0,16)||"Guest";
-  if(game.started||game.ended){conn.send({type:"reject",reason:"This game has already started."});conn.close();return}
-  if(playerCount()>=8){conn.send({type:"reject",reason:"This room is full."});conn.close();return}
-  if(game.players[id])return;
-  game.players[id]=newPlayer(id,name);connections[id]=conn;game.log=name+" joined the casino.";broadcast();return;
- }
- if(!game.players[conn.peer]||data.type!=="action")return;
- applyAction(conn.peer,data.action,data.payload||{});
-}
-function removePlayer(id){
- delete connections[id];
- if(!game||!game.players[id])return;
- delete game.players[id];
- if(game.started&&!game.ended){game.log="A guest disconnected.";if(playerCount()<2){game.ended=true;game.winner="none";game.log="Not enough players remain. The game has ended."}}
- broadcast();
-}
-function sendAction(action,payload={}){
- if(host){applyAction(myId,action,payload);return}
- if(hostConn&&hostConn.open)hostConn.send({type:"action",action,payload});
- else toast("Not connected to the host.");
-}
-function privateView(id){
- const p=game.players[id];if(!p)return null;
- const players={};
- for(const [pid,q] of Object.entries(game.players))players[pid]={name:q.name,cash:q.cash,x:q.x,y:q.y,online:q.online};
- const cheat=game.roles[id]==="cheater";
- return{
-  id,roomCode,hostId:game.hostId,isHost:id===game.hostId,players,
-  role:game.roles[id]||null,started:game.started,ended:game.ended,winner:game.winner,
-  log:game.log,glasses:p.glasses,
-  roulette:{last:game.roulette.last,next:cheat&&p.glasses?game.roulette.next:null,ready:game.roulette.next!==null,result:game.roulette.message},
-  poker:{active:game.poker.active,pot:game.poker.pot,finished:game.poker.finished,message:game.poker.message,own:game.poker.hands[id]||[],other:cheat&&p.glasses?Object.fromEntries(Object.entries(game.poker.hands).filter(([pid])=>pid!==id)):null},
-  chat:game.chat.slice(-35)
- };
-}
-function broadcast(){
- if(!game)return;
- const own=privateView(myId);if(own){myView=own;render()}
- for(const [id,conn] of Object.entries(connections)){if(conn.open){const v=privateView(id);if(v)conn.send({type:"snapshot",view:v})}}
-}
-function renderWaiting(){
- if(!game)return;
- $("roomCodeDisplay").textContent=roomCode;
- $("playerCount").textContent=playerCount()+" / 8";
- $("waitingPlayers").innerHTML=Object.entries(game.players).map(([id,p])=>`<div class="row"><span>${esc(p.name)}${id===game.hostId?" · HOST":""}</span><span style="color:var(--light)">CONNECTED</span></div>`).join("");
- $("startBtn").disabled=!host||playerCount()<3;
- $("startBtn").textContent=playerCount()<3?"Waiting for 3 players":"Start game";
-}
-function startGame(){
- if(!host||playerCount()<3)return;
- const ids=Object.keys(game.players);
- for(let i=ids.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]]}
- game.roles={};ids.forEach((id,i)=>game.roles[id]=i===0?"cheater":i===1?"security":"innocent");
- game.started=true;game.ended=false;game.log="The casino doors are open. Good luck.";
- broadcast();
-}
+      Security: {
+        description:
+          "Protect the casino. Investigate suspicious players and help identify the Cheater.",
+        ability: "ABILITY: You can investigate one player each round."
+      },
 
-function wheelColour(n){return n===0?"green":reds.has(n)?"red":"black"}
-function applyAction(id,action,payload){
- if(!host||!game||!game.started||game.ended||!game.players[id])return;
- const p=game.players[id];
- if(action==="move"){
-  const dx=Math.max(-4,Math.min(4,Number(payload.dx)||0)),dy=Math.max(-4,Math.min(4,Number(payload.dy)||0));
-  p.x=Math.max(4,Math.min(96,p.x+dx));p.y=Math.max(6,Math.min(94,p.y+dy));
- }
- if(action==="chat"){
-  const message=String(payload.message||"").trim().slice(0,140);
-  if(message){game.chat.push({name:p.name,message});if(game.chat.length>35)game.chat.shift()}
- }
- if(action==="glasses"&&game.roles[id]==="cheater")p.glasses=!p.glasses;
- if(action==="prepare"){
-  if(game.roulette.next===null){game.roulette.next=Math.floor(Math.random()*37);game.roulette.bets={};game.roulette.resolved=false;game.roulette.message="The wheel is ready for bets."}
- }
- if(action==="bet"){
-  const amount=Math.floor(Number(payload.amount)),choice=payload.choice;
-  if(game.roulette.next===null||game.roulette.resolved||game.roulette.bets[id])return;
-  if(!["red","black"].includes(choice)||!Number.isInteger(amount)||amount<100||amount>5000||amount%100!==0||p.cash<amount)return;
-  p.cash-=amount;game.roulette.bets[id]={choice,amount};game.roulette.message=p.name+" placed a bet.";
- }
- if(action==="spin"){
-  const r=game.roulette;if(r.next===null||r.resolved)return;
-  const n=r.next,colour=wheelColour(n),results=[];
-  for(const [pid,b] of Object.entries(r.bets)){const q=game.players[pid];if(!q)continue;if(b.choice===colour){q.cash+=b.amount*2;results.push(q.name+" won "+money(b.amount*2))}else results.push(q.name+" lost "+money(b.amount))}
-  r.last=n;r.next=null;r.resolved=true;r.message=results.join(" · ")||"No bets were placed.";
-  game.log="Roulette landed on "+n+" ("+colour+").";checkWinner();
- }
- if(action==="deal"){
-  if(game.poker.active||Object.keys(game.players).length<2)return;
-  const ids=Object.keys(game.players);if(ids.some(pid=>game.players[pid].cash<500)){toast("Every player needs $500 to enter poker.");return}
-  const deck=makeDeck();game.poker={active:true,hands:{},pot:ids.length*500,finished:false,message:"The cards have been dealt."};
-  ids.forEach(pid=>{game.players[pid].cash-=500;game.poker.hands[pid]=deck.splice(0,5)});
- }
- if(action==="showdown"){
-  if(!game.poker.active||game.poker.finished)return;
-  const ranking=Object.entries(game.poker.hands).map(([pid,cards])=>({id:pid,score:evaluateHand(cards)})).sort((a,b)=>compareScore(b.score,a.score));
-  if(!ranking.length)return;
-  const best=ranking[0].score,winners=ranking.filter(x=>compareScore(x.score,best)===0),prize=Math.floor(game.poker.pot/winners.length);
-  winners.forEach(w=>{if(game.players[w.id])game.players[w.id].cash+=prize});
-  game.poker.active=false;game.poker.finished=true;
-  game.poker.message=winners.map(w=>game.players[w.id]?.name||"Guest").join(", ")+" won with "+handNames[best[0]]+".";
-  game.log="Poker: "+game.poker.message;checkWinner();
- }
- if(action==="accuse"){
-  if(game.roles[id]!=="security")return;
-  const target=String(payload.id||"");
-  if(!game.players[target]||target===id)return;
-  if(game.roles[target]==="cheater"){game.ended=true;game.winner="security";game.log=p.name+" correctly identified the Cheater!"}
-  else{p.cash=Math.max(0,p.cash-1000);game.log="Security made an incorrect accusation. $1,000 penalty."}
- }
- broadcast();
-}
-function checkWinner(){
- for(const [id,p] of Object.entries(game.players)){if(p.cash>=20000){game.ended=true;game.winner=game.roles[id]==="cheater"?"cheater":"innocents";game.log=p.name+" reached $20,000!";return}}
-}
+      Cheater: {
+        description:
+          "Blend in with the crowd. Avoid suspicion and use your secret scan ability.",
+        ability: "ABILITY: Use your secret scan once per round."
+      }
+    };
 
-const suits=["♠","♥","♦","♣"],ranks=["2","3","4","5","6","7","8","9","10","J","Q","K","A"];
-function makeDeck(){
- const d=[];for(const suit of suits)for(let i=0;i<13;i++)d.push({suit,rank:ranks[i],value:i+2});
- for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}return d;
-}
-function evaluateHand(cards){
- const vals=cards.map(c=>c.value).sort((a,b)=>b-a),counts={};cards.forEach(c=>counts[c.value]=(counts[c.value]||0)+1);
- const groups=Object.entries(counts).map(([v,n])=>({v:+v,n})).sort((a,b)=>b.n-a.n||b.v-a.v);
- const flush=cards.every(c=>c.suit===cards[0].suit),unique=[...new Set(vals)];
- let straight=unique.length===5&&unique[0]-unique[4]===4;if(unique.join(",")==="14,5,4,3,2")straight=true;
- const high=unique.join(",")==="14,5,4,3,2"?5:unique[0];let cat=0,tie=vals;
- if(straight&&flush){cat=8;tie=[high]}else if(groups[0].n===4){cat=7;tie=groups.map(g=>g.v)}else if(groups[0].n===3&&groups[1].n===2){cat=6;tie=groups.map(g=>g.v)}else if(flush)cat=5;else if(straight){cat=4;tie=[high]}else if(groups[0].n===3){cat=3;tie=groups.map(g=>g.v)}else if(groups[0].n===2&&groups[1].n===2){cat=2;tie=groups.map(g=>g.v)}else if(groups[0].n===2){cat=1;tie=groups.map(g=>g.v)}
- return[cat,...tie];
-}
-function compareScore(a,b){for(let i=0;i<Math.max(a.length,b.length);i++){const d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
-function cardsHTML(cards){return cards.map(c=>`<div class="playingcard ${c.suit==="♥"||c.suit==="♦"?"red":""}">${c.rank}${c.suit}</div>`).join("")}
+    const STATIONS = {
+      memory: {
+        name: "Memory Room",
+        description: "Remember the displayed sequence."
+      },
+      pattern: {
+        name: "Code Vault",
+        description: "Work out the missing number."
+      },
+      reaction: {
+        name: "Reaction Desk",
+        description: "Choose the correct response."
+      },
+      sorting: {
+        name: "Card Archive",
+        description: "Identify the matching symbol."
+      }
+    };
 
-function render(){
- if(!myView)return;
- if(!myView.started){
-  showScreen("waiting");$("roomCodeDisplay").textContent=myView.roomCode||roomCode;
-  const entries=Object.entries(myView.players||{});
-  $("playerCount").textContent=entries.length+" / 8";
-  $("waitingPlayers").innerHTML=entries.map(([id,p])=>`<div class="row"><span>${esc(p.name)}${id===myView.hostId?" · HOST":""}${id===myView.id?" · YOU":""}</span><span style="color:var(--light)">CONNECTED</span></div>`).join("");
-  $("startBtn").disabled=!myView.isHost||entries.length<3;
-  $("startBtn").textContent=myView.isHost?(entries.length<3?"Waiting for 3 players":"Start game"):"Waiting for host";
-  return;
- }
- showScreen("game");
- const me=myView.players[myView.id];if(!me)return;
- $("cash").textContent=money(me.cash);$("count").textContent=Object.keys(myView.players).length;
- const roleText={cheater:"CHEATER: Secretly reach $20,000. Your X-Ray Specs can reveal roulette results and other players' poker cards.",security:"SECURITY: Watch the guests and identify the Cheater. You have no automatic detection.",innocent:"INNOCENT: Play casino games, reach $20,000 and watch for suspicious behaviour."};
- $("roleBanner").textContent=roleText[myView.role]||"Welcome to the casino.";
- $("gamePlayers").innerHTML=Object.entries(myView.players).map(([id,p])=>`<div class="row"><span>${id===myView.id?"You":esc(p.name)}</span><span style="color:var(--light)">${money(p.cash)}</span></div>`).join("");
- $("suspect").innerHTML=Object.entries(myView.players).filter(([id])=>id!==myView.id).map(([id,p])=>`<option value="${id}">${esc(p.name)}</option>`).join("");
- $("tokens").innerHTML=Object.entries(myView.players).map(([id,p])=>`<div class="token ${id===myView.id?"me":""}" style="left:${p.x}%;top:${p.y}%">${esc(p.name.charAt(0).toUpperCase())}<span class="tokenlabel">${id===myView.id?"You":esc(p.name)}</span></div>`).join("");
- $("chatMessages").innerHTML=(myView.chat||[]).map(m=>`<div class="chatline"><strong>${esc(m.name)}:</strong> ${esc(m.message)}</div>`).join("");$("chatMessages").scrollTop=$("chatMessages").scrollHeight;
- $("gameLog").textContent=myView.log||"The casino is open.";
- const r=myView.roulette;
- $("wheelResult").textContent=r.last!==null?"Last result: "+r.last+" ("+wheelColour(r.last)+"). "+(r.result||""):r.ready?"The wheel is ready. Place your bets.":"The wheel is waiting.";
- $("xrayBtn").style.display=myView.role==="cheater"?"inline-block":"none";$("xrayBtn").textContent=myView.glasses?"Deactivate X-Ray Specs":"Activate X-Ray Specs";
- const vision=myView.role==="cheater"&&myView.glasses&&r.next!==null;
- $("wheelVision").style.display=vision?"block":"none";if(vision)$("wheelVision").textContent="X-RAY VISION: The wheel will land on "+r.next+" ("+wheelColour(r.next)+").";
- const po=myView.poker;$("myCards").innerHTML=cardsHTML(po.own||[]);$("pokerResult").textContent=po.message||"Waiting for a hand.";
- $("cardVisionBtn").style.display=myView.role==="cheater"?"inline-block":"none";$("cardVisionBtn").textContent=cardVision?"Hide other cards":"View other cards";
- const canSee=myView.role==="cheater"&&myView.glasses&&cardVision&&po.other;
- $("cardVision").style.display=canSee?"block":"none";
- if(canSee)$("cardVision").innerHTML=Object.entries(po.other).map(([id,cards])=>`<div style="margin:9px 0"><strong>${esc(myView.players[id]?.name||"Guest")}</strong><div class="cards">${cardsHTML(cards)}</div></div>`).join("");
- $("securityResult").textContent=myView.role==="security"?"Choose the person you believe is the Cheater. An incorrect accusation costs $1,000.":"Only Security can make an accusation.";
- if(myView.ended&&!ending){ending=true;$("endTitle").textContent=({cheater:"The Cheater Wins!",security:"Security Wins!",innocents:"The Innocents Win!",none:"Game ended"})[myView.winner]||"Game over";$("endDescription").textContent=myView.log||"The game has ended.";$("endModal").classList.add("show")}
-}
 
-function cleanup(goHome=true){
- try{if(host){for(const c of Object.values(connections)){try{c.send({type:"reject",reason:"The host closed the room."})}catch(e){}c.close()}}}catch(e){}
- try{if(hostConn)hostConn.close()}catch(e){}
- try{if(peer)peer.destroy()}catch(e){}
- peer=null;hostConn=null;connections={};game=null;myView=null;host=false;myId="";roomCode="";cardVision=false;ending=false;
- $("endModal").classList.remove("show");status("READY");if(goHome)showScreen("home");
-}
-function move(dx,dy){if(!myView?.started||myView.ended)return;const now=Date.now();if(now-lastMove<85)return;lastMove=now;sendAction("move",{dx,dy})}
-function chat(){const message=$("chatInput").value.trim();if(!message)return;$("chatInput").value="";sendAction("chat",{message})}
-function bet(choice){const amount=Number($("rouletteBet").value);if(!Number.isInteger(amount)||amount<100||amount>5000||amount%100!==0){toast("Bet between $100 and $5,000 in $100 increments.");return}sendAction("bet",{choice,amount})}
+    /* ##############
+       GAME STATE
+       ############## */
 
-$("createBtn").onclick=createRoom;$("joinBtn").onclick=joinRoom;
-$("copyBtn").onclick=async()=>{try{await navigator.clipboard.writeText(roomCode);toast("Room code copied.")}catch(e){toast("Room code: "+roomCode)}};
-$("startBtn").onclick=startGame;$("leaveWaitingBtn").onclick=()=>cleanup();
-$("prepareBtn").onclick=()=>sendAction("prepare");$("redBtn").onclick=()=>bet("red");$("blackBtn").onclick=()=>bet("black");$("spinBtn").onclick=()=>sendAction("spin");
-$("xrayBtn").onclick=()=>sendAction("glasses");$("dealBtn").onclick=()=>sendAction("deal");$("showdownBtn").onclick=()=>sendAction("showdown");
-$("cardVisionBtn").onclick=()=>{cardVision=!cardVision;render()};$("accuseBtn").onclick=()=>{if(myView?.role!=="security"){toast("Only Security can accuse someone.");return}const target=$("suspect").value;if(target)sendAction("accuse",{id:target})};
-$("chatSend").onclick=chat;$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")chat()});
-document.querySelectorAll("[data-move]").forEach(b=>b.onclick=()=>move(...b.dataset.move.split(",").map(Number)));
-$("leaveGameBtn").onclick=()=>cleanup();$("returnBtn").onclick=()=>cleanup();
-document.addEventListener("keydown",e=>{if(["INPUT","TEXTAREA","SELECT"].includes(document.activeElement.tagName))return;const k=e.key.toLowerCase(),d={w:[0,-4],arrowup:[0,-4],s:[0,4],arrowdown:[0,4],a:[-4,0],arrowleft:[-4,0],d:[4,0],arrowright:[4,0]};if(d[k]){e.preventDefault();move(...d[k])}});
-window.addEventListener("beforeunload",()=>{if(peer)peer.destroy()});
-status("READY");
-</script>
+    let peer = null;
+    let hostConnection = null;
+    let connections = new Map();
+
+    let isHost = false;
+    let roomCode = "";
+    let myId = "";
+    let myName = "";
+    let myRole = "";
+    let gameStarted = false;
+
+    let gameState = null;
+    let completedTasks = new Set();
+    let lastMeeting = 0;
+    let investigationUsed = false;
+    let scanUsed = false;
+
+
+    /* ##############
+       DOM HELPERS
+       ############## */
+
+    const $ = id => document.getElementById(id);
+
+    function setStatus(message) {
+      $("menuStatus").textContent = message;
+    }
+
+    function showScreen(screen) {
+      $("menuScreen").classList.add("hidden");
+      $("lobbyScreen").classList.add("hidden");
+      $("gameScreen").classList.add("hidden");
+      $(screen).classList.remove("hidden");
+    }
+
+    function showModal(title, message, extra = "") {
+      $("modalTitle").textContent = title;
+      $("modalText").textContent = message;
+      $("modalExtra").innerHTML = extra;
+      $("modalBackdrop").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      $("modalBackdrop").classList.add("hidden");
+      $("modalExtra").innerHTML = "";
+    }
+
+    function randomCode(length = 6) {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let result = "";
+
+      for (let i = 0; i < length; i++) {
+        result += chars[Math.floor(Math.random() * chars.length)];
+      }
+
+      return result;
+    }
+
+    function randomNumber(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[char]);
+    }
+
+
+    /* ##############
+       PEER CONNECTION
+       ############## */
+
+    function peerOpen(id = null) {
+      return new Promise((resolve, reject) => {
+        if (typeof Peer === "undefined") {
+          reject(new Error("PeerJS failed to load. Check your internet connection."));
+          return;
+        }
+
+        const options = {
+          debug: 1,
+          config: {
+            iceServers: [
+              {
+                urls: "stun:stun.l.google.com:19302"
+              },
+              {
+                urls: [
+                  "turn:eu-0.turn.peerjs.com:3478",
+                  "turn:us-0.turn.peerjs.com:3478"
+                ],
+                username: "peerjs",
+                credential: "peerjsp"
+              }
+            ],
+            sdpSemantics: "unified-plan"
+          }
+        };
+
+        let p;
+
+        try {
+          p = id ? new Peer(id, options) : new Peer(options);
+        } catch (error) {
+          reject(error);
+          return;
+        }
+
+        let finished = false;
+
+        const timer = setTimeout(() => {
+          if (finished) return;
+
+          finished = true;
+          p.destroy();
+
+          reject(new Error(
+            "Peer connection timed out. Try again or use a different network."
+          ));
+        }, CONFIG.peerTimeout);
+
+        p.on("open", peerId => {
+          if (finished) return;
+
+          finished = true;
+          clearTimeout(timer);
+          resolve(p);
+        });
+
+        p.on("error", error => {
+          console.error("PeerJS error:", error);
+
+          if (!finished) {
+            finished = true;
+            clearTimeout(timer);
+            reject(error);
+          }
+        });
+      });
+    }
+
+
+    /* ##############
+       CREATE ROOM
+       ############## */
+
+    async function createRoom() {
+      myName = $("playerName").value.trim().slice(0, 16);
+
+      if (!myName) {
+        setStatus("Enter a player name first.");
+        return;
+      }
+
+      setStatus("Creating room...");
+
+      roomCode = randomCode();
+      const hostId = "whos-cheater-" + roomCode.toLowerCase();
+
+      try {
+        peer = await peerOpen(hostId);
+
+        isHost = true;
+        myId = peer.id;
+
+        gameState = {
+          roomCode,
+          hostId: myId,
+          players: {},
+          started: false,
+          round: 1,
+          tasks: {},
+          messages: [],
+          meetingActive: false,
+          createdAt: Date.now()
+        };
+
+        gameState.players[myId] = {
+          id: myId,
+          name: myName,
+          role: "Unassigned",
+          points: CONFIG.startingPoints,
+          x: 50,
+          y: 50,
+          connected: true,
+          tasks: 0
+        };
+
+        setupHostPeer();
+        enterLobby();
+
+      } catch (error) {
+        console.error(error);
+        setStatus("Could not create room: " + error.message);
+      }
+    }
+
+
+    /* ##############
+       JOIN ROOM
+       ############## */
+
+    async function joinRoom() {
+      myName = $("playerName").value.trim().slice(0, 16);
+      roomCode = $("joinCode").value.trim().toUpperCase();
+
+      if (!myName) {
+        setStatus("Enter a player name first.");
+        return;
+      }
+
+      if (!/^[A-Z0-9]{6}$/.test(roomCode)) {
+        setStatus("Enter a valid 6-character room code.");
+        return;
+      }
+
+      setStatus("Connecting to room...");
+
+      try {
+        peer = await peerOpen();
+
+        isHost = false;
+        myId = peer.id;
+
+        peer.on("connection", conn => {
+          conn.close();
+        });
+
+        const hostId = "whos-cheater-" + roomCode.toLowerCase();
+
+        hostConnection = peer.connect(hostId, {
+          reliable: true
+        });
+
+        const connected = await waitForConnection(hostConnection);
+
+        if (!connected) {
+          peer.destroy();
+          peer = null;
+          throw new Error("Could not connect to the room host.");
+        }
+
+        hostConnection.on("data", handleHostMessage);
+        hostConnection.on("close", () => {
+          showModal("Connection lost", "The host connection was closed.");
+        });
+
+        sendToHost({
+          type: "JOIN",
+          player: {
+            id: myId,
+            name: myName
+          }
+        });
+
+      } catch (error) {
+        console.error(error);
+        setStatus("Could not join: " + error.message);
+      }
+    }
+
+    function waitForConnection(conn) {
+      return new Promise(resolve => {
+        let done = false;
+
+        const finish = value => {
+          if (done) return;
+          done = true;
+          clearTimeout(timer);
+          resolve(value);
+        };
+
+        const timer = setTimeout(() => finish(false), 15000);
+
+        conn.on("open", () => finish(true));
+        conn.on("error", () => finish(false));
+      });
+    }
+
+
+    /* ##############
+       HOST PEER SETUP
+       ############## */
+
+    function setupHostPeer() {
+      peer.on("connection", conn => {
+        if (gameState.started) {
+          conn.on("open", () => {
+            conn.send({
+              type: "REJECT",
+              reason: "This game has already started."
+            });
+            conn.close();
+          });
+          return;
+        }
+
+        conn.on("open", () => {
+          connections.set(conn.peer, conn);
+        });
+
+        conn.on("data", data => {
+          handleClientMessage(conn.peer, data);
+        });
+
+        conn.on("close", () => {
+          connections.delete(conn.peer);
+
+          if (gameState && gameState.players[conn.peer]) {
+            gameState.players[conn.peer].connected = false;
+            broadcastState();
+            updateLobby();
+          }
+        });
+
+        conn.on("error", error => {
+          console.warn("Client connection error:", error);
+        });
+      });
+    }
+
+
+    /* ##############
+       ENTER LOBBY
+       ############## */
+
+    function enterLobby() {
+      showScreen("lobbyScreen");
+      $("displayRoomCode").textContent = roomCode;
+      updateLobby();
+    }
+
+    function updateLobby() {
+      if (!gameState) return;
+
+      const players = Object.values(gameState.players);
+
+      $("lobbyPlayers").innerHTML = players.map((player, index) => `
+        <div class="player-card">
+          <div class="avatar">${escapeHTML(player.name.slice(0, 1).toUpperCase())}</div>
+          <div>
+            <strong>${escapeHTML(player.name)}</strong>
+            <div class="small muted">
+              ${player.id === myId ? "You" : "Player"}
+              ${player.connected ? " · Connected" : " · Disconnected"}
+            </div>
+          </div>
+        </div>
+      `).join("");
+
+      const canStart =
+        isHost &&
+        players.filter(p => p.connected).length >= CONFIG.minPlayers;
+
+      $("startButton").classList.toggle("hidden", !isHost);
+
+      $("startButton").disabled = !canStart;
+
+      $("lobbyMessage").textContent =
+        players.length + "/" + CONFIG.maxPlayers +
+        " players connected. At least 3 are required.";
+    }
+
+
+    /* ##############
+       ROOM CODE COPYING
+       ############## */
+
+    async function copyRoomCode() {
+      try {
+        await navigator.clipboard.writeText(roomCode);
+        $("lobbyMessage").textContent = "Room code copied.";
+      } catch {
+        $("lobbyMessage").textContent = "Room code: " + roomCode;
+      }
+    }
+
+
+    /* ##############
+       NETWORK MESSAGES
+       ############## */
+
+    function sendToHost(message) {
+      if (!hostConnection || !hostConnection.open) return;
+      hostConnection.send(message);
+    }
+
+    function sendToPlayer(id, message) {
+      const conn = connections.get(id);
+
+      if (conn && conn.open) {
+        conn.send(message);
+      }
+    }
+
+    function broadcast(message) {
+      for (const conn of connections.values()) {
+        if (conn.open) {
+          conn.send(message);
+        }
+      }
+    }
+
+    function broadcastState() {
+      if (!isHost || !gameState) return;
+
+      broadcast({
+        type: "STATE",
+        state: gameState
+      });
+
+      renderGame();
+    }
+
+
+    /* ##############
+       HOST MESSAGE HANDLER
+       ############## */
+
+    function handleClientMessage(senderId, data) {
+      if (!isHost || !gameState || !data) return;
+
+      const player = gameState.players[senderId];
+
+      switch (data.type) {
+
+        case "JOIN": {
+          if (gameState.started) return;
+
+          if (Object.keys(gameState.players).length >= CONFIG.maxPlayers) {
+            sendToPlayer(senderId, {
+              type: "REJECT",
+              reason: "This room is full."
+            });
+            return;
+          }
+
+          if (!player) {
+            gameState.players[senderId] = {
+              id: senderId,
+              name: String(data.player?.name || "Player").slice(0, 16),
+              role: "Unassigned",
+              points: CONFIG.startingPoints,
+              x: randomNumber(35, 65),
+              y: randomNumber(35, 65),
+              connected: true,
+              tasks: 0
+            };
+          }
+
+          if (player) player.connected = true;
+
+          sendToPlayer(senderId, {
+            type: "LOBBY_STATE",
+            state: gameState
+          });
+
+          broadcastState();
+          updateLobby();
+          break;
+        }
+
+        case "CHAT": {
+          if (!player || !player.connected) return;
+
+          addChat(player.name, data.message);
+          break;
+        }
+
+        case "TASK_COMPLETE": {
+          if (!player || !gameState.started) return;
+
+          const taskId = String(data.taskId || "");
+
+          if (!STATIONS[taskId]) return;
+
+          const key = senderId + ":" + taskId + ":" + gameState.round;
+
+          if (gameState.tasks[key]) return;
+
+          gameState.tasks[key] = true;
+          player.points += CONFIG.pointsPerTask;
+          player.tasks += 1;
+
+          broadcast({
+            type: "TASK_RESULT",
+            playerName: player.name,
+            station: STATIONS[taskId].name,
+            points: CONFIG.pointsPerTask
+          });
+
+          broadcastState();
+          break;
+        }
+
+        case "MEETING": {
+          if (!player || !gameState.started) return;
+
+          startMeeting(player.name);
+          break;
+        }
+
+        case "VOTE": {
+          if (!player || !gameState.meetingActive) return;
+
+          handleVote(senderId, data.targetId);
+          break;
+        }
+
+        case "INVESTIGATE": {
+          if (!player || player.role !== "Security") return;
+
+          const target = gameState.players[data.targetId];
+
+          if (!target) return;
+
+          sendToPlayer(senderId, {
+            type: "INVESTIGATION_RESULT",
+            targetName: target.name,
+            result: target.role === "Cheater"
+              ? "SUSPICIOUS"
+              : "NO EVIDENCE"
+          });
+          break;
+        }
+
+        case "SCAN": {
+          if (!player || player.role !== "Cheater") return;
+
+          const target = gameState.players[data.targetId];
+
+          if (!target) return;
+
+          sendToPlayer(senderId, {
+            type: "SCAN_RESULT",
+            targetName: target.name,
+            result: target.role === "Security"
+              ? "SECURITY"
+              : "NOT SECURITY"
+          });
+          break;
+        }
+      }
+    }
+
+
+    /* ##############
+       CLIENT MESSAGE HANDLER
+       ############## */
+
+    function handleHostMessage(data) {
+      if (!data) return;
+
+      switch (data.type) {
+
+        case "REJECT":
+          showModal("Cannot join", data.reason || "The room rejected your connection.");
+          break;
+
+        case "LOBBY_STATE":
+        case "STATE":
+          gameState = data.state;
+          enterLobby();
+
+          if (gameState.started) {
+            beginClientGame();
+          }
+          break;
+
+        case "GAME_START":
+          gameState = data.state;
+          beginClientGame(data.role);
+          break;
+
+        case "CHAT":
+          appendChat(data.name, data.message);
+          break;
+
+        case "TASK_RESULT":
+          showModal(
+            "Challenge completed",
+            data.playerName + " completed " + data.station +
+            " and earned " + data.points + " points."
+          );
+          break;
+
+        case "MEETING":
+          openVoting(data);
+          break;
+
+        case "MEETING_RESULT":
+          showModal("Meeting result", data.message);
+          break;
+
+        case "INVESTIGATION_RESULT":
+          showModal(
+            "Security report",
+            data.targetName + ": " + data.result
+          );
+          break;
+
+        case "SCAN_RESULT":
+          showModal(
+            "Secret scan",
+            data.targetName + ": " + data.result
+          );
+          break;
+
+        case "ROUND_UPDATE":
+          gameState = data.state;
+          renderGame();
+          break;
+
+        case "GAME_OVER":
+          showModal("Game over", data.message);
+          break;
+      }
+    }
+
+
+    /* ##############
+       CHAT SYSTEM
+       ############## */
+
+    function addChat(name, message) {
+      const clean = String(message || "").trim().slice(0, 180);
+
+      if (!clean) return;
+
+      const entry = {
+        name: String(name).slice(0, 16),
+        message: clean,
+        time: Date.now()
+      };
+
+      gameState.messages.push(entry);
+      gameState.messages = gameState.messages.slice(-80);
+
+      broadcast({
+        type: "CHAT",
+        name: entry.name,
+        message: entry.message
+      });
+
+      appendChat(entry.name, entry.message);
+    }
+
+    function appendChat(name, message) {
+      const box = $("chatMessages");
+      const item = document.createElement("div");
+      item.className = "chat-message";
+
+      const nameSpan = document.createElement("span");
+      nameSpan.className = "chat-name";
+      nameSpan.textContent = name + ": ";
+
+      const messageSpan = document.createElement("span");
+      messageSpan.textContent = message;
+
+      item.append(nameSpan, messageSpan);
+      box.appendChild(item);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendChat(event) {
+      event.preventDefault();
+
+      const message = $("chatInput").value.trim();
+
+      if (!message) return;
+
+      $("chatInput").value = "";
+
+      if (isHost) {
+        addChat(myName, message);
+      } else {
+        sendToHost({
+          type: "CHAT",
+          message
+        });
+      }
+    }
+
+
+    /* ##############
+       START GAME
+       ############## */
+
+    function startGame() {
+      if (!isHost || !gameState) return;
+
+      const players = Object.values(gameState.players)
+        .filter(player => player.connected);
+
+      if (players.length < CONFIG.minPlayers) {
+        showModal("Not enough players", "You need at least 3 connected players.");
+        return;
+      }
+
+      const shuffled = [...players].sort(() => Math.random() - 0.5);
+
+      shuffled.forEach(player => {
+        player.role = "Innocent";
+      });
+
+      shuffled[0].role = "Cheater";
+
+      if (shuffled.length >= 4) {
+        shuffled[1].role = "Security";
+      }
+
+      gameState.started = true;
+      gameState.round = 1;
+      gameState.meetingActive = false;
+
+      for (const player of players) {
+        const role = player.role;
+
+        if (player.id === myId) {
+          myRole = role;
+          beginClientGame(role);
+        } else {
+          sendToPlayer(player.id, {
+            type: "GAME_START",
+            state: gameState,
+            role
+          });
+        }
+      }
+
+      broadcast({
+        type: "STATE",
+        state: gameState
+      });
+    }
+
+
+    /* ##############
+       BEGIN GAME
+       ############## */
+
+    function beginClientGame(role = null) {
+      if (role) myRole = role;
+
+      if (!myRole && gameState) {
+        myRole = gameState.players[myId]?.role || "Innocent";
+      }
+
+      gameStarted = true;
+
+      showScreen("gameScreen");
+
+      $("gameRoomCode").textContent = roomCode;
+      $("roundNumber").textContent = gameState.round;
+
+      const info = ROLE_INFO[myRole] || ROLE_INFO.Innocent;
+
+      $("roleName").textContent = myRole.toUpperCase();
+      $("roleDescription").textContent = info.description;
+      $("specialAbility").textContent = info.ability;
+
+      if (myRole === "Cheater") {
+        $("roleName").style.color = "#f08080";
+      } else if (myRole === "Security") {
+        $("roleName").style.color = "#75c6ff";
+      } else {
+        $("roleName").style.color = "#73e0a8";
+      }
+
+      renderGame();
+
+      showModal(
+        "Your secret role: " + myRole,
+        info.description
+      );
+    }
+
+
+    /* ##############
+       RENDER GAME
+       ############## */
+
+    function renderGame() {
+      if (!gameState || !gameState.started) return;
+
+      $("roundNumber").textContent = gameState.round;
+
+      const players = Object.values(gameState.players);
+
+      $("scoreboard").innerHTML = players
+        .sort((a, b) => b.points - a.points)
+        .map(player => `
+          <div class="score-line">
+            <span>${escapeHTML(player.name)}</span>
+            <strong class="gold">${player.points}</strong>
+          </div>
+        `).join("");
+
+      const tokens = $("playerTokens");
+      tokens.innerHTML = "";
+
+      players.forEach(player => {
+        if (!player.connected) return;
+
+        const token = document.createElement("div");
+        token.className = "player-token" + (player.id === myId ? " me" : "");
+        token.textContent = player.name.slice(0, 1).toUpperCase();
+        token.title = player.name;
+        token.style.left = player.x + "%";
+        token.style.top = player.y + "%";
+
+        tokens.appendChild(token);
+      });
+
+      document.querySelectorAll(".station").forEach(station => {
+        station.classList.remove("done");
+      });
+    }
+
+
+    /* ##############
+       TASK GENERATOR
+       ############## */
+
+    function visitStation(stationId) {
+      if (!gameStarted || !STATIONS[stationId]) return;
+
+      const taskKey = stationId + ":" + gameState.round;
+
+      if (completedTasks.has(taskKey)) {
+        showModal("Already completed", "You have already completed this challenge this round.");
+        return;
+      }
+
+      const taskArea = $("taskArea");
+
+      taskArea.innerHTML = `
+        <h3>${STATIONS[stationId].name}</h3>
+        <p>${STATIONS[stationId].description}</p>
+        <div id="taskContent"></div>
+        <div class="task-options" id="taskOptions"></div>
+      `;
+
+      if (stationId === "memory") {
+        memoryChallenge();
+      }
+
+      if (stationId === "pattern") {
+        patternChallenge();
+      }
+
+      if (stationId === "reaction") {
+        reactionChallenge();
+      }
+
+      if (stationId === "sorting") {
+        sortingChallenge();
+      }
+    }
+
+
+    /* ##############
+       MEMORY CHALLENGE
+       ############## */
+
+    function memoryChallenge() {
+      const symbols = ["★", "●", "◆", "▲", "■"];
+      const sequence = Array.from(
+        { length: 4 },
+        () => symbols[randomNumber(0, symbols.length - 1)]
+      );
+
+      const content = $("taskContent");
+      const options = $("taskOptions");
+
+      content.innerHTML = `
+        <p>Memorise this sequence. It will disappear shortly.</p>
+        <h2 id="memorySequence" style="text-align:center;letter-spacing:12px">
+          ${sequence.join(" ")}
+        </h2>
+      `;
+
+      setTimeout(() => {
+        if (!document.getElementById("memorySequence")) return;
+
+        $("memorySequence").textContent = "???";
+
+        content.innerHTML += "<p>What was the sequence?</p>";
+
+        const choices = [...sequence];
+
+        for (let i = choices.length - 1; i > 0; i--) {
+          const j = randomNumber(0, i);
+          [choices[i], choices[j]] = [choices[j], choices[i]];
+        }
+
+        choices.sort(() => Math.random() - 0.5);
+
+        choices.forEach(symbol => {
+          const button = document.createElement("button");
+          button.className = "secondary";
+          button.textContent = symbol;
+          button.onclick = () => {
+            finishTask(
+              "memory",
+              choices.join("") === sequence.join("")
+                ? false
+                : true
+            );
+          };
+          options.appendChild(button);
+        });
+
+        const answerInput = document.createElement("input");
+        answerInput.placeholder = "Enter the sequence exactly";
+        answerInput.maxLength = 8;
+        content.appendChild(answerInput);
+
+        const submit = document.createElement("button");
+        submit.className = "primary";
+        submit.textContent = "SUBMIT";
+        submit.style.marginTop = "10px";
+        submit.onclick = () => {
+          finishTask("memory", answerInput.value.replace(/\s/g, "") !== sequence.join(""));
+        };
+
+        content.appendChild(submit);
+      }, 2500);
+    }
+
+
+    /* ##############
+       PATTERN CHALLENGE
+       ############## */
+
+    function patternChallenge() {
+      const start = randomNumber(2, 9);
+      const step = randomNumber(2, 5);
+      const sequence = [
+        start,
+        start + step,
+        start + step * 2,
+        start + step * 3
+      ];
+
+      const answer = start + step * 4;
+
+      $("taskContent").innerHTML = `
+        <p>What number comes next?</p>
+        <h2 style="text-align:center">${sequence.join(" · ")} · ?</h2>
+      `;
+
+      const options = $("taskOptions");
+      const answers = [
+        answer,
+        answer + step,
+        answer - step,
+        answer + 2
+      ].sort(() => Math.random() - 0.5);
+
+      answers.forEach(value => {
+        const button = document.createElement("button");
+        button.className = "secondary";
+        button.textContent = value;
+        button.onclick = () => finishTask("pattern", value !== answer);
+        options.appendChild(button);
+      });
+    }
+
+
+    /* ##############
+       REACTION CHALLENGE
+       ############## */
+
+    function reactionChallenge() {
+      const target = randomNumber(2, 9);
+
+      $("taskContent").innerHTML = `
+        <p>Choose the number ${target}.</p>
+      `;
+
+      const options = $("taskOptions");
+
+      for (let i = 0; i < 4; i++) {
+        const number = i === 0
+          ? target
+          : randomNumber(1, 10);
+
+        const button = document.createElement("button");
+        button.className = "secondary";
+        button.textContent = number;
+
+        button.onclick = () => finishTask(
+          "reaction",
+          number !== target
+        );
+
+        options.appendChild(button);
+      }
+    }
+
+
+    /* ##############
+       CARD ARCHIVE CHALLENGE
+       ############## */
+
+    function sortingChallenge() {
+      const symbols = ["♠", "♥", "♦", "♣"];
+      const target = symbols[randomNumber(0, 3)];
+
+      $("taskContent").innerHTML = `
+        <p>Find the matching symbol.</p>
+        <h2 style="text-align:center;font-size:45px">${target}</h2>
+      `;
+
+      const options = $("taskOptions");
+
+      [...symbols].sort(() => Math.random() - .5).forEach(symbol => {
+        const button = document.createElement("button");
+        button.className = "secondary";
+        button.textContent = symbol;
+        button.onclick = () => finishTask("sorting", symbol !== target);
+        options.appendChild(button);
+      });
+    }
+
+
+    /* ##############
+       COMPLETE TASK
+       ############## */
+
+    function finishTask(stationId, failed) {
+      const key = stationId + ":" + gameState.round;
+
+      if (completedTasks.has(key)) return;
+
+      completedTasks.add(key);
+
+      if (failed) {
+        showModal("Challenge failed", "You did not complete the challenge. Try another station.");
+        return;
+      }
+
+      if (isHost) {
+        handleClientMessage(myId, {
+          type: "TASK_COMPLETE",
+          taskId: stationId
+        });
+      } else {
+        sendToHost({
+          type: "TASK_COMPLETE",
+          taskId: stationId
+        });
+      }
+
+      showModal(
+        "Challenge completed",
+        "You completed the challenge. Your points will be added."
+      );
+
+      document.querySelectorAll(".station").forEach(station => {
+        const name = station.querySelector(".station-name")?.textContent || "";
+
+        if (name.toLowerCase().includes(STATIONS[stationId].name.split(" ")[0].toLowerCase())) {
+          station.classList.add("done");
+        }
+      });
+    }
+
+
+    /* ##############
+       SECURITY MEETING
+       ############## */
+
+    function requestMeeting() {
+      if (!gameStarted) return;
+
+      if (Date.now() - lastMeeting < CONFIG.meetingCooldown) {
+        showModal("Meeting unavailable", "Please wait before calling another meeting.");
+        return;
+      }
+
+      if (isHost) {
+        startMeeting(myName);
+      } else {
+        sendToHost({
+          type: "MEETING"
+        });
+      }
+    }
+
+    function startMeeting(callerName) {
+      if (gameState.meetingActive) return;
+
+      gameState.meetingActive = true;
+      lastMeeting = Date.now();
+
+      const players = Object.values(gameState.players)
+        .filter(player => player.connected);
+
+      broadcast({
+        type: "MEETING",
+        callerName,
+        players: players.map(player => ({
+          id: player.id,
+          name: player.name
+        }))
+      });
+
+      openVoting({
+        callerName,
+        players: players.map(player => ({
+          id: player.id,
+          name: player.name
+        }))
+      });
+    }
+
+
+    /* ##############
+       VOTING
+       ############## */
+
+    function openVoting(data) {
+      const options = data.players
+        .filter(player => player.id !== myId)
+        .map(player => `
+          <button class="secondary" style="width:100%;margin:5px 0"
+            onclick="castVote('${player.id}')">
+            ${escapeHTML(player.name)}
+          </button>
+        `).join("");
+
+      showModal(
+        "Security meeting",
+        data.callerName + " called a meeting. Who should be investigated?",
+        `<div>${options}
+        <button class="secondary" style="width:100%;margin-top:8px"
+          onclick="castVote('skip')">SKIP</button></div>`
+      );
+    }
+
+    function castVote(targetId) {
+      closeModal();
+
+      if (isHost) {
+        handleVote(myId, targetId);
+      } else {
+        sendToHost({
+          type: "VOTE",
+          targetId
+        });
+      }
+    }
+
+    let currentVotes = {};
+
+    function handleVote(senderId, targetId) {
+      if (!gameState.meetingActive) return;
+
+      if (!gameState.players[senderId]) return;
+
+      if (currentVotes[senderId]) return;
+
+      if (
+        targetId !== "skip" &&
+        !gameState.players[targetId]
+      ) return;
+
+      currentVotes[senderId] = targetId;
+
+      const connectedPlayers = Object.values(gameState.players)
+        .filter(player => player.connected);
+
+      if (Object.keys(currentVotes).length < connectedPlayers.length) {
+        return;
+      }
+
+      const counts = {};
+
+      Object.values(currentVotes).forEach(vote => {
+        counts[vote] = (counts[vote] || 0) + 1;
+      });
+
+      const highest = Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])[0];
+
+      let message = "The players decided to skip the investigation.";
+
+      if (highest && highest[0] !== "skip") {
+        const target = gameState.players[highest[0]];
+
+        if (target) {
+          message = target.name + " received the most votes.";
+
+          if (target.role === "Cheater") {
+            message += " The Cheater has been identified!";
+            endGame("Security and Innocents win! The Cheater was " + target.name + ".");
+          } else {
+            message += " They were not the Cheater.";
+          }
+        }
+      }
+
+      currentVotes = {};
+      gameState.meetingActive = false;
+
+      broadcast({
+        type: "MEETING_RESULT",
+        message
+      });
+
+      broadcastState();
+    }
+
+
+    /* ##############
+       SPECIAL ROLE ABILITIES
+       ############## */
+
+    function showPlayers() {
+      if (!gameState) return;
+
+      const players = Object.values(gameState.players)
+        .filter(player => player.connected);
+
+      const choices = players
+        .filter(player => player.id !== myId)
+        .map(player => `
+          <button class="secondary" style="width:100%;margin:5px 0"
+            onclick="useAbility('${player.id}')">
+            ${escapeHTML(player.name)}
+          </button>
+        `).join("");
+
+      let heading = "Players";
+      let description = "Select a player.";
+
+      if (myRole === "Security") {
+        heading = "Security investigation";
+        description = "Choose a player to investigate.";
+      }
+
+      if (myRole === "Cheater") {
+        heading = "Secret scan";
+        description = "Choose a player to scan.";
+      }
+
+      showModal(heading, description, `<div>${choices}</div>`);
+    }
+
+    function useAbility(targetId) {
+      if (myRole === "Security") {
+        if (investigationUsed) {
+          showModal("Ability used", "You have already investigated someone this round.");
+          return;
+        }
+
+        investigationUsed = true;
+
+        if (isHost) {
+          handleClientMessage(myId, {
+            type: "INVESTIGATE",
+            targetId
+          });
+        } else {
+          sendToHost({
+            type: "INVESTIGATE",
+            targetId
+          });
+        }
+
+        closeModal();
+        return;
+      }
+
+      if (myRole === "Cheater") {
+        if (scanUsed) {
+          showModal("Ability used", "You have already used your scan this round.");
+          return;
+        }
+
+        scanUsed = true;
+
+        if (isHost) {
+          handleClientMessage(myId, {
+            type: "SCAN",
+            targetId
+          });
+        } else {
+          sendToHost({
+            type: "SCAN",
+            targetId
+          });
+        }
+
+        closeModal();
+        return;
+      }
+
+      closeModal();
+
+      showModal(
+        "No special ability",
+        "Your role does not have a secret scan or investigation ability."
+      );
+    }
+
+
+    /* ##############
+       END GAME
+       ############## */
+
+    function endGame(message) {
+      if (!isHost) return;
+
+      gameState.started = false;
+
+      broadcast({
+        type: "GAME_OVER",
+        message
+      });
+
+      showModal("Game over", message);
+    }
+
+
+    /* ##############
+       LEAVE GAME
+       ############## */
+
+    function leaveGame() {
+      if (peer) {
+        try {
+          peer.destroy();
+        } catch (error) {
+          console.warn(error);
+        }
+      }
+
+      peer = null;
+      hostConnection = null;
+      connections.clear();
+
+      isHost = false;
+      gameStarted = false;
+      myRole = "";
+      gameState = null;
+
+      completedTasks.clear();
+      currentVotes = {};
+
+      $("playerTokens").innerHTML = "";
+      $("chatMessages").innerHTML = "";
+
+      closeModal();
+      showScreen("menuScreen");
+      setStatus("You left the room.");
+    }
+
+
+    /* ##############
+       STARTUP
+       ############## */
+
+    window.addEventListener("beforeunload", () => {
+      if (peer) peer.destroy();
+    });
+
+    $("playerName").addEventListener("keydown", event => {
+      if (event.key === "Enter") createRoom();
+    });
+
+    $("joinCode").addEventListener("input", event => {
+      event.target.value = event.target.value
+        .toUpperCase()
+        .replace(/[^A-Z0-9]/g, "")
+        .slice(0, 6);
+    });
+
+  </script>
 </body>
 </html>
