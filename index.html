@@ -3,1202 +3,1125 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WHO'S THE CHEATER?</title>
+<title>Who's The Cheater?</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
 <style>
 /* ##############
-   GLOBAL STYLES
-   ############## */
-:root {
-  --bg:#080d12;
-  --panel:#121d25;
-  --panel2:#192a32;
-  --gold:#e8bd62;
-  --gold2:#ffe4a0;
-  --green:#43d69b;
-  --red:#e45b5b;
-  --blue:#56b8ff;
-  --text:#f2f4f5;
-  --muted:#9eafb8;
-  --border:#30434d;
-}
+   GLOBAL
+############## */
 *{box-sizing:border-box}
-body{
-  margin:0;background:var(--bg);color:var(--text);
-  font-family:Arial,Helvetica,sans-serif;overflow:hidden
-}
+body{margin:0;background:#090f13;color:#f1f3f3;font-family:Arial,sans-serif;overflow:hidden}
 button,input{font:inherit}
 button{cursor:pointer}
-button:disabled{opacity:.45;cursor:not-allowed}
+button:disabled{opacity:.4;cursor:not-allowed}
 .hidden{display:none!important}
-button.primary{
-  border:0;border-radius:8px;padding:11px 17px;
-  color:#241b0b;background:linear-gradient(135deg,#ffe7a5,#c9953c);
-  font-weight:900
-}
-button.secondary{
-  border:1px solid #455a65;border-radius:8px;padding:10px 14px;
-  color:white;background:#263943;font-weight:700
-}
-button.danger{
-  border:1px solid #a54b50;border-radius:8px;padding:10px 14px;
-  color:white;background:#612b32;font-weight:700
-}
-input{
-  width:100%;background:#081116;border:1px solid #40545e;
-  border-radius:8px;padding:12px;color:white;outline:none
-}
-input:focus{border-color:var(--gold)}
-.panel{
-  background:linear-gradient(145deg,var(--panel2),var(--panel));
-  border:1px solid var(--border);border-radius:12px;padding:15px
-}
-.muted{color:var(--muted)}
-.gold{color:var(--gold)}
-.small{font-size:12px}
+.gold{color:#edc36f}
+.muted{color:#9aabb2}
+.panel{background:#17252b;border:1px solid #35474e;border-radius:12px;padding:14px}
+.primary{background:linear-gradient(135deg,#ffe5a0,#c18c37);color:#241b0b;border:0;border-radius:8px;padding:12px 16px;font-weight:900}
+.secondary{background:#263a43;color:white;border:1px solid #49616b;border-radius:8px;padding:10px 13px;font-weight:bold}
+.danger{background:#632e34;color:white;border:1px solid #a54c54;border-radius:8px;padding:10px 13px}
+input{background:#091216;border:1px solid #455962;color:white;border-radius:8px;padding:12px;width:100%;outline:none}
+input:focus{border-color:#edc36f}
 
 /* ##############
    MENU
-   ############## */
-#menuScreen{
-  height:100vh;display:grid;place-items:center;padding:20px;
-  background:radial-gradient(ellipse at 50% 0%,#29483e,#080d12 65%)
-}
-.menu-card{
-  width:min(460px,100%);padding:30px;text-align:center;
-  border:1px solid #77633f;border-radius:17px;
-  background:linear-gradient(145deg,#1c302e,#10191e);
-  box-shadow:0 25px 80px #000a
-}
-.logo{
-  font-size:clamp(35px,8vw,54px);font-weight:1000;
-  line-height:.95;letter-spacing:-2px;color:var(--gold2)
-}
+############## */
+#menu{height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#315444,#090f13 70%)}
+.menu-card{width:min(440px,100%);padding:30px;text-align:center;background:#142522;border:1px solid #92794d;border-radius:18px;box-shadow:0 25px 80px #0009}
+.logo{font-size:clamp(38px,9vw,58px);font-weight:1000;letter-spacing:-3px;line-height:.95;color:#ffe3a0}
 .logo span{color:white}
-.menu-card p{color:var(--muted);line-height:1.5}
-.menu-card input{margin:7px 0}
+.menu-card p{color:#aebcba;line-height:1.5}
+.menu-card input{margin:6px 0}
 .menu-card button{width:100%;margin-top:9px}
-#menuStatus{min-height:22px;margin-top:12px;color:var(--gold);font-size:13px}
+#menuStatus{min-height:25px;margin-top:12px;color:#edc36f;font-size:13px}
 
 /* ##############
    LOBBY
-   ############## */
-#lobbyScreen{height:100vh;overflow:auto;padding:25px;max-width:1050px;margin:auto}
-.lobby-header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
-.room-code{font-size:30px;font-weight:1000;letter-spacing:6px;color:var(--gold)}
-.player-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
-.player-card{display:flex;align-items:center;gap:10px;padding:12px;background:#0b151b;border:1px solid var(--border);border-radius:9px}
-.avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(145deg,#f5d68b,#a7752e);color:#211708;font-weight:1000}
-.lobby-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+############## */
+#lobby{height:100vh;max-width:1000px;margin:auto;padding:25px;overflow:auto}
+.lobby-top{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.room-code{font-size:32px;font-weight:1000;letter-spacing:7px;color:#edc36f}
+.player-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.lobby-player{display:flex;align-items:center;gap:12px;padding:12px;background:#0d171c;border:1px solid #35474e;border-radius:9px}
+.avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:#d4ad63;color:#20190d;font-weight:1000}
+.lobby-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}
 
 /* ##############
-   GAME LAYOUT
-   ############## */
-#gameScreen{height:100vh;display:flex;flex-direction:column;padding:10px;gap:10px}
-.game-header{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 14px;background:#121e25;border:1px solid var(--border);
-  border-radius:10px;flex-wrap:wrap
-}
-.game-title{font-weight:1000;color:var(--gold);letter-spacing:1px}
-.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:10px;min-height:0;flex:1}
-.main-area{display:flex;flex-direction:column;gap:10px;min-height:0}
-#worldViewport{
-  position:relative;flex:1;min-height:350px;overflow:hidden;
-  background:#101b1a;border:2px solid #6b6042;border-radius:12px
-}
-#world{
-  position:absolute;width:1600px;height:1100px;
-  background-color:#174335;
-  background-image:
-    linear-gradient(#d3b66a16 2px,transparent 2px),
-    linear-gradient(90deg,#d3b66a16 2px,transparent 2px);
-  background-size:80px 80px;
-  transform-origin:0 0
-}
-.floor-border{position:absolute;inset:35px;border:5px solid #c3a45d;border-radius:20px;pointer-events:none}
-.floor-rug{position:absolute;background:#273a34;border:3px solid #b89952;border-radius:14px}
-.room-wall{position:absolute;background:#33413b;border:3px solid #8e7548;border-radius:8px;box-shadow:0 5px 10px #0007}
-.table{
-  position:absolute;width:155px;height:90px;border-radius:45%;
-  background:radial-gradient(ellipse,#247a52,#10412f);
-  border:7px solid #98723b;box-shadow:0 8px 15px #0008;
-  display:grid;place-items:center;color:#e7d29a;font-weight:900;font-size:12px
-}
-.decoration{
-  position:absolute;font-size:28px;filter:drop-shadow(0 3px 3px #0008);
-  pointer-events:none
-}
-.station{
-  position:absolute;width:150px;height:100px;border-radius:12px;
-  background:linear-gradient(145deg,#35474a,#17282b);
-  border:3px solid #c7a45c;box-shadow:0 8px 18px #0009;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:5px;cursor:pointer;text-align:center;user-select:none
-}
-.station:hover{filter:brightness(1.3)}
-.station .emoji{font-size:28px}
-.station strong{font-size:12px;color:var(--gold2)}
-.station small{font-size:10px;color:#c0ccca}
-.player{
-  position:absolute;width:34px;height:43px;z-index:5;
-  display:flex;flex-direction:column;align-items:center;
-  transition:left .08s linear,top .08s linear;pointer-events:none
-}
-.player-head{
-  width:25px;height:25px;border-radius:50%;border:2px solid white;
-  background:#e7c38a;display:grid;place-items:center;color:#241a0c;
-  font-size:10px;font-weight:1000
-}
-.player-body{width:21px;height:19px;border-radius:5px;background:#4289c4;border:1px solid #b5d5e7}
-.player.me .player-head{border:3px solid #69d7ff}
-.player-label{
-  position:absolute;top:-17px;white-space:nowrap;font-size:10px;
-  font-weight:900;color:white;text-shadow:0 2px 3px black
-}
-#worldHint{
-  position:absolute;bottom:10px;left:10px;z-index:10;
-  padding:8px 11px;border-radius:7px;background:#07100dcc;
-  font-size:11px;color:#e9e2c8;pointer-events:none
-}
-.game-bottom{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.control-help{font-size:11px;color:var(--muted)}
-#taskPanel{min-height:100px}
-#taskPanel h3{color:var(--gold);margin:0 0 8px}
-#taskPanel p{font-size:13px;color:#c6d0d0;line-height:1.4;margin:5px 0}
-.side-panel{display:flex;flex-direction:column;gap:10px;overflow-y:auto;min-height:0}
-.side-panel h3{margin:0 0 10px;font-size:14px;color:var(--gold)}
-.role-box{background:#30291b;border:1px solid #8c7040;border-radius:8px;padding:12px}
+   GAME
+############## */
+#game{height:100vh;display:flex;flex-direction:column;padding:9px;gap:9px}
+.header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;background:#17252b;border:1px solid #35474e;border-radius:10px;padding:10px 13px}
+.header-title{font-weight:1000;color:#edc36f;letter-spacing:1px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:9px;flex:1;min-height:0}
+.main{display:flex;flex-direction:column;gap:9px;min-height:0}
+#viewport{position:relative;flex:1;min-height:300px;overflow:hidden;background:#123e31;border:2px solid #9c824e;border-radius:12px}
+#world{position:absolute;width:1500px;height:1000px;background-color:#174c3a;background-image:linear-gradient(#ffffff0b 2px,transparent 2px),linear-gradient(90deg,#ffffff0b 2px,transparent 2px);background-size:75px 75px;transform-origin:0 0}
+.boundary{position:absolute;inset:30px;border:5px solid #b99a5d;border-radius:20px;pointer-events:none}
+.rug{position:absolute;left:390px;top:280px;width:720px;height:430px;background:#283d35;border:5px solid #b99a5d;border-radius:22px}
+.wall{position:absolute;background:#35443d;border:4px solid #9b804b;border-radius:9px}
+.table{position:absolute;width:150px;height:90px;border-radius:50%;background:radial-gradient(#2c875a,#105035);border:7px solid #98733c;display:grid;place-items:center;color:#e8d49c;font-weight:bold;font-size:12px;box-shadow:0 8px 14px #0008}
+.station{position:absolute;width:145px;height:105px;background:linear-gradient(145deg,#3b5150,#17282a);border:3px solid #d0ac60;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;box-shadow:0 7px 15px #0008;text-align:center}
+.station:hover{filter:brightness(1.25)}
+.station span{font-size:28px}
+.station strong{font-size:12px;color:#ffe5a0}
+.station small{font-size:10px;color:#b7c6c3}
+.deco{position:absolute;font-size:30px;pointer-events:none}
+.player{position:absolute;width:35px;height:44px;z-index:5;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.player-head{width:25px;height:25px;border-radius:50%;background:#e6c38d;border:2px solid white;color:#251b0e;display:grid;place-items:center;font-size:11px;font-weight:1000}
+.player-body{width:21px;height:19px;border-radius:5px;background:#468ec6;border:1px solid #c0e1f3}
+.player.me .player-head{border:3px solid #55d5ff}
+.player-label{position:absolute;top:-17px;white-space:nowrap;font-size:10px;font-weight:bold;color:white;text-shadow:0 2px 3px black}
+#worldHint{position:absolute;bottom:9px;left:9px;background:#06100dcc;padding:8px 10px;border-radius:7px;font-size:11px;z-index:10;pointer-events:none}
+.side{display:flex;flex-direction:column;gap:9px;overflow-y:auto;min-height:0}
+.side h3{font-size:13px;color:#edc36f;margin:0 0 10px}
+.role-card{padding:12px;border:1px solid #887043;background:#30291c;border-radius:9px}
 .role-name{font-size:21px;font-weight:1000}
-.role-description{font-size:12px;line-height:1.5;color:#d7cdb5}
-.score-line{display:flex;justify-content:space-between;border-bottom:1px solid #30404a;padding:7px 0;font-size:12px}
-#chatMessages{height:140px;overflow-y:auto;background:#081116;border:1px solid #2c3d45;border-radius:8px;padding:8px;font-size:12px}
+.role-description{font-size:12px;color:#ddd2b8;line-height:1.5;margin-top:6px}
+.score-row{display:flex;justify-content:space-between;border-bottom:1px solid #35474e;padding:7px 0;font-size:12px}
+#chat{height:135px;overflow:auto;background:#091317;border:1px solid #35474e;border-radius:8px;padding:8px;font-size:12px}
 .chat-line{margin-bottom:7px;overflow-wrap:anywhere}
-.chat-name{color:var(--gold);font-weight:900}
+.chat-name{color:#edc36f;font-weight:bold}
 .chat-form{display:flex;gap:5px;margin-top:7px}
 .chat-form input{min-width:0;padding:9px}
 .chat-form button{padding:8px 12px}
-.ability-buttons{display:grid;gap:7px}
+.task-info{font-size:12px;color:#c7d2cf;line-height:1.5}
+.task-info h3{margin:0 0 7px}
+#taskBar{height:9px;background:#091317;border-radius:10px;overflow:hidden;margin-top:8px}
+#taskProgress{height:100%;width:0;background:#53d59b;transition:width .2s}
 
 /* ##############
    MODAL
-   ############## */
-#modalBackdrop{
-  position:fixed;inset:0;background:#000b;z-index:100;
-  display:grid;place-items:center;padding:15px
-}
-.modal{
-  width:min(460px,100%);max-height:85vh;overflow:auto;
-  padding:22px;border:1px solid #8a754b;border-radius:13px;
-  background:#17262c;box-shadow:0 20px 70px #000c
-}
-.modal h2{margin-top:0;color:var(--gold)}
-.modal p{font-size:14px;line-height:1.5;color:#d1d9d8}
+############## */
+#modalBackdrop{position:fixed;inset:0;background:#000c;z-index:50;display:grid;place-items:center;padding:15px}
+.modal{width:min(450px,100%);max-height:85vh;overflow:auto;padding:22px;background:#18282d;border:1px solid #a38a55;border-radius:13px;box-shadow:0 20px 70px #000b}
+.modal h2{margin-top:0;color:#edc36f}
+.modal p{font-size:14px;line-height:1.5;color:#d0d9d6}
 .modal-actions{display:flex;gap:8px;margin-top:15px}
 .modal-actions button{flex:1}
-.choice-list{display:grid;gap:7px;margin-top:12px}
-.choice-list button{width:100%}
+.choices{display:grid;gap:8px;margin-top:12px}
+.choices button{width:100%}
 @media(max-width:850px){
-  body{overflow:auto}
-  #gameScreen{height:auto;min-height:100vh}
-  .game-layout{grid-template-columns:1fr}
-  #worldViewport{height:55vh;flex:none}
-  .side-panel{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));overflow:visible}
+ body{overflow:auto}
+ #game{height:auto;min-height:100vh}
+ .layout{grid-template-columns:1fr}
+ #viewport{height:55vh;flex:none}
+ .side{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));overflow:visible}
 }
 </style>
 </head>
+
 <body>
 
 <!-- ##############
      MAIN MENU
-     ############## -->
-<section id="menuScreen">
-  <div class="menu-card">
-    <div class="logo">WHO'S THE<br><span>CHEATER?</span></div>
-    <p>Enter the casino. Complete activities. Find the Cheater before they fool everyone.</p>
-    <input id="playerName" maxlength="16" placeholder="Your player name">
-    <button class="primary" onclick="createRoom()">CREATE ROOM</button>
-    <div style="height:12px"></div>
-    <input id="joinCode" maxlength="6" placeholder="SIX-CHARACTER ROOM CODE">
-    <button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
-    <div id="menuStatus"></div>
-    <p class="small">3–8 players · Private rooms · Multiplayer · No Firebase</p>
-  </div>
+############## -->
+<section id="menu">
+ <div class="menu-card">
+  <div class="logo">WHO'S THE<br><span>CHEATER?</span></div>
+  <p>Welcome to the casino. Complete activities, investigate suspicious guests and find the Cheater.</p>
+  <input id="playerName" maxlength="16" placeholder="Your player name">
+  <button class="primary" onclick="createRoom()">CREATE ROOM</button>
+  <input id="joinCode" maxlength="6" placeholder="SIX-CHARACTER ROOM CODE">
+  <button class="secondary" onclick="joinRoom()">JOIN ROOM</button>
+  <div id="menuStatus"></div>
+  <p class="small">3–8 players · Multiplayer · Private rooms</p>
+ </div>
 </section>
 
 <!-- ##############
      LOBBY
-     ############## -->
-<section id="lobbyScreen" class="hidden">
-  <div class="lobby-header">
-    <div>
-      <div class="game-title">CASINO LOBBY</div>
-      <p class="muted small">Waiting for players</p>
-    </div>
-    <div>
-      <div class="small muted">ROOM CODE</div>
-      <div id="displayRoomCode" class="room-code">------</div>
-    </div>
+############## -->
+<section id="lobby" class="hidden">
+ <div class="lobby-top">
+  <div><h2 class="gold">CASINO LOBBY</h2><p class="muted">Waiting for players to join</p></div>
+  <div><div class="muted small">ROOM CODE</div><div class="room-code" id="roomCodeDisplay">------</div></div>
+ </div>
+ <div class="panel">
+  <h2>Players</h2>
+  <div id="lobbyPlayers" class="player-grid"></div>
+  <div class="lobby-actions">
+   <button class="secondary" onclick="copyCode()">COPY ROOM CODE</button>
+   <button class="primary hidden" id="startButton" onclick="startGame()">START GAME</button>
+   <button class="danger" onclick="leaveGame()">LEAVE ROOM</button>
   </div>
-  <div class="panel">
-    <h2>Players</h2>
-    <div id="lobbyPlayers" class="player-list"></div>
-    <div class="lobby-actions">
-      <button class="secondary" onclick="copyRoomCode()">COPY CODE</button>
-      <button class="primary hidden" id="startButton" onclick="startGame()">START GAME</button>
-      <button class="danger" onclick="leaveGame()">LEAVE ROOM</button>
-    </div>
-    <p id="lobbyMessage" class="muted small">At least 3 players are required.</p>
-  </div>
+  <p id="lobbyInfo" class="muted">Waiting for at least 3 players.</p>
+ </div>
 </section>
 
 <!-- ##############
-     GAME
-     ############## -->
-<section id="gameScreen" class="hidden">
-  <header class="game-header">
-    <div class="game-title">WHO'S THE CHEATER?</div>
-    <div class="small">ROOM <strong id="gameRoomCode" class="gold"></strong></div>
-    <div class="small">ROUND <strong id="roundNumber" class="gold">1</strong></div>
-    <div class="small">BALANCE <strong id="myBalance" class="gold">0</strong></div>
-    <button class="danger" onclick="leaveGame()">LEAVE</button>
-  </header>
+     GAME SCREEN
+############## -->
+<section id="game" class="hidden">
+ <header class="header">
+  <div class="header-title">WHO'S THE CHEATER?</div>
+  <div class="small">ROOM <b id="gameRoom" class="gold"></b></div>
+  <div class="small">TIME <b id="timer" class="gold">05:00</b></div>
+  <div class="small">CREDITS <b id="balance" class="gold">500</b></div>
+  <button class="danger" onclick="leaveGame()">LEAVE</button>
+ </header>
 
-  <div class="game-layout">
-    <div class="main-area">
-      <div id="worldViewport">
-        <div id="world">
-          <div class="floor-border"></div>
-          <div class="floor-rug" style="left:480px;top:350px;width:600px;height:380px"></div>
-          <div class="room-wall" style="left:70px;top:90px;width:300px;height:130px"></div>
-          <div class="room-wall" style="left:1230px;top:90px;width:270px;height:130px"></div>
-          <div class="room-wall" style="left:70px;top:830px;width:300px;height:150px"></div>
-          <div class="room-wall" style="left:1230px;top:830px;width:270px;height:150px"></div>
+ <div class="layout">
+  <div class="main">
+   <div id="viewport">
+    <div id="world">
+     <div class="boundary"></div>
+     <div class="rug"></div>
+     <div class="wall" style="left:65px;top:70px;width:260px;height:135px"></div>
+     <div class="wall" style="left:1175px;top:70px;width:260px;height:135px"></div>
+     <div class="wall" style="left:65px;top:795px;width:260px;height:135px"></div>
+     <div class="wall" style="left:1175px;top:795px;width:260px;height:135px"></div>
 
-          <div class="table" style="left:520px;top:420px">CASINO TABLE</div>
-          <div class="table" style="left:800px;top:420px">CASINO TABLE</div>
-          <div class="table" style="left:520px;top:620px">CASINO TABLE</div>
-          <div class="table" style="left:800px;top:620px">CASINO TABLE</div>
+     <div class="table" style="left:460px;top:360px">CASINO TABLE</div>
+     <div class="table" style="left:700px;top:360px">CASINO TABLE</div>
+     <div class="table" style="left:460px;top:550px">CASINO TABLE</div>
+     <div class="table" style="left:700px;top:550px">CASINO TABLE</div>
 
-          <div class="station" style="left:145px;top:105px" onclick="visitStation('vault')">
-            <span class="emoji">🔐</span><strong>CODE VAULT</strong><small>Crack the code</small>
-          </div>
-          <div class="station" style="left:1275px;top:105px" onclick="visitStation('memory')">
-            <span class="emoji">🧠</span><strong>MEMORY ROOM</strong><small>Remember the sequence</small>
-          </div>
-          <div class="station" style="left:145px;top:850px" onclick="visitStation('archive')">
-            <span class="emoji">🎴</span><strong>CARD ARCHIVE</strong><small>Find the symbol</small>
-          </div>
-          <div class="station" style="left:1275px;top:850px" onclick="visitStation('reaction')">
-            <span class="emoji">⚡</span><strong>REACTION DESK</strong><small>Test your timing</small>
-          </div>
+     <div class="station" style="left:115px;top:85px" onclick="visitStation('vault')"><span>🔐</span><strong>CODE VAULT</strong><small>Crack the code</small></div>
+     <div class="station" style="left:1215px;top:85px" onclick="visitStation('memory')"><span>🧠</span><strong>MEMORY ROOM</strong><small>Remember the sequence</small></div>
+     <div class="station" style="left:115px;top:810px" onclick="visitStation('archive')"><span>🎴</span><strong>CARD ARCHIVE</strong><small>Find the symbol</small></div>
+     <div class="station" style="left:1215px;top:810px" onclick="visitStation('reaction')"><span>⚡</span><strong>REACTION DESK</strong><small>Test your timing</small></div>
 
-          <div class="decoration" style="left:420px;top:120px">🌴</div>
-          <div class="decoration" style="left:1100px;top:120px">🌴</div>
-          <div class="decoration" style="left:420px;top:900px">🌴</div>
-          <div class="decoration" style="left:1100px;top:900px">🌴</div>
-          <div class="decoration" style="left:760px;top:150px">💡</div>
-          <div class="decoration" style="left:760px;top:900px">💡</div>
-          <div id="playersLayer"></div>
-        </div>
-        <div id="worldHint">WASD / ARROW KEYS to move · Click stations to interact</div>
-      </div>
-
-      <div class="game-bottom">
-        <div class="control-help">WASD / ARROWS: Move · E: Interact · SPACE: Use ability</div>
-        <div class="control-help" id="connectionStatus">Connected</div>
-      </div>
-
-      <div class="panel" id="taskPanel">
-        <h3>Casino Floor</h3>
-        <p>Explore the casino and complete activities. Keep an eye on everyone.</p>
-      </div>
+     <div class="deco" style="left:370px;top:120px">🌴</div>
+     <div class="deco" style="left:1080px;top:120px">🌴</div>
+     <div class="deco" style="left:370px;top:850px">🌴</div>
+     <div class="deco" style="left:1080px;top:850px">🌴</div>
+     <div class="deco" style="left:720px;top:150px">💡</div>
+     <div class="deco" style="left:720px;top:870px">💡</div>
+     <div id="playersLayer"></div>
     </div>
+    <div id="worldHint">WASD / ARROWS to move · E to interact · SPACE for ability</div>
+   </div>
 
-    <aside class="side-panel">
-      <div class="panel">
-        <h3>YOUR SECRET ROLE</h3>
-        <div class="role-box">
-          <div id="roleName" class="role-name">UNKNOWN</div>
-          <div id="roleDescription" class="role-description">Your role appears here.</div>
-        </div>
-        <p id="roleAbility" class="small gold"></p>
-      </div>
-
-      <div class="panel">
-        <h3>PLAYER BALANCES</h3>
-        <div id="scoreboard"></div>
-      </div>
-
-      <div class="panel">
-        <h3>CASINO CHAT</h3>
-        <div id="chatMessages"></div>
-        <form class="chat-form" onsubmit="sendChat(event)">
-          <input id="chatInput" maxlength="180" placeholder="Message...">
-          <button class="primary">SEND</button>
-        </form>
-      </div>
-
-      <div class="panel ability-buttons">
-        <h3>GAME ACTIONS</h3>
-        <button class="secondary" onclick="openPlayerActions()">PLAYER ACTIONS</button>
-        <button class="secondary" onclick="requestMeeting()">CALL MEETING</button>
-        <button class="secondary" onclick="useSpecialAbility()">SPECIAL ABILITY</button>
-      </div>
-    </aside>
+   <div class="task-info panel" id="taskInfo">
+    <h3>CASINO FLOOR</h3>
+    Explore the casino and complete activities. Watch the other players.
+    <div id="taskBar"><div id="taskProgress"></div></div>
+   </div>
   </div>
+
+  <aside class="side">
+   <div class="panel">
+    <h3>YOUR SECRET ROLE</h3>
+    <div class="role-card">
+     <div id="roleName" class="role-name">UNKNOWN</div>
+     <div id="roleDescription" class="role-description"></div>
+    </div>
+    <p id="roleAbility" class="small gold"></p>
+   </div>
+
+   <div class="panel">
+    <h3>PLAYER BALANCES</h3>
+    <div id="scoreboard"></div>
+   </div>
+
+   <div class="panel">
+    <h3>CASINO CHAT</h3>
+    <div id="chat"></div>
+    <form class="chat-form" onsubmit="sendChat(event)">
+     <input id="chatInput" maxlength="160" placeholder="Message...">
+     <button class="primary">SEND</button>
+    </form>
+   </div>
+
+   <div class="panel">
+    <h3>GAME ACTIONS</h3>
+    <div class="choices">
+     <button class="secondary" onclick="openPlayerActions()">PLAYER ACTIONS</button>
+     <button class="secondary" onclick="callMeeting()">CALL MEETING</button>
+     <button class="secondary" onclick="useAbility()">SPECIAL ABILITY</button>
+    </div>
+   </div>
+  </aside>
+ </div>
 </section>
 
 <!-- ##############
      MODAL
-     ############## -->
+############## -->
 <div id="modalBackdrop" class="hidden">
-  <div class="modal">
-    <h2 id="modalTitle"></h2>
-    <p id="modalText"></p>
-    <div id="modalExtra"></div>
-    <div class="modal-actions">
-      <button class="primary" onclick="closeModal()">CLOSE</button>
-    </div>
-  </div>
+ <div class="modal">
+  <h2 id="modalTitle"></h2>
+  <p id="modalText"></p>
+  <div id="modalExtra"></div>
+  <div class="modal-actions"><button class="primary" onclick="closeModal()">CLOSE</button></div>
+ </div>
 </div>
 
 <script>
 /* ##############
-   CONFIGURATION
-   ############## */
+   CONFIG
+############## */
 const CONFIG={
-  minPlayers:3,
-  maxPlayers:8,
-  moveSpeed:4,
-  worldWidth:1600,
-  worldHeight:1100,
-  startingBalance:500,
-  taskReward:100,
-  turnRate:30,
-  heartbeat:5000
-};
-
-const ROLE_INFO={
-  Innocent:{
-    description:"You are an ordinary casino guest. Complete activities, watch other players and identify the Cheater.",
-    ability:"Complete activities to earn fictional casino credits."
-  },
-  Security:{
-    description:"You are casino security. Investigate suspicious guests and work out who is cheating.",
-    ability:"Investigate a player to receive a private security report."
-  },
-  Cheater:{
-    description:"You are the Cheater. Blend in, mislead other players and use your X-Ray Specs to gather secret information.",
-    ability:"X-RAY SPECS: Secretly scan another player's role."
-  }
+ minPlayers:3,
+ maxPlayers:8,
+ worldWidth:1500,
+ worldHeight:1000,
+ moveSpeed:4,
+ startingCredits:500,
+ taskReward:100,
+ gameDuration:300
 };
 
 const STATIONS={
-  vault:{name:"Code Vault",x:220,y:180},
-  memory:{name:"Memory Room",x:1350,y:180},
-  archive:{name:"Card Archive",x:220,y:900},
-  reaction:{name:"Reaction Desk",x:1350,y:900}
+ vault:{name:"Code Vault",x:185,y:140},
+ memory:{name:"Memory Room",x:1285,y:140},
+ archive:{name:"Card Archive",x:185,y:860},
+ reaction:{name:"Reaction Desk",x:1285,y:860}
+};
+
+const ROLES={
+ Guest:{
+  description:"You are an ordinary casino guest. Complete activities, watch the other players and identify the Cheater.",
+  ability:"Complete activities to earn credits."
+ },
+ Security:{
+  description:"You are casino security. Investigate suspicious guests and work out who the Cheater is.",
+  ability:"Investigate another player once per round."
+ },
+ Cheater:{
+  description:"You are the Cheater. Blend in, mislead the guests and avoid being caught.",
+  ability:"X-RAY SPECS: Scan another player's role once per round."
+ }
 };
 
 /* ##############
    STATE
-   ############## */
+############## */
 let peer=null;
 let hostConnection=null;
 let connections=new Map();
 let isHost=false;
-let roomCode="";
 let myId="";
 let myName="";
+let roomCode="";
 let myRole="";
-let gameState=null;
+let state=null;
 let gameStarted=false;
+let position={x:750,y:500};
+let keys={};
 let completedTasks=new Set();
-let keyState={};
+let currentTask=null;
 let lastMoveSent=0;
-let lastAbility=0;
-let lastMeeting=0;
-let investigationUsed=false;
-let xrayUsed=false;
-let localPosition={x:800,y:550};
-let activeTask=null;
-let votes={};
-let meetingData=null;
-let heartbeatTimer=null;
+let abilityUsed=false;
+let meetingCooldown=0;
+let gameEndAt=0;
+let gameTimer=null;
+let voteState=null;
+let taskChallenges={};
 
 /* ##############
-   HELPERS
-   ############## */
+   BASIC HELPERS
+############## */
 const $=id=>document.getElementById(id);
-const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
-const randomCode=()=>Array.from({length:6},()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[rand(0,31)]).join("");
-
+const rand=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const cleanName=s=>String(s||"Player").replace(/[<>]/g,"").slice(0,16);
+const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function showScreen(id){
-  ["menuScreen","lobbyScreen","gameScreen"].forEach(x=>$(x).classList.add("hidden"));
-  $(id).classList.remove("hidden");
+ ["menu","lobby","game"].forEach(s=>$(s).classList.add("hidden"));
+ $(id).classList.remove("hidden");
 }
-function status(text){$("menuStatus").textContent=text}
-function escapeHTML(s){
-  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function setStatus(s){$("menuStatus").textContent=s}
+function showModal(title,text,html=""){
+ $("modalTitle").textContent=title;
+ $("modalText").textContent=text;
+ $("modalExtra").innerHTML=html;
+ $("modalBackdrop").classList.remove("hidden");
 }
-function modal(title,text,extra=""){
-  $("modalTitle").textContent=title;
-  $("modalText").textContent=text;
-  $("modalExtra").innerHTML=extra;
-  $("modalBackdrop").classList.remove("hidden");
+function closeModal(){
+ $("modalBackdrop").classList.add("hidden");
+ $("modalExtra").innerHTML="";
 }
-function closeModal(){$("modalBackdrop").classList.add("hidden");$("modalExtra").innerHTML=""}
+function randomCode(){
+ const chars="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+ return Array.from({length:6},()=>chars[rand(0,chars.length-1)]).join("");
+}
 
 /* ##############
    PEER OPEN
-   ############## */
+############## */
 function peerOpen(id=null){
-  return new Promise((resolve,reject)=>{
-    if(typeof Peer==="undefined"){
-      reject(new Error("PeerJS did not load. Check your internet connection."));
-      return;
-    }
-    const options={
-      debug:1,
-      config:{
-        iceServers:[
-          {urls:"stun:stun.l.google.com:19302"},
-          {
-            urls:[
-              "turn:eu-0.turn.peerjs.com:3478",
-              "turn:us-0.turn.peerjs.com:3478"
-            ],
-            username:"peerjs",
-            credential:"peerjsp"
-          }
-        ],
-        sdpSemantics:"unified-plan"
-      }
-    };
-    let p;
-    try{p=id?new Peer(id,options):new Peer(options)}
-    catch(e){reject(e);return}
-    let finished=false;
-    const timeout=setTimeout(()=>{
-      if(finished)return;
-      finished=true;p.destroy();
-      reject(new Error("Connection timed out."));
-    },25000);
-    p.on("open",()=>{
-      if(finished)return;
-      finished=true;clearTimeout(timeout);resolve(p);
-    });
-    p.on("error",e=>{
-      console.error("PeerJS:",e);
-      if(!finished){
-        finished=true;clearTimeout(timeout);reject(e);
-      }
-    });
+ return new Promise((resolve,reject)=>{
+  if(typeof Peer==="undefined"){
+   reject(new Error("PeerJS failed to load. Check your internet connection."));
+   return;
+  }
+  const options={
+   debug:1,
+   config:{
+    iceServers:[
+     {urls:"stun:stun.l.google.com:19302"},
+     {
+      urls:["turn:eu-0.turn.peerjs.com:3478","turn:us-0.turn.peerjs.com:3478"],
+      username:"peerjs",
+      credential:"peerjsp"
+     }
+    ],
+    sdpSemantics:"unified-plan"
+   }
+  };
+  let p;
+  try{p=id?new Peer(id,options):new Peer(options)}
+  catch(e){reject(e);return}
+  let settled=false;
+  const timeout=setTimeout(()=>{
+   if(settled)return;
+   settled=true;
+   p.destroy();
+   reject(new Error("Connection timed out."));
+  },25000);
+  p.on("open",()=>{
+   if(settled)return;
+   settled=true;
+   clearTimeout(timeout);
+   resolve(p);
   });
+  p.on("error",e=>{
+   console.error("PeerJS error:",e);
+   if(!settled){
+    settled=true;
+    clearTimeout(timeout);
+    reject(e);
+   }
+  });
+ });
 }
 
 /* ##############
    CREATE ROOM
-   ############## */
+############## */
 async function createRoom(){
-  myName=$("playerName").value.trim().slice(0,16);
-  if(!myName){status("Enter a player name.");return}
-  status("Creating room...");
-  roomCode=randomCode();
-  try{
-    peer=await peerOpen("whos-cheater-"+roomCode.toLowerCase());
-    isHost=true;myId=peer.id;
-    gameState={
-      roomCode,
-      hostId:myId,
-      started:false,
-      round:1,
-      players:{},
-      messages:[],
-      taskRecords:{},
-      meeting:null,
-      createdAt:Date.now()
-    };
-    gameState.players[myId]={
-      id:myId,name:myName,role:"Unassigned",
-      balance:CONFIG.startingBalance,
-      x:800,y:550,connected:true,completed:0
-    };
-    setupHost();
-    enterLobby();
-  }catch(e){
-    console.error(e);
-    status("Room creation failed: "+e.message);
-  }
+ myName=cleanName($("playerName").value.trim());
+ if(!myName){setStatus("Enter a player name first.");return}
+ setStatus("Creating room...");
+ roomCode=randomCode();
+ try{
+  peer=await peerOpen("whos-cheater-"+roomCode.toLowerCase());
+  isHost=true;
+  myId=peer.id;
+  state={
+   roomCode,
+   hostId:myId,
+   started:false,
+   round:1,
+   seconds:CONFIG.gameDuration,
+   players:{},
+   messages:[],
+   tasks:{},
+   meeting:null,
+   gameOver:false
+  };
+  state.players[myId]=makePlayer(myId,myName,750,500);
+  installHostNetwork();
+  enterLobby();
+ }catch(e){
+  console.error(e);
+  setStatus("Couldn't create room: "+e.message);
+ }
 }
 
 /* ##############
    JOIN ROOM
-   ############## */
+############## */
 async function joinRoom(){
-  myName=$("playerName").value.trim().slice(0,16);
-  roomCode=$("joinCode").value.trim().toUpperCase();
-  if(!myName){status("Enter a player name.");return}
-  if(!/^[A-Z0-9]{6}$/.test(roomCode)){status("Enter a valid room code.");return}
-  status("Connecting...");
-  try{
-    peer=await peerOpen();
-    isHost=false;myId=peer.id;
-    hostConnection=peer.connect("whos-cheater-"+roomCode.toLowerCase(),{reliable:true});
-    const ok=await waitConnection(hostConnection);
-    if(!ok)throw new Error("Could not reach the room host.");
-    hostConnection.on("data",handleHostMessage);
-    hostConnection.on("close",()=>{
-      $("connectionStatus").textContent="Disconnected from host";
-      modal("Connection lost","The host connection closed.");
-    });
-    hostConnection.send({type:"JOIN",name:myName});
-  }catch(e){
-    console.error(e);
-    if(peer)peer.destroy();
-    peer=null;
-    status("Join failed: "+e.message);
-  }
-}
-function waitConnection(conn){
-  return new Promise(resolve=>{
-    let done=false;
-    const finish=v=>{if(done)return;done=true;clearTimeout(timer);resolve(v)};
-    const timer=setTimeout(()=>finish(false),18000);
-    conn.on("open",()=>finish(true));
-    conn.on("error",()=>finish(false));
+ myName=cleanName($("playerName").value.trim());
+ roomCode=$("joinCode").value.trim().toUpperCase();
+ if(!myName){setStatus("Enter a player name first.");return}
+ if(!/^[A-Z0-9]{6}$/.test(roomCode)){setStatus("Enter a valid six-character code.");return}
+ setStatus("Connecting to host...");
+ try{
+  peer=await peerOpen();
+  isHost=false;
+  myId=peer.id;
+  hostConnection=peer.connect("whos-cheater-"+roomCode.toLowerCase(),{reliable:true});
+  if(!await waitForConnection(hostConnection))throw new Error("Could not connect to the room host.");
+  hostConnection.on("data",handleHostData);
+  hostConnection.on("close",()=>{
+   $("connectionStatus")?.textContent;
+   if(gameStarted)showModal("Connection lost","The host disconnected. Return to the menu and try another room.");
   });
+  hostConnection.send({type:"JOIN",name:myName});
+ }catch(e){
+  console.error(e);
+  if(peer)peer.destroy();
+  peer=null;
+  setStatus("Couldn't join: "+e.message);
+ }
+}
+function waitForConnection(conn){
+ return new Promise(resolve=>{
+  let done=false;
+  const timer=setTimeout(()=>finish(false),18000);
+  function finish(v){if(done)return;done=true;clearTimeout(timer);resolve(v)}
+  conn.on("open",()=>finish(true));
+  conn.on("error",()=>finish(false));
+ });
+}
+function makePlayer(id,name,x,y){
+ return {id,name,role:"Unassigned",credits:CONFIG.startingCredits,x,y,connected:true,tasks:0,alive:true};
 }
 
 /* ##############
-   HOST CONNECTIONS
-   ############## */
-function setupHost(){
-  peer.on("connection",conn=>{
-    conn.on("open",()=>connections.set(conn.peer,conn));
-    conn.on("data",data=>handleClientMessage(conn.peer,data));
-    conn.on("close",()=>{
-      connections.delete(conn.peer);
-      if(gameState?.players[conn.peer]){
-        gameState.players[conn.peer].connected=false;
-        broadcastState();
-        updateLobby();
-      }
-    });
+   HOST NETWORK
+############## */
+function installHostNetwork(){
+ peer.on("connection",conn=>{
+  conn.on("open",()=>connections.set(conn.peer,conn));
+  conn.on("data",data=>handleClientData(conn.peer,data));
+  conn.on("close",()=>{
+   connections.delete(conn.peer);
+   if(state?.players[conn.peer]){
+    state.players[conn.peer].connected=false;
+    broadcastState();
+    updateLobby();
+   }
   });
+ });
 }
-function sendPlayer(id,data){
-  const c=connections.get(id);
-  if(c?.open)c.send(data);
+function sendTo(id,data){
+ const c=connections.get(id);
+ if(c?.open)c.send(data);
 }
 function broadcast(data){
-  for(const c of connections.values())if(c.open)c.send(data);
-}
-function broadcastState(){
-  if(!isHost||!gameState)return;
-  broadcast({type:"STATE",state:publicState()});
-  renderGame();
+ for(const c of connections.values())if(c.open)c.send(data);
 }
 function publicState(){
-  return {
-    roomCode:gameState.roomCode,
-    started:gameState.started,
-    round:gameState.round,
-    players:Object.fromEntries(Object.entries(gameState.players).map(([id,p])=>[
-      id,{
-        id:p.id,name:p.name,balance:p.balance,x:p.x,y:p.y,
-        connected:p.connected,completed:p.completed
-      }
-    ])),
-    messages:gameState.messages.slice(-40),
-    meeting:gameState.meeting
-  };
+ return {
+  roomCode:state.roomCode,
+  started:state.started,
+  round:state.round,
+  seconds:state.seconds,
+  gameOver:state.gameOver,
+  players:Object.fromEntries(Object.entries(state.players).map(([id,p])=>[id,{
+   id:p.id,name:p.name,credits:p.credits,x:p.x,y:p.y,
+   connected:p.connected,tasks:p.tasks,alive:p.alive
+  }])),
+  messages:state.messages.slice(-40),
+  meeting:state.meeting,
+  taskCount:state.taskCount||0
+ };
+}
+function broadcastState(){
+ if(!isHost||!state)return;
+ broadcast({type:"STATE",state:publicState()});
+ renderGame();
 }
 
 /* ##############
-   ENTER LOBBY
-   ############## */
-function enterLobby(){
-  showScreen("lobbyScreen");
-  $("displayRoomCode").textContent=roomCode;
+   CLIENT DATA
+############## */
+function handleHostData(data){
+ if(!data)return;
+ switch(data.type){
+  case "REJECT":
+   showModal("Room unavailable",data.reason);
+   break;
+  case "LOBBY":
+   state=data.state;
+   enterLobby();
+   break;
+  case "START":
+   state=data.state;
+   myRole=data.role;
+   startLocalGame();
+   break;
+  case "STATE":
+   state=data.state;
+   if(state.started&&!gameStarted)startLocalGame();
+   if(gameStarted)renderGame();
+   break;
+  case "CHAT":
+   appendChat(data.name,data.message);
+   break;
+  case "ABILITY":
+   showModal(data.title,data.message);
+   break;
+  case "MEETING":
+   openMeeting(data);
+   break;
+  case "MEETING_RESULT":
+   showModal("Meeting result",data.message);
+   break;
+  case "GAME_OVER":
+   gameStarted=false;
+   showModal("GAME OVER",data.message);
+   break;
+  case "TASK_RESULT":
+   showModal("Activity completed",data.message);
+   break;
+ }
+}
+
+/* ##############
+   HOST ACTIONS
+############## */
+function handleClientData(sender,data){
+ if(!isHost||!state||!data)return;
+ const p=state.players[sender];
+
+ if(data.type==="JOIN"){
+  if(state.started){sendTo(sender,{type:"REJECT",reason:"The game has already started."});return}
+  if(!p&&Object.keys(state.players).length>=CONFIG.maxPlayers){
+   sendTo(sender,{type:"REJECT",reason:"The room is full."});return;
+  }
+  if(!p){
+   state.players[sender]=makePlayer(sender,cleanName(data.name),rand(600,900),rand(400,600));
+  }else p.connected=true;
+  sendTo(sender,{type:"LOBBY",state});
   updateLobby();
+  broadcastState();
+  return;
+ }
+ if(!p||!p.connected||!p.alive)return;
+
+ if(data.type==="MOVE"&&state.started){
+  const x=Number(data.x),y=Number(data.y);
+  if(!Number.isFinite(x)||!Number.isFinite(y))return;
+  p.x=clamp(x,35,1465);
+  p.y=clamp(y,35,965);
+  broadcast({type:"POSITION",id:sender,x:p.x,y:p.y});
+  return;
+ }
+ if(data.type==="CHAT"){hostChat(p.name,data.message);return}
+ if(data.type==="TASK"){hostTask(sender,data.station,data.answer);return}
+ if(data.type==="INVESTIGATE"){hostInvestigate(sender,data.target);return}
+ if(data.type==="XRAY"){hostXray(sender,data.target);return}
+ if(data.type==="MEETING"){hostMeeting(sender);return}
+ if(data.type==="VOTE"){hostVote(sender,data.target);return}
+}
+
+/* ##############
+   LOBBY
+############## */
+function enterLobby(){
+ showScreen("lobby");
+ $("roomCodeDisplay").textContent=roomCode;
+ updateLobby();
 }
 function updateLobby(){
-  if(!gameState)return;
-  const players=Object.values(gameState.players);
-  $("lobbyPlayers").innerHTML=players.map(p=>`
-    <div class="player-card">
-      <div class="avatar">${escapeHTML(p.name[0].toUpperCase())}</div>
-      <div><strong>${escapeHTML(p.name)}</strong>
-      <div class="small muted">${p.connected?"Connected":"Disconnected"} ${p.id===myId?"· You":""}</div></div>
-    </div>`).join("");
-  $("startButton").classList.toggle("hidden",!isHost);
-  $("startButton").disabled=players.filter(p=>p.connected).length<CONFIG.minPlayers;
-  $("lobbyMessage").textContent=players.length+"/"+CONFIG.maxPlayers+" players. Three are required.";
+ if(!state)return;
+ const players=Object.values(state.players);
+ $("lobbyPlayers").innerHTML=players.map(p=>`
+  <div class="lobby-player">
+   <div class="avatar">${escapeHTML(p.name[0].toUpperCase())}</div>
+   <div><b>${escapeHTML(p.name)}</b><div class="small muted">${p.connected?"Connected":"Disconnected"} ${p.id===myId?"· You":""}</div></div>
+  </div>`).join("");
+ $("startButton").classList.toggle("hidden",!isHost);
+ $("startButton").disabled=players.filter(p=>p.connected).length<CONFIG.minPlayers;
+ $("lobbyInfo").textContent=players.length+" / "+CONFIG.maxPlayers+" players. At least three are required.";
 }
-async function copyRoomCode(){
-  try{await navigator.clipboard.writeText(roomCode);$("lobbyMessage").textContent="Copied room code."}
-  catch{$("lobbyMessage").textContent="Room code: "+roomCode}
-}
-
-/* ##############
-   CLIENT MESSAGE
-   ############## */
-function handleHostMessage(data){
-  if(!data)return;
-  switch(data.type){
-    case "REJECT":
-      modal("Room unavailable",data.reason);break;
-    case "LOBBY":
-      gameState=data.state;enterLobby();break;
-    case "START":
-      gameState=data.state;myRole=data.role;beginGame();break;
-    case "STATE":
-      gameState=data.state;
-      if(gameState.started&&!gameStarted)beginGame();
-      if(gameStarted)renderGame();
-      break;
-    case "CHAT":
-      appendChat(data.name,data.message);break;
-    case "TASK_RESULT":
-      modal("Activity completed",data.message);break;
-    case "ABILITY_RESULT":
-      modal(data.title,data.message);break;
-    case "MEETING":
-      openMeeting(data);break;
-    case "MEETING_RESULT":
-      modal("Meeting result",data.message);break;
-    case "GAME_OVER":
-      modal("Game over",data.message);break;
-    case "PONG":
-      break;
-  }
-}
-
-/* ##############
-   HOST MESSAGE VALIDATION
-   ############## */
-function handleClientMessage(sender,data){
-  if(!isHost||!gameState||!data)return;
-  const p=gameState.players[sender];
-
-  if(data.type==="JOIN"){
-    if(gameState.started){sendPlayer(sender,{type:"REJECT",reason:"The game has already started."});return}
-    if(!p&&Object.keys(gameState.players).length>=CONFIG.maxPlayers){
-      sendPlayer(sender,{type:"REJECT",reason:"The room is full."});return;
-    }
-    if(!p){
-      gameState.players[sender]={
-        id:sender,name:String(data.name||"Player").slice(0,16),
-        role:"Unassigned",balance:CONFIG.startingBalance,
-        x:rand(650,950),y:rand(450,650),connected:true,completed:0
-      };
-    }else p.connected=true;
-    sendPlayer(sender,{type:"LOBBY",state:gameState});
-    updateLobby();broadcastState();return;
-  }
-  if(!p||!p.connected)return;
-
-  if(data.type==="MOVE"&&gameState.started){
-    const x=Number(data.x),y=Number(data.y);
-    if(!Number.isFinite(x)||!Number.isFinite(y))return;
-    p.x=clamp(x,40,CONFIG.worldWidth-40);
-    p.y=clamp(y,40,CONFIG.worldHeight-40);
-    broadcast({type:"POSITION",id:sender,x:p.x,y:p.y});
-    return;
-  }
-
-  if(data.type==="CHAT"){
-    addChat(p.name,data.message);return;
-  }
-
-  if(data.type==="TASK"&&gameState.started){
-    completeHostTask(sender,data.station,data.answer);return;
-  }
-
-  if(data.type==="MEETING"&&gameState.started){
-    startMeeting(p.name,sender);return;
-  }
-
-  if(data.type==="VOTE"&&gameState.meeting){
-    castHostVote(sender,data.target);return;
-  }
-
-  if(data.type==="INVESTIGATE"&&p.role==="Security"){
-    const target=gameState.players[data.target];
-    if(!target)return;
-    sendPlayer(sender,{
-      type:"ABILITY_RESULT",
-      title:"Security report",
-      message:target.name+": "+(target.role==="Cheater"?"SUSPICIOUS ACTIVITY DETECTED":"No suspicious evidence found.")
-    });
-    return;
-  }
-
-  if(data.type==="XRAY"&&p.role==="Cheater"){
-    const target=gameState.players[data.target];
-    if(!target)return;
-    sendPlayer(sender,{
-      type:"ABILITY_RESULT",
-      title:"X-Ray Specs",
-      message:target.name+": "+(target.role==="Security"?"SECURITY":"NOT SECURITY")
-    });
-  }
+async function copyCode(){
+ try{
+  await navigator.clipboard.writeText(roomCode);
+  $("lobbyInfo").textContent="Room code copied.";
+ }catch{
+  $("lobbyInfo").textContent="Room code: "+roomCode;
+ }
 }
 
 /* ##############
    START GAME
-   ############## */
+############## */
 function startGame(){
-  if(!isHost)return;
-  const players=Object.values(gameState.players).filter(p=>p.connected);
-  if(players.length<CONFIG.minPlayers){modal("Not enough players","Three players are required.");return}
-  const shuffled=[...players].sort(()=>Math.random()-.5);
-  shuffled.forEach(p=>p.role="Innocent");
-  shuffled[0].role="Cheater";
-  if(players.length>=4)shuffled[1].role="Security";
-  gameState.started=true;
-  gameState.round=1;
-  gameState.meeting=null;
-  for(const p of players){
-    if(p.id===myId)myRole=p.role;
-    else sendPlayer(p.id,{type:"START",state:publicState(),role:p.role});
-  }
-  beginGame();
-  broadcastState();
+ if(!isHost)return;
+ const players=Object.values(state.players).filter(p=>p.connected);
+ if(players.length<CONFIG.minPlayers){showModal("Not enough players","You need at least three connected players.");return}
+ const shuffled=[...players].sort(()=>Math.random()-.5);
+ shuffled.forEach(p=>p.role="Guest");
+ shuffled[0].role="Cheater";
+ if(players.length>=4)shuffled[1].role="Security";
+ state.started=true;
+ state.gameOver=false;
+ state.seconds=CONFIG.gameDuration;
+ state.round=1;
+ state.taskCount=0;
+ state.meeting=null;
+ gameEndAt=Date.now()+CONFIG.gameDuration*1000;
+ for(const p of players){
+  if(p.id===myId)myRole=p.role;
+  else sendTo(p.id,{type:"START",state:publicState(),role:p.role});
+ }
+ startLocalGame();
+ broadcastState();
+ startHostTimer();
 }
-function beginGame(){
-  gameStarted=true;
-  showScreen("gameScreen");
-  $("gameRoomCode").textContent=roomCode;
-  $("roleName").textContent=myRole.toUpperCase();
-  $("roleDescription").textContent=ROLE_INFO[myRole].description;
-  $("roleAbility").textContent=ROLE_INFO[myRole].ability;
-  $("roleName").style.color=myRole==="Cheater"?"#f08080":myRole==="Security"?"#75c6ff":"#73e0a8";
-  completedTasks.clear();
-  investigationUsed=false;xrayUsed=false;
-  renderGame();
-  startHeartbeat();
-  modal("Your secret role: "+myRole,ROLE_INFO[myRole].description);
+function startLocalGame(){
+ gameStarted=true;
+ showScreen("game");
+ $("gameRoom").textContent=roomCode;
+ $("roleName").textContent=myRole.toUpperCase();
+ $("roleDescription").textContent=ROLES[myRole].description;
+ $("roleAbility").textContent=ROLES[myRole].ability;
+ $("roleName").style.color=myRole==="Cheater"?"#f08080":myRole==="Security"?"#75c6ff":"#73e0a8";
+ completedTasks.clear();
+ abilityUsed=false;
+ $("chat").innerHTML="";
+ $("taskInfo").innerHTML='<h3>CASINO FLOOR</h3>Explore the casino and complete activities. Watch the other players.<div id="taskBar"><div id="taskProgress"></div></div>';
+ if(state.players[myId]){
+  position.x=state.players[myId].x;
+  position.y=state.players[myId].y;
+ }
+ renderGame();
+ showModal("YOUR SECRET ROLE: "+myRole,ROLES[myRole].description);
+ if(!gameTimer){
+  gameTimer=setInterval(()=>{
+   if(gameStarted)updateTimer();
+  },500);
+ }
+}
+function startHostTimer(){
+ if(!isHost)return;
+ clearInterval(gameTimer);
+ gameTimer=setInterval(()=>{
+  if(!state.started)return;
+  state.seconds=Math.max(0,Math.ceil((gameEndAt-Date.now())/1000));
+  broadcast({type:"TIMER",seconds:state.seconds});
+  if(state.seconds<=0){
+   if(state.players[Object.keys(state.players).find(id=>state.players[id].role==="Cheater")]?.alive){
+    endGame("The Cheater survived until closing time! The Cheater wins.");
+   }
+  }
+ },1000);
 }
 
 /* ##############
-   GAME RENDER
-   ############## */
+   TIMER
+############## */
+function updateTimer(){
+ if(!state)return;
+ const seconds=state.seconds||0;
+ $("timer").textContent=String(Math.floor(seconds/60)).padStart(2,"0")+":"+String(seconds%60).padStart(2,"0");
+}
+
+/* ##############
+   RENDER GAME
+############## */
 function renderGame(){
-  if(!gameState)return;
-  $("roundNumber").textContent=gameState.round;
-  const players=Object.values(gameState.players);
-  $("scoreboard").innerHTML=players.sort((a,b)=>b.balance-a.balance).map(p=>`
-    <div class="score-line"><span>${escapeHTML(p.name)}</span>
-    <strong class="gold">${p.balance}</strong></div>`).join("");
-  const mine=gameState.players[myId];
-  if(mine)$("myBalance").textContent=mine.balance;
-  renderPlayers();
-  if(gameState.messages){
-    const box=$("chatMessages");
-    if(!box.dataset.loaded){
-      box.innerHTML="";
-      gameState.messages.forEach(m=>appendChat(m.name,m.message));
-      box.dataset.loaded="1";
-    }
-  }
+ if(!state)return;
+ $("gameRoom").textContent=roomCode;
+ updateTimer();
+ const players=Object.values(state.players);
+ $("scoreboard").innerHTML=players.sort((a,b)=>b.credits-a.credits).map(p=>`
+  <div class="score-row"><span>${escapeHTML(p.name)}</span><b class="gold">${p.credits}</b></div>`).join("");
+ if(state.players[myId])$("balance").textContent=state.players[myId].credits;
+ renderPlayers();
+ const total=players.reduce((n,p)=>n+(p.tasks||0),0);
+ const progress=Math.min(100,total/(players.length*3)*100);
+ const bar=$("taskProgress");
+ if(bar)bar.style.width=progress+"%";
 }
 function renderPlayers(){
-  const layer=$("playersLayer");
-  if(!layer||!gameState)return;
-  layer.innerHTML="";
-  Object.values(gameState.players).filter(p=>p.connected).forEach(p=>{
-    const el=document.createElement("div");
-    el.className="player"+(p.id===myId?" me":"");
-    el.style.left=p.x+"px";el.style.top=p.y+"px";
-    el.innerHTML=`<div class="player-label">${escapeHTML(p.name)}</div><div class="player-head">${escapeHTML(p.name[0].toUpperCase())}</div><div class="player-body"></div>`;
-    layer.appendChild(el);
-  });
-  updateCamera();
+ if(!state)return;
+ const layer=$("playersLayer");
+ layer.innerHTML="";
+ Object.values(state.players).filter(p=>p.connected&&p.alive).forEach(p=>{
+  const el=document.createElement("div");
+  el.className="player"+(p.id===myId?" me":"");
+  el.style.left=p.x+"px";
+  el.style.top=p.y+"px";
+  el.innerHTML=`<div class="player-label">${escapeHTML(p.name)}</div><div class="player-head">${escapeHTML(p.name[0].toUpperCase())}</div><div class="player-body"></div>`;
+  layer.appendChild(el);
+ });
+ updateCamera();
 }
 
 /* ##############
    CAMERA
-   ############## */
+############## */
 function updateCamera(){
-  const viewport=$("worldViewport");
-  const world=$("world");
-  if(!viewport||!world)return;
-  const scale=Math.min(viewport.clientWidth/CONFIG.worldWidth,viewport.clientHeight/CONFIG.worldHeight,1);
-  const x=clamp(localPosition.x*scale-viewport.clientWidth/2,-(CONFIG.worldWidth*scale-viewport.clientWidth),0);
-  const y=clamp(localPosition.y*scale-viewport.clientHeight/2,-(CONFIG.worldHeight*scale-viewport.clientHeight),0);
-  world.style.transform=`translate(${x}px,${y}px) scale(${scale})`;
+ const viewport=$("viewport"),world=$("world");
+ if(!viewport||!world)return;
+ const scale=Math.min(viewport.clientWidth/CONFIG.worldWidth,viewport.clientHeight/CONFIG.worldHeight,1);
+ const tx=viewport.clientWidth/2-position.x*scale;
+ const ty=viewport.clientHeight/2-position.y*scale;
+ world.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;
 }
-
-/* ##############
-   MOVEMENT
-   ############## */
-window.addEventListener("keydown",e=>{
-  const key=e.key.toLowerCase();
-  if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(key))e.preventDefault();
-  keyState[key]=true;
-  if(key==="e")interactNearest();
-  if(key===" ")useSpecialAbility();
-});
-window.addEventListener("keyup",e=>keyState[e.key.toLowerCase()]=false);
-function movementLoop(){
-  if(gameStarted&&document.activeElement.tagName!=="INPUT"){
-    let dx=0,dy=0;
-    if(keyState.w||keyState.arrowup)dy--;
-    if(keyState.s||keyState.arrowdown)dy++;
-    if(keyState.a||keyState.arrowleft)dx--;
-    if(keyState.d||keyState.arrowright)dx++;
-    if(dx||dy){
-      const len=Math.hypot(dx,dy);
-      localPosition.x=clamp(localPosition.x+dx/len*CONFIG.moveSpeed,40,1560);
-      localPosition.y=clamp(localPosition.y+dy/len*CONFIG.moveSpeed,40,1060);
-      const now=Date.now();
-      if(now-lastMoveSent>60){
-        lastMoveSent=now;
-        sendAction({type:"MOVE",x:localPosition.x,y:localPosition.y});
-        if(isHost){
-          gameState.players[myId].x=localPosition.x;
-          gameState.players[myId].y=localPosition.y;
-          broadcast({type:"POSITION",id:myId,x:localPosition.x,y:localPosition.y});
-        }
-      }
-      renderPlayers();
-    }
-  }
-  requestAnimationFrame(movementLoop);
-}
-requestAnimationFrame(movementLoop);
 window.addEventListener("resize",updateCamera);
 
 /* ##############
+   MOVEMENT
+############## */
+window.addEventListener("keydown",e=>{
+ const k=e.key.toLowerCase();
+ if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(k))e.preventDefault();
+ keys[k]=true;
+ if(k==="e")interactNearest();
+ if(k===" ")useAbility();
+});
+window.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
+function movementLoop(){
+ if(gameStarted&&document.activeElement.tagName!=="INPUT"){
+  let dx=0,dy=0;
+  if(keys.w||keys.arrowup)dy--;
+  if(keys.s||keys.arrowdown)dy++;
+  if(keys.a||keys.arrowleft)dx--;
+  if(keys.d||keys.arrowright)dx++;
+  if(dx||dy){
+   const length=Math.hypot(dx,dy);
+   position.x=clamp(position.x+dx/length*CONFIG.moveSpeed,35,1465);
+   position.y=clamp(position.y+dy/length*CONFIG.moveSpeed,35,965);
+   if(Date.now()-lastMoveSent>65){
+    lastMoveSent=Date.now();
+    sendAction({type:"MOVE",x:position.x,y:position.y});
+    if(isHost){
+     state.players[myId].x=position.x;
+     state.players[myId].y=position.y;
+     broadcast({type:"POSITION",id:myId,x:position.x,y:position.y});
+    }
+   }
+   renderPlayers();
+  }
+ }
+ requestAnimationFrame(movementLoop);
+}
+requestAnimationFrame(movementLoop);
+
+/* ##############
    ACTION ROUTER
-   ############## */
+############## */
 function sendAction(data){
-  if(isHost)handleClientMessage(myId,data);
-  else if(hostConnection?.open)hostConnection.send(data);
+ if(isHost)handleClientData(myId,data);
+ else if(hostConnection?.open)hostConnection.send(data);
 }
 
 /* ##############
-   INTERACTION
-   ############## */
+   STATION INTERACTIONS
+############## */
 function interactNearest(){
-  let nearest=null,best=100;
-  for(const [id,s] of Object.entries(STATIONS)){
-    const d=Math.hypot(localPosition.x-s.x,localPosition.y-s.y);
-    if(d<best){best=d;nearest=id}
-  }
-  if(nearest)visitStation(nearest);
-  else $("taskPanel").innerHTML="<h3>Nothing nearby</h3><p>Move closer to an activity station.</p>";
+ let closest=null,distance=150;
+ for(const [id,s] of Object.entries(STATIONS)){
+  const d=Math.hypot(position.x-s.x,position.y-s.y);
+  if(d<distance){distance=d;closest=id}
+ }
+ if(closest)visitStation(closest);
+ else setTaskInfo("Nothing nearby","Move closer to an activity station.");
+}
+function setTaskInfo(title,text,html=""){
+ $("taskInfo").innerHTML=`<h3>${title}</h3>${text}${html}`;
 }
 function visitStation(id){
-  if(!gameStarted)return;
-  const station=STATIONS[id];
-  if(Math.hypot(localPosition.x-station.x,localPosition.y-station.y)>190){
-    $("taskPanel").innerHTML=`<h3>${station.name}</h3><p>Move closer to this station to interact with it.</p>`;
-    return;
-  }
-  const key=id+":"+gameState.round;
-  if(completedTasks.has(key)){
-    $("taskPanel").innerHTML="<h3>Already completed</h3><p>Try another activity.</p>";
-    return;
-  }
-  activeTask=id;
-  if(id==="vault")vaultTask();
-  if(id==="memory")memoryTask();
-  if(id==="archive")archiveTask();
-  if(id==="reaction")reactionTask();
-}
-function taskUI(title,description,content){
-  $("taskPanel").innerHTML=`<h3>${title}</h3><p>${description}</p><div>${content}</div>`;
+ if(!gameStarted)return;
+ const s=STATIONS[id];
+ if(Math.hypot(position.x-s.x,position.y-s.y)>175){
+  setTaskInfo(s.name,"Move closer to this activity station.");
+  return;
+ }
+ const key=id+":"+state.round;
+ if(completedTasks.has(key)){
+  setTaskInfo("Already completed","You have already completed this activity this round.");
+  return;
+ }
+ currentTask=id;
+ if(id==="vault")vaultChallenge();
+ if(id==="memory")memoryChallenge();
+ if(id==="archive")archiveChallenge();
+ if(id==="reaction")reactionChallenge();
 }
 
 /* ##############
-   VAULT CHALLENGE
-   ############## */
-function vaultTask(){
-  const a=rand(2,9),b=rand(2,9),c=rand(2,9);
-  const answer=a+b*c;
-  const choices=[answer,answer+2,answer-3,answer+5].sort(()=>Math.random()-.5);
-  taskUI("🔐 Code Vault",`Solve the code: ${a} + ${b} × ${c}`,`<div class="choice-list">${choices.map(n=>`<button class="secondary" onclick="answerTask('vault',${n},${answer})">${n}</button>`).join("")}</div>`);
+   CODE VAULT
+############## */
+function vaultChallenge(){
+ const a=rand(2,9),b=rand(2,9),c=rand(2,9);
+ const answer=a+b*c;
+ const choices=[answer,answer+2,answer-3,answer+5].sort(()=>Math.random()-.5);
+ setTaskInfo("🔐 CODE VAULT",`Solve this code: <b>${a} + ${b} × ${c}</b>`,`
+  <div class="choices">${choices.map(n=>`<button class="secondary" onclick="answerTask('vault',${n},${answer})">${n}</button>`).join("")}</div>`);
 }
 
 /* ##############
-   MEMORY CHALLENGE
-   ############## */
-function memoryTask(){
-  const seq=Array.from({length:4},()=>rand(1,4));
-  taskUI("🧠 Memory Room","Remember the sequence. It will disappear shortly.",`<h2 id="sequenceDisplay" style="letter-spacing:12px;text-align:center">${seq.join(" ")}</h2>`);
-  setTimeout(()=>{
-    const el=$("sequenceDisplay");
-    if(!el||activeTask!=="memory")return;
-    el.textContent="???";
-    $("taskPanel").innerHTML+=`<input id="memoryAnswer" placeholder="Enter sequence e.g. 1234" maxlength="4"><button class="primary" onclick="submitMemory('${seq.join("")}')">SUBMIT</button>`;
-  },2200);
+   MEMORY ROOM
+############## */
+function memoryChallenge(){
+ const seq=Array.from({length:4},()=>rand(1,4)).join("");
+ setTaskInfo("🧠 MEMORY ROOM","Remember the sequence before it disappears.",`<h2 id="memorySequence" style="text-align:center;letter-spacing:12px">${seq.split("").join(" ")}</h2>`);
+ setTimeout(()=>{
+  const el=$("memorySequence");
+  if(!el||currentTask!=="memory")return;
+  el.textContent="???";
+  $("taskInfo").innerHTML+=`<input id="memoryInput" maxlength="4" placeholder="Enter the four numbers"><button class="primary" onclick="submitMemory('${seq}')">SUBMIT</button>`;
+ },2200);
 }
-function submitMemory(answer){
-  const value=$("memoryAnswer").value.replace(/\s/g,"");
-  finishTask("memory",value===answer);
-}
-
-/* ##############
-   ARCHIVE CHALLENGE
-   ############## */
-function archiveTask(){
-  const symbols=["♠","♥","♦","♣"];
-  const target=symbols[rand(0,3)];
-  const choices=[...symbols].sort(()=>Math.random()-.5);
-  taskUI("🎴 Card Archive","Find the matching symbol.",`<h1 style="text-align:center">${target}</h1><div class="choice-list">${choices.map(s=>`<button class="secondary" onclick="finishTask('archive',${JSON.stringify(s===target)})">${s}</button>`).join("")}</div>`);
+function submitMemory(correct){
+ const value=$("memoryInput")?.value.trim();
+ finishTask("memory",value===correct);
 }
 
 /* ##############
-   REACTION CHALLENGE
-   ############## */
-function reactionTask(){
-  const target=rand(1,9);
-  const choices=[target,rand(1,9),rand(1,9),rand(1,9)].sort(()=>Math.random()-.5);
-  taskUI("⚡ Reaction Desk",`Select number ${target}.`,`<div class="choice-list">${choices.map(n=>`<button class="secondary" onclick="finishTask('reaction',${n===target})">${n}</button>`).join("")}</div>`);
+   CARD ARCHIVE
+############## */
+function archiveChallenge(){
+ const symbols=["♠","♥","♦","♣"];
+ const target=symbols[rand(0,3)];
+ const options=[...symbols].sort(()=>Math.random()-.5);
+ setTaskInfo("🎴 CARD ARCHIVE","Find the matching symbol.",`
+  <h1 style="text-align:center">${target}</h1>
+  <div class="choices">${options.map(s=>`<button class="secondary" onclick="finishTask('archive',${JSON.stringify(s===target)})">${s}</button>`).join("")}</div>`);
 }
 
 /* ##############
-   TASK ANSWERS
-   ############## */
-function answerTask(id,value,correct){finishTask(id,value===correct)}
+   REACTION DESK
+############## */
+function reactionChallenge(){
+ const target=rand(1,9);
+ const options=[target,rand(1,9),rand(1,9),rand(1,9)].sort(()=>Math.random()-.5);
+ setTaskInfo("⚡ REACTION DESK",`Select the number <b>${target}</b>.`,`
+  <div class="choices">${options.map(n=>`<button class="secondary" onclick="finishTask('reaction',${n===target})">${n}</button>`).join("")}</div>`);
+}
+
+/* ##############
+   TASK COMPLETION
+############## */
+function answerTask(id,value,answer){finishTask(id,value===answer)}
 function finishTask(id,correct){
-  if(!correct){
-    taskUI("Challenge failed","That answer was incorrect. Try another activity.","");
-    return;
-  }
-  const key=id+":"+gameState.round;
-  if(completedTasks.has(key))return;
-  completedTasks.add(key);
-  sendAction({type:"TASK",station:id,answer:true});
-  taskUI("Activity completed","You completed the activity. Your balance will be updated.","");
+ if(!correct){
+  setTaskInfo("Incorrect","That answer was wrong. Try again.");
+  return;
+ }
+ const key=id+":"+state.round;
+ if(completedTasks.has(key))return;
+ completedTasks.add(key);
+ sendAction({type:"TASK",station:id});
+ setTaskInfo("Activity completed","Your reward will be added to your balance.");
 }
-function completeHostTask(sender,id,answer){
-  const p=gameState.players[sender];
-  if(!p||!STATIONS[id]||answer!==true)return;
-  const key=sender+":"+id+":"+gameState.round;
-  if(gameState.taskRecords[key])return;
-  gameState.taskRecords[key]=true;
-  p.balance+=CONFIG.taskReward;
-  p.completed++;
-  const message=p.name+" completed "+STATIONS[id].name+" and earned "+CONFIG.taskReward+" credits.";
-  broadcast({type:"TASK_RESULT",message});
-  if(sender===myId)modal("Activity completed",message);
-  broadcastState();
+function hostTask(sender,id){
+ const p=state.players[sender];
+ if(!p||!STATIONS[id])return;
+ if(Math.hypot(p.x-STATIONS[id].x,p.y-STATIONS[id].y)>190)return;
+ const key=sender+":"+id+":"+state.round;
+ if(state.tasks[key])return;
+ state.tasks[key]=true;
+ p.credits+=CONFIG.taskReward;
+ p.tasks++;
+ state.taskCount=(state.taskCount||0)+1;
+ sendTo(sender,{type:"TASK_RESULT",message:"You earned "+CONFIG.taskReward+" credits for completing "+STATIONS[id].name+"."});
+ broadcastState();
 }
 
 /* ##############
    CHAT
-   ############## */
+############## */
 function sendChat(e){
-  e.preventDefault();
-  const message=$("chatInput").value.trim().slice(0,180);
-  if(!message)return;
-  $("chatInput").value="";
-  sendAction({type:"CHAT",message});
+ e.preventDefault();
+ const message=$("chatInput").value.trim().slice(0,160);
+ if(!message)return;
+ $("chatInput").value="";
+ sendAction({type:"CHAT",message});
 }
-function addChat(name,message){
-  const clean=String(message||"").trim().slice(0,180);
-  if(!clean)return;
-  const entry={name:String(name).slice(0,16),message:clean};
-  gameState.messages.push(entry);
-  gameState.messages=gameState.messages.slice(-50);
-  broadcast({type:"CHAT",...entry});
-  appendChat(entry.name,entry.message);
+function hostChat(name,message){
+ message=String(message||"").trim().slice(0,160);
+ if(!message)return;
+ const entry={name:cleanName(name),message};
+ state.messages.push(entry);
+ state.messages=state.messages.slice(-50);
+ broadcast({type:"CHAT",...entry});
+ appendChat(entry.name,entry.message);
 }
 function appendChat(name,message){
-  const el=document.createElement("div");
-  el.className="chat-line";
-  const n=document.createElement("span");
-  n.className="chat-name";n.textContent=name+": ";
-  const m=document.createElement("span");m.textContent=message;
-  el.append(n,m);$("chatMessages").appendChild(el);
-  $("chatMessages").scrollTop=$("chatMessages").scrollHeight;
+ const el=document.createElement("div");
+ el.className="chat-line";
+ const n=document.createElement("span");
+ n.className="chat-name";
+ n.textContent=name+": ";
+ const m=document.createElement("span");
+ m.textContent=message;
+ el.append(n,m);
+ $("chat").appendChild(el);
+ $("chat").scrollTop=$("chat").scrollHeight;
 }
 
 /* ##############
    PLAYER ACTIONS
-   ############## */
+############## */
 function openPlayerActions(){
-  const list=Object.values(gameState.players).filter(p=>p.id!==myId&&p.connected);
-  const html=list.map(p=>`<button class="secondary" onclick="selectPlayer('${p.id}')">${escapeHTML(p.name)}</button>`).join("");
-  modal("Player actions","Choose another player.",`<div class="choice-list">${html}</div>`);
+ const players=Object.values(state.players).filter(p=>p.id!==myId&&p.connected&&p.alive);
+ const html=players.map(p=>`<button class="secondary" onclick="selectPlayer('${p.id}')">${escapeHTML(p.name)}</button>`).join("");
+ showModal("PLAYER ACTIONS","Choose another player.",`<div class="choices">${html}</div>`);
 }
 function selectPlayer(id){
-  const p=gameState.players[id];
-  if(!p)return;
-  closeModal();
-  if(myRole==="Security"){
-    if(investigationUsed){modal("Already investigated","You have used your investigation this round.");return}
-    investigationUsed=true;
-    sendAction({type:"INVESTIGATE",target:id});
-  }else if(myRole==="Cheater"){
-    if(xrayUsed){modal("X-Ray used","You have used your X-Ray Specs this round.");return}
-    xrayUsed=true;
-    sendAction({type:"XRAY",target:id});
-  }else{
-    modal("Player selected",p.name+" is currently in the casino.");
-  }
+ closeModal();
+ const p=state.players[id];
+ if(!p)return;
+ if(myRole==="Security"){
+  if(abilityUsed){showModal("Ability used","Your investigation is already used this round.");return}
+  abilityUsed=true;
+  sendAction({type:"INVESTIGATE",target:id});
+ }else if(myRole==="Cheater"){
+  if(abilityUsed){showModal("Ability used","Your X-Ray Specs are already used this round.");return}
+  abilityUsed=true;
+  sendAction({type:"XRAY",target:id});
+ }else{
+  showModal("Guest","You have no investigation ability. Discuss your suspicions with the other players.");
+ }
 }
-function useSpecialAbility(){
-  if(!gameStarted)return;
-  if(myRole==="Security"||myRole==="Cheater"){
-    openPlayerActions();
-  }else{
-    modal("No special ability","You are an Innocent. Focus on completing activities and identifying suspicious players.");
-  }
+function useAbility(){
+ if(!gameStarted)return;
+ if(myRole==="Security"||myRole==="Cheater")openPlayerActions();
+ else showModal("No special ability","As a Guest, your job is to complete activities and find the Cheater.");
 }
 
 /* ##############
-   MEETING
-   ############## */
-function requestMeeting(){
-  if(!gameStarted)return;
-  if(Date.now()-lastMeeting<30000){
-    modal("Meeting unavailable","Wait a little before calling another meeting.");
-    return;
-  }
-  lastMeeting=Date.now();
-  sendAction({type:"MEETING"});
+   SECRET ABILITIES
+############## */
+function hostInvestigate(sender,targetId){
+ const p=state.players[sender],target=state.players[targetId];
+ if(!p||p.role!=="Security"||!target)return;
+ sendTo(sender,{
+  type:"ABILITY",
+  title:"SECURITY REPORT",
+  message:target.name+": "+(target.role==="Cheater"?"Suspicious activity detected. This player is the Cheater.":"No suspicious evidence found.")
+ });
 }
-function startMeeting(caller,sender){
-  if(gameState.meeting)return;
-  gameState.meeting={
-    caller,
-    votes:{},
-    players:Object.values(gameState.players).filter(p=>p.connected).map(p=>({id:p.id,name:p.name}))
-  };
-  votes={};
-  broadcast({type:"MEETING",caller,players:gameState.meeting.players});
-  openMeeting({caller,players:gameState.meeting.players});
+function hostXray(sender,targetId){
+ const p=state.players[sender],target=state.players[targetId];
+ if(!p||p.role!=="Cheater"||!target)return;
+ sendTo(sender,{
+  type:"ABILITY",
+  title:"X-RAY SPECS",
+  message:target.name+": "+target.role.toUpperCase()
+ });
+}
+
+/* ##############
+   MEETINGS
+############## */
+function callMeeting(){
+ if(!gameStarted)return;
+ if(Date.now()<meetingCooldown){
+  showModal("Meeting unavailable","Wait before calling another meeting.");
+  return;
+ }
+ sendAction({type:"MEETING"});
+}
+function hostMeeting(sender){
+ if(state.meeting)return;
+ state.meeting={
+  caller:state.players[sender].name,
+  players:Object.values(state.players).filter(p=>p.connected&&p.alive).map(p=>({id:p.id,name:p.name})),
+  votes:{}
+ };
+ broadcast({type:"MEETING",caller:state.meeting.caller,players:state.meeting.players});
+ openMeeting({caller:state.meeting.caller,players:state.meeting.players});
+ meetingCooldown=Date.now()+30000;
 }
 function openMeeting(data){
-  meetingData=data;
-  const choices=data.players.filter(p=>p.id!==myId).map(p=>`<button class="secondary" onclick="castVote('${p.id}')">${escapeHTML(p.name)}</button>`).join("");
-  modal("🚨 SECURITY MEETING",data.caller+" called a meeting. Who do you suspect?",`<div class="choice-list">${choices}<button class="secondary" onclick="castVote('skip')">SKIP VOTE</button></div>`);
+ voteState=data;
+ const choices=data.players.filter(p=>p.id!==myId).map(p=>`<button class="secondary" onclick="castVote('${p.id}')">${escapeHTML(p.name)}</button>`).join("");
+ showModal("🚨 SECURITY MEETING",data.caller+" called a meeting. Who do you suspect?",`
+  <div class="choices">${choices}<button class="secondary" onclick="castVote('skip')">SKIP VOTE</button></div>`);
 }
 function castVote(target){
-  closeModal();
-  sendAction({type:"VOTE",target});
+ closeModal();
+ sendAction({type:"VOTE",target});
 }
-function castHostVote(sender,target){
-  if(!gameState.meeting||votes[sender])return;
-  if(target!=="skip"&&!gameState.players[target])return;
-  votes[sender]=target;
-  const total=gameState.meeting.players.length;
-  if(Object.keys(votes).length<total)return;
-  const counts={};
-  Object.values(votes).forEach(v=>counts[v]=(counts[v]||0)+1);
-  const winner=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0];
-  let message="The group skipped the vote.";
-  if(winner&&winner[0]!=="skip"){
-    const suspect=gameState.players[winner[0]];
-    message=suspect.name+" received the most votes. ";
-    if(suspect.role==="Cheater"){
-      message+="The Cheater has been caught!";
-      finishGame("Security and Innocents win! "+suspect.name+" was the Cheater.");
-    }else message+="They were not the Cheater.";
+function hostVote(sender,target){
+ if(!state.meeting||state.meeting.votes[sender])return;
+ if(target!=="skip"&&!state.players[target])return;
+ state.meeting.votes[sender]=target;
+ const total=state.meeting.players.length;
+ if(Object.keys(state.meeting.votes).length<total)return;
+ const counts={};
+ Object.values(state.meeting.votes).forEach(v=>counts[v]=(counts[v]||0)+1);
+ const sorted=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+ const tie=sorted.length>1&&sorted[0][1]===sorted[1][1];
+ let message="The group skipped the vote.";
+ if(!tie&&sorted[0][0]!=="skip"){
+  const suspect=state.players[sorted[0][0]];
+  if(suspect){
+   message=suspect.name+" received the most votes. ";
+   if(suspect.role==="Cheater"){
+    message+="The Cheater has been caught!";
+    endGame("Security and Guests win! "+suspect.name+" was the Cheater.");
+    return;
+   }else message+="That player was not the Cheater.";
   }
-  gameState.meeting=null;votes={};
-  broadcast({type:"MEETING_RESULT",message});
-  broadcastState();
+ }else if(tie)message="The vote was tied. Nobody was removed.";
+ state.meeting=null;
+ broadcast({type:"MEETING_RESULT",message});
+ broadcastState();
 }
 
 /* ##############
    END GAME
-   ############## */
-function finishGame(message){
-  gameState.started=false;
-  broadcast({type:"GAME_OVER",message});
-  modal("Game over",message);
+############## */
+function endGame(message){
+ if(!isHost||state.gameOver)return;
+ state.gameOver=true;
+ state.started=false;
+ gameStarted=false;
+ clearInterval(gameTimer);
+ gameTimer=null;
+ broadcast({type:"GAME_OVER",message});
+ showModal("GAME OVER",message);
 }
 
 /* ##############
-   HEARTBEAT
-   ############## */
-function startHeartbeat(){
-  clearInterval(heartbeatTimer);
-  heartbeatTimer=setInterval(()=>{
-    if(!gameStarted)return;
-    if(!isHost&&hostConnection?.open)hostConnection.send({type:"PING"});
-    if(isHost)broadcast({type:"PING"});
-  },CONFIG.heartbeat);
+   POSITION SYNC
+############## */
+function handlePosition(data){
+ if(!state?.players[data.id])return;
+ state.players[data.id].x=data.x;
+ state.players[data.id].y=data.y;
+ renderPlayers();
 }
 
 /* ##############
-   ROUTING ACTIONS
-   ############## */
-function handleClientMessageWithPing(sender,data){
-  if(data?.type==="PING"){sendPlayer(sender,{type:"PONG"});return}
-  handleClientMessage(sender,data);
-}
-
-/* ##############
-   LEAVE GAME
-   ############## */
+   LEAVE
+############## */
 function leaveGame(){
-  clearInterval(heartbeatTimer);
-  if(peer){try{peer.destroy()}catch(e){console.warn(e)}}
-  peer=null;hostConnection=null;connections.clear();
-  isHost=false;gameStarted=false;myRole="";gameState=null;
-  completedTasks.clear();keyState={};activeTask=null;
-  $("chatMessages").innerHTML="";
-  $("chatMessages").dataset.loaded="";
-  $("playersLayer").innerHTML="";
-  closeModal();showScreen("menuScreen");
-  status("You left the game.");
+ clearInterval(gameTimer);
+ gameTimer=null;
+ if(peer){try{peer.destroy()}catch(e){console.warn(e)}}
+ peer=null;
+ hostConnection=null;
+ connections.clear();
+ isHost=false;
+ gameStarted=false;
+ state=null;
+ myRole="";
+ completedTasks.clear();
+ keys={};
+ closeModal();
+ $("chat").innerHTML="";
+ $("playersLayer").innerHTML="";
+ showScreen("menu");
+ setStatus("You left the room.");
 }
 
 /* ##############
-   INITIALISATION
-   ############## */
+   NETWORK MESSAGE PATCHES
+############## */
+const originalHandleHostData=handleHostData;
+handleHostData=function(data){
+ if(data?.type==="POSITION"){handlePosition(data);return}
+ if(data?.type==="TIMER"){
+  if(state)state.seconds=data.seconds;
+  updateTimer();
+  return;
+ }
+ originalHandleHostData(data);
+};
+const originalHandleClientData=handleClientData;
+handleClientData=function(sender,data){
+ if(data?.type==="VOTE"){hostVote(sender,data.target);return}
+ originalHandleClientData(sender,data);
+};
+
+/* ##############
+   INPUT AND STARTUP
+############## */
 $("joinCode").addEventListener("input",e=>{
-  e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
+ e.target.value=e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,6);
 });
-$("playerName").addEventListener("keydown",e=>{if(e.key==="Enter")createRoom()});
-window.addEventListener("beforeunload",()=>{if(peer)peer.destroy()});
-
-/* ##############
-   HOST MESSAGE ROUTER PATCH
-   ############## */
-const originalSetupHost=setupHost;
-setupHost=function(){
-  originalSetupHost();
-  peer.on("connection",conn=>{
-    conn.on("data",data=>{
-      if(data?.type==="PING")sendPlayer(conn.peer,{type:"PONG"});
-    });
-  });
-};
-const originalHandleClientMessage=handleClientMessage;
-handleClientMessage=function(sender,data){
-  if(data?.type==="PING"){sendPlayer(sender,{type:"PONG"});return}
-  originalHandleClientMessage(sender,data);
-};
-const originalRenderGame=renderGame;
-renderGame=function(){
-  originalRenderGame();
-};
-
-/* ##############
-   POSITION UPDATES
-   ############## */
-const oldHandleHostMessage=handleHostMessage;
-handleHostMessage=function(data){
-  if(data?.type==="POSITION"){
-    if(gameState?.players[data.id]){
-      gameState.players[data.id].x=data.x;
-      gameState.players[data.id].y=data.y;
-      renderPlayers();
-    }
-    return;
-  }
-  oldHandleHostMessage(data);
-};
+$("playerName").addEventListener("keydown",e=>{
+ if(e.key==="Enter")createRoom();
+});
+window.addEventListener("beforeunload",()=>{
+ if(peer)peer.destroy();
+});
+requestAnimationFrame(movementLoop);
 </script>
 </body>
 </html>
