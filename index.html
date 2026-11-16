@@ -4,52 +4,69 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Grand Casino</title>
-
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
 <style>
-/* ##############
-   COLOUR SCHEME
-############## */
-
 :root {
     --bg:#171716;
     --panel:#222220;
     --panel2:#292824;
     --gold:#c6a66b;
     --gold2:#e0c48c;
-    --text:#eeeae1;
+    --cream:#eeeae1;
     --muted:#99958c;
     --green:#426d51;
-    --green2:#34563f;
+    --green2:#345640;
     --red:#a84b43;
     --border:#494337;
-    --cream:#d9cfb9;
 }
 
-* {
-    box-sizing:border-box;
-}
+* { box-sizing:border-box; }
 
 body {
     margin:0;
     background:var(--bg);
-    color:var(--text);
-    font-family:Arial,Helvetica,sans-serif;
+    color:var(--cream);
+    font-family:Georgia,serif;
     min-height:100vh;
 }
 
-button,input {
+button,input,textarea {
     font:inherit;
 }
 
 button {
     cursor:pointer;
-    transition:background .2s,border-color .2s,transform .15s;
+    border:1px solid var(--gold);
+    background:var(--gold);
+    color:#211e18;
+    padding:11px 17px;
+    border-radius:4px;
+    font-weight:bold;
+    transition:.15s;
 }
 
 button:hover {
+    background:var(--gold2);
     transform:translateY(-1px);
+}
+
+button.secondary {
+    background:var(--panel2);
+    color:var(--cream);
+    border-color:var(--border);
+}
+
+button.danger {
+    background:var(--red);
+    color:white;
+    border-color:var(--red);
+}
+
+button.green {
+    background:var(--green);
+    color:white;
+    border-color:var(--green);
 }
 
 button:disabled {
@@ -58,479 +75,411 @@ button:disabled {
     transform:none;
 }
 
-input {
-    background:#171716;
-    color:var(--text);
-    border:1px solid var(--border);
-    border-radius:5px;
-    padding:13px;
+input,textarea {
     width:100%;
+    padding:12px;
+    background:#151513;
+    color:var(--cream);
+    border:1px solid var(--border);
+    border-radius:4px;
     outline:none;
 }
 
-input:focus {
+input:focus,textarea:focus {
     border-color:var(--gold);
 }
 
-.hidden {
-    display:none!important;
+.hidden { display:none!important; }
+
+.screen {
+    display:none;
+    min-height:100vh;
 }
 
-/* ##############
-   HEADER
-############## */
-
-header {
-    height:76px;
-    background:#1d1c1a;
-    border-bottom:1px solid #514631;
+.screen.active {
     display:flex;
+}
+
+#home {
     align-items:center;
-    justify-content:space-between;
-    padding:0 30px;
-    position:relative;
-    z-index:5;
+    justify-content:center;
+    padding:25px;
+    background:
+        radial-gradient(ellipse at center,#30291d 0%,#171716 70%);
 }
 
-.brand {
-    display:flex;
-    align-items:center;
-    gap:15px;
-}
-
-.brand-mark {
-    width:43px;
-    height:43px;
-    border:1px solid var(--gold);
-    display:grid;
-    place-items:center;
-    color:var(--gold);
-    font-family:Georgia,serif;
-    font-size:24px;
-}
-
-.brand-name {
-    font-family:Georgia,serif;
-    letter-spacing:2px;
-    font-size:19px;
-}
-
-.brand-sub {
-    color:var(--muted);
-    font-size:9px;
-    letter-spacing:3px;
-    margin-top:4px;
-}
-
-.header-status {
-    color:var(--muted);
-    font-size:12px;
-}
-
-/* ##############
-   GENERAL
-############## */
-
-.page {
-    max-width:1250px;
-    margin:auto;
-    padding:45px 24px;
-}
-
-.eyebrow {
-    color:var(--gold);
-    text-transform:uppercase;
-    letter-spacing:3px;
-    font-size:11px;
-}
-
-h1,h2,h3 {
-    font-family:Georgia,serif;
-    font-weight:normal;
-}
-
-h1 {
-    font-size:clamp(34px,5vw,56px);
-    margin:12px 0;
-}
-
-h2 {
-    font-size:27px;
-}
-
-p {
-    color:var(--muted);
-    line-height:1.6;
-}
-
-.gold {
-    color:var(--gold);
-}
-
-.small {
-    font-size:12px;
-    color:var(--muted);
-}
-
-.panel {
+.home-card {
+    width:min(520px,100%);
+    padding:35px;
     background:var(--panel);
     border:1px solid var(--border);
-    border-radius:7px;
-    padding:24px;
-}
-
-.primary {
-    background:var(--gold);
-    color:#211e17;
-    border:1px solid var(--gold);
-    padding:13px 20px;
-    border-radius:4px;
-    font-weight:bold;
-}
-
-.primary:hover {
-    background:var(--gold2);
-}
-
-.secondary {
-    background:#302e29;
-    color:var(--text);
-    border:1px solid #5a5140;
-    padding:12px 18px;
-    border-radius:4px;
-}
-
-.danger {
-    background:var(--red);
-    color:white;
-    border:1px solid #bd6259;
-    padding:12px 18px;
-    border-radius:4px;
-}
-
-.green-button {
-    background:var(--green);
-    color:white;
-    border:1px solid #64846a;
-    padding:12px 18px;
-    border-radius:4px;
-}
-
-.field-label {
-    display:block;
-    color:var(--gold);
-    font-size:11px;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-    margin:17px 0 8px;
-}
-
-.status-message {
-    min-height:22px;
-    color:var(--gold);
-    font-size:13px;
-    margin-top:12px;
-    line-height:1.5;
-}
-
-.divider {
-    height:1px;
-    background:var(--border);
-    margin:20px 0;
-}
-
-/* ##############
-   HOME SCREEN
-############## */
-
-.hero {
+    border-top:4px solid var(--gold);
+    box-shadow:0 20px 70px #0008;
     text-align:center;
-    padding:45px 0 38px;
 }
 
-.hero h1 {
+.logo {
+    font-size:clamp(35px,7vw,60px);
+    color:var(--gold);
+    margin:0 0 8px;
     letter-spacing:2px;
 }
 
-.hero p {
-    max-width:570px;
-    margin:15px auto;
-}
-
-.hero-line {
-    width:90px;
-    height:2px;
-    background:var(--gold);
-    margin:25px auto;
-}
-
-.home-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:22px;
-    max-width:850px;
-    margin:auto;
+.subtitle {
+    color:var(--muted);
+    letter-spacing:4px;
+    font-size:12px;
+    margin-bottom:30px;
 }
 
 .home-card h2 {
-    margin-top:0;
+    color:var(--gold2);
+    font-size:20px;
+    margin:24px 0 12px;
 }
 
-.home-card button {
-    width:100%;
+.home-card input {
+    margin:8px 0;
+}
+
+.home-actions {
+    display:grid;
+    gap:10px;
     margin-top:18px;
 }
 
-.home-footer {
-    text-align:center;
-    margin-top:35px;
-    color:#77736b;
-    font-size:11px;
-    letter-spacing:1px;
+.home-actions button {
+    width:100%;
 }
 
-/* ##############
-   LOBBY
-############## */
+#connectionStatus {
+    margin-top:18px;
+    color:var(--muted);
+    font-size:13px;
+    min-height:20px;
+}
 
-.lobby-layout {
-    display:grid;
-    grid-template-columns:1.3fr .7fr;
-    gap:20px;
+.small-note {
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.6;
+    margin-top:22px;
+}
+
+#lobby {
+    align-items:center;
+    justify-content:center;
+    padding:25px;
+}
+
+.lobby-card {
+    width:min(750px,100%);
+    background:var(--panel);
+    border:1px solid var(--border);
+    padding:30px;
+}
+
+.lobby-heading {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid var(--border);
+    padding-bottom:17px;
+    margin-bottom:20px;
+}
+
+.lobby-heading h1 {
+    color:var(--gold);
+    margin:0;
 }
 
 .room-code {
-    background:#171716;
+    background:#151513;
     border:1px solid var(--gold);
+    padding:12px 18px;
     color:var(--gold2);
-    padding:16px;
+    letter-spacing:4px;
+    font-size:22px;
     text-align:center;
-    font-family:Georgia,serif;
-    font-size:27px;
-    letter-spacing:6px;
-    margin:15px 0;
-    user-select:all;
 }
 
 .player-list {
-    display:flex;
-    flex-direction:column;
-    gap:9px;
-}
-
-.player-row {
-    background:#2b2925;
-    padding:12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    border-radius:4px;
-}
-
-.player-name {
-    display:flex;
-    align-items:center;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
     gap:10px;
+    margin:20px 0;
 }
 
-.player-dot {
-    width:9px;
-    height:9px;
-    background:var(--green);
-    border-radius:50%;
-}
-
-.host-tag {
-    color:var(--gold);
-    font-size:10px;
-    letter-spacing:1px;
-}
-
-/* ##############
-   GAME SCREEN
-############## */
-
-#gameScreen {
-    padding:15px;
-    max-width:1500px;
-    margin:auto;
-}
-
-.game-top {
+.player-card {
+    background:var(--panel2);
+    border:1px solid var(--border);
+    padding:13px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    gap:15px;
-    padding:12px 16px;
-    background:var(--panel);
-    border:1px solid var(--border);
-    margin-bottom:13px;
-    flex-wrap:wrap;
+    gap:8px;
 }
 
-.game-top-title {
-    font-family:Georgia,serif;
+.player-card .host-label {
     color:var(--gold);
-    letter-spacing:2px;
+    font-size:11px;
 }
 
-.game-stats {
+.lobby-footer {
     display:flex;
-    gap:20px;
-    font-size:12px;
-    color:var(--muted);
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:20px;
 }
 
-.game-stats strong {
+#game {
+    flex-direction:column;
+    height:100vh;
+    overflow:hidden;
+}
+
+.topbar {
+    background:#201e1a;
+    border-bottom:2px solid var(--gold);
+    padding:10px 17px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+    z-index:5;
+}
+
+.topbar h2 {
+    margin:0;
+    color:var(--gold);
+    font-size:21px;
+}
+
+.top-info {
+    display:flex;
+    align-items:center;
+    gap:16px;
+    flex-wrap:wrap;
+    font-size:13px;
+}
+
+.top-info strong {
     color:var(--gold2);
 }
 
 .game-layout {
     display:grid;
-    grid-template-columns:minmax(0,1fr) 290px;
-    gap:13px;
+    grid-template-columns:minmax(0,1fr) 280px;
+    flex:1;
+    min-height:0;
 }
 
-.map-frame {
-    background:#1b1a17;
-    border:5px solid #51432f;
-    padding:5px;
-    overflow:hidden;
-    position:relative;
-}
-
-#gameCanvas {
-    display:block;
-    width:100%;
-    height:auto;
-    background:var(--green);
-    cursor:crosshair;
-}
-
-.side-panel {
+.game-main {
     display:flex;
     flex-direction:column;
-    gap:12px;
     min-width:0;
+    min-height:0;
 }
 
-.side-box {
+.map-wrap {
+    flex:1;
+    overflow:auto;
+    background:#171815;
+    padding:12px;
+    min-height:300px;
+}
+
+#map {
+    position:relative;
+    width:100%;
+    min-width:650px;
+    max-width:1100px;
+    height:650px;
+    margin:auto;
+    overflow:hidden;
+    border:9px solid #493a29;
+    background:
+        linear-gradient(90deg,transparent 49.8%,#ffffff0a 50%,transparent 50.2%),
+        linear-gradient(0deg,transparent 49.8%,#ffffff0a 50%,transparent 50.2%),
+        #426d51;
+    box-shadow:inset 0 0 0 4px #9a7747;
+}
+
+.map-wall {
+    position:absolute;
+    background:#443326;
+    border:3px solid #8a6b42;
+    box-shadow:inset 0 0 0 3px #211b15;
+}
+
+.map-label {
+    position:absolute;
+    color:#e6d4af;
+    font-size:13px;
+    text-align:center;
+    text-shadow:0 2px 3px #000;
+    pointer-events:none;
+}
+
+.station {
+    position:absolute;
+    width:125px;
+    height:75px;
+    background:#29251e;
+    border:3px solid var(--gold);
+    border-radius:7px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:var(--gold2);
+    font-size:13px;
+    padding:8px;
+    box-shadow:0 5px 10px #0005;
+}
+
+.station small {
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+}
+
+.player-token {
+    position:absolute;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:3px solid #eeeae1;
+    background:#a84b43;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font:bold 12px Arial;
+    transform:translate(-50%,-50%);
+    box-shadow:0 3px 8px #0009;
+    z-index:3;
+    pointer-events:none;
+}
+
+.player-token.me {
+    border-color:var(--gold2);
+    box-shadow:0 0 0 3px #c6a66b66,0 3px 8px #0009;
+}
+
+.game-controls {
+    padding:10px 14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    background:#201e1a;
+    border-top:1px solid var(--border);
+}
+
+.game-controls button {
+    padding:9px 12px;
+    font-size:12px;
+}
+
+.sidebar {
     background:var(--panel);
-    border:1px solid var(--border);
-    padding:15px;
-    border-radius:4px;
-}
-
-.side-box h3 {
-    color:var(--gold);
-    font-size:17px;
-    margin:0 0 12px;
-}
-
-#gamePlayers {
+    border-left:1px solid var(--border);
     display:flex;
     flex-direction:column;
-    gap:7px;
+    min-height:0;
 }
 
-.game-player {
-    background:#302e29;
-    padding:8px;
-    font-size:12px;
-    border-radius:3px;
+.side-section {
+    padding:13px;
+    border-bottom:1px solid var(--border);
+}
+
+.side-section h3 {
+    color:var(--gold);
+    font-size:15px;
+    margin:0 0 10px;
+}
+
+#sidePlayers {
+    max-height:170px;
+    overflow:auto;
+}
+
+.side-player {
     display:flex;
     justify-content:space-between;
+    padding:5px 0;
+    border-bottom:1px solid #ffffff0c;
+    font-size:12px;
 }
 
-.chat-log {
-    height:155px;
-    overflow-y:auto;
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-    font-size:12px;
-    color:var(--cream);
-    overflow-wrap:anywhere;
+.side-player span:last-child {
+    color:var(--gold2);
+}
+
+#chatMessages {
+    height:180px;
+    overflow:auto;
+    font:12px Arial,sans-serif;
+    line-height:1.5;
+    color:#ddd;
 }
 
 .chat-line {
-    line-height:1.4;
+    margin:5px 0;
+    overflow-wrap:anywhere;
 }
 
-.chat-line b {
-    color:var(--gold);
+.chat-line strong {
+    color:var(--gold2);
 }
 
-.chat-controls {
+.chat-input {
     display:flex;
     gap:5px;
-    margin-top:10px;
+    margin-top:8px;
 }
 
-.chat-controls input {
+.chat-input input {
     min-width:0;
-    padding:9px;
+    padding:8px;
     font-size:12px;
 }
 
-.chat-controls button {
-    padding:8px 12px;
-}
-
-.action-buttons {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-}
-
-.action-buttons button {
+.chat-input button {
+    padding:8px 10px;
     font-size:11px;
-    padding:10px 5px;
 }
 
-.controls-note {
-    font-size:11px;
+#eventLog {
+    font:12px Arial,sans-serif;
     color:var(--muted);
-    line-height:1.7;
+    max-height:100px;
+    overflow:auto;
 }
-
-.task-bar {
-    background:#292824;
-    height:8px;
-    border-radius:5px;
-    overflow:hidden;
-    margin-top:9px;
-}
-
-.task-progress {
-    height:100%;
-    background:var(--gold);
-    width:0%;
-    transition:width .3s;
-}
-
-/* ##############
-   MODALS
-############## */
 
 .modal-backdrop {
     position:fixed;
     inset:0;
-    background:#000b;
     z-index:20;
-    display:grid;
-    place-items:center;
-    padding:15px;
+    background:#000b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 }
 
 .modal {
+    width:min(460px,100%);
+    max-height:90vh;
+    overflow:auto;
     background:var(--panel);
     border:1px solid var(--gold);
-    width:min(470px,100%);
-    padding:27px;
-    box-shadow:0 15px 60px #0009;
-    max-height:90vh;
-    overflow-y:auto;
+    border-top:4px solid var(--gold);
+    padding:25px;
+    box-shadow:0 20px 80px #000b;
 }
 
 .modal h2 {
@@ -538,105 +487,73 @@ p {
     margin-top:0;
 }
 
+.modal p {
+    color:#d0c9ba;
+    line-height:1.6;
+}
+
 .modal-actions {
     display:flex;
-    gap:9px;
-    margin-top:20px;
+    gap:8px;
     flex-wrap:wrap;
+    margin-top:17px;
 }
 
-.modal-actions button {
-    flex:1;
+#roleName {
+    font-size:32px;
+    color:var(--gold2);
+    text-align:center;
 }
 
-.vote-list {
-    display:flex;
-    flex-direction:column;
+#roleDescription {
+    text-align:center;
+}
+
+#taskAnswer {
+    margin-top:12px;
+}
+
+#voteOptions {
+    display:grid;
     gap:8px;
     margin-top:15px;
 }
 
-.vote-choice {
-    text-align:left;
-    background:#302e29;
-    color:var(--text);
-    border:1px solid var(--border);
-    padding:12px;
-    border-radius:4px;
+#voteOptions button {
+    width:100%;
 }
 
-.vote-choice:hover {
-    border-color:var(--gold);
-}
-
-.role-card {
-    background:#302e29;
-    border-left:3px solid var(--gold);
-    padding:15px;
-    margin:15px 0;
-    line-height:1.6;
-}
-
-#toast {
-    position:fixed;
-    bottom:22px;
-    left:50%;
-    transform:translateX(-50%);
-    background:#292824;
-    border:1px solid var(--gold);
-    color:var(--text);
-    padding:12px 20px;
-    z-index:50;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .2s;
-    max-width:90vw;
-    text-align:center;
-    font-size:13px;
-}
-
-#toast.show {
-    opacity:1;
-}
-
-@media(max-width:850px) {
+@media(max-width:800px) {
     .game-layout {
         grid-template-columns:1fr;
+        grid-template-rows:minmax(300px,1fr) auto;
     }
 
-    .side-panel {
+    .sidebar {
+        border-left:0;
+        border-top:1px solid var(--border);
+        max-height:250px;
         display:grid;
         grid-template-columns:1fr 1fr;
+        overflow:auto;
     }
 
-    .lobby-layout {
-        grid-template-columns:1fr;
-    }
-}
-
-@media(max-width:600px) {
-    header {
-        padding:0 14px;
+    .side-section {
+        min-width:0;
     }
 
-    .brand-name {
-        font-size:15px;
+    #chatMessages {
+        height:90px;
     }
 
-    .page {
-        padding:25px 14px;
+    #game {
+        height:auto;
+        min-height:100vh;
+        overflow:auto;
     }
 
-    .home-grid {
-        grid-template-columns:1fr;
-    }
-
-    .side-panel {
-        display:flex;
-    }
-
-    .game-stats {
-        gap:10px;
+    .game-layout {
+        min-height:650px;
     }
 }
 </style>
@@ -644,679 +561,525 @@ p {
 
 <body>
 
-<header>
-    <div class="brand">
-        <div class="brand-mark">G</div>
-        <div>
-            <div class="brand-name">THE GRAND CASINO</div>
-            <div class="brand-sub">THE SOCIAL DEDUCTION GAME</div>
+<!-- HOME -->
+<section id="home" class="screen active">
+    <div class="home-card">
+        <h1 class="logo">THE GRAND CASINO</h1>
+        <div class="subtitle">A GAME OF TRUST AND DECEPTION</div>
+
+        <h2>Enter the Casino</h2>
+        <input id="playerName" maxlength="16" placeholder="Your player name">
+
+        <div class="home-actions">
+            <button onclick="createRoom()">CREATE NEW ROOM</button>
+            <button class="green" onclick="continuePlaying()">CONTINUE PLAYING</button>
+        </div>
+
+        <h2>Join a Room</h2>
+        <input id="roomInput" maxlength="6" placeholder="ENTER ROOM CODE">
+        <button class="secondary" style="width:100%" onclick="joinRoom()">JOIN ROOM</button>
+
+        <div id="connectionStatus">Ready to connect</div>
+
+        <div class="small-note">
+            3–8 players · Secret roles · Social deduction<br>
+            Skill challenges · Investigations · Meetings
         </div>
     </div>
-    <div class="header-status" id="headerStatus">OFFLINE</div>
-</header>
+</section>
 
-<!-- ##############
-     HOME SCREEN
-############## -->
+<!-- LOBBY -->
+<section id="lobby" class="screen">
+    <div class="lobby-card">
+        <div class="lobby-heading">
+            <h1>Casino Lobby</h1>
+            <span id="lobbyCount">0 / 8 players</span>
+        </div>
 
-<main id="homeScreen" class="page">
+        <p style="color:var(--muted)">ROOM CODE</p>
+        <div class="room-code" id="lobbyCode">------</div>
 
-    <section class="hero">
-        <div class="eyebrow">Est. 1924 · Private Members Club</div>
-        <h1>THE GRAND CASINO</h1>
-        <div class="hero-line"></div>
-        <p>
-            Something suspicious is happening behind the velvet curtains.
-            Find the cheater before they fool everyone.
+        <h3 style="color:var(--gold)">Players</h3>
+        <div class="player-list" id="lobbyPlayers"></div>
+
+        <p style="color:var(--muted);font-size:13px">
+            At least 3 players are required to start. One player becomes the Cheater and one becomes Security.
         </p>
-    </section>
 
-    <div class="home-grid">
+        <div class="lobby-footer">
+            <button id="startButton" onclick="startGame()">START GAME</button>
+            <button class="secondary" onclick="copyRoomCode()">COPY ROOM CODE</button>
+            <button class="danger" onclick="leaveRoom()">LEAVE ROOM</button>
+        </div>
 
-        <section class="panel home-card">
-            <div class="eyebrow">New private table</div>
-            <h2>Create a Room</h2>
-            <p>Start a private game and invite your friends using your room code.</p>
-
-            <label class="field-label" for="hostName">Your name</label>
-            <input id="hostName" maxlength="16" placeholder="Enter your name">
-
-            <button class="primary" id="createButton" onclick="createRoom()">
-                CREATE PRIVATE ROOM
-            </button>
-        </section>
-
-        <section class="panel home-card">
-            <div class="eyebrow">Join an existing table</div>
-            <h2>Join a Room</h2>
-            <p>Enter a friend's room code to join their casino.</p>
-
-            <label class="field-label" for="joinName">Your name</label>
-            <input id="joinName" maxlength="16" placeholder="Enter your name">
-
-            <label class="field-label" for="joinCode">Room code</label>
-            <input id="joinCode" maxlength="6" placeholder="ABC123"
-                   autocomplete="off" style="text-transform:uppercase">
-
-            <button class="primary" id="joinButton" onclick="joinRoom()">
-                JOIN PRIVATE ROOM
-            </button>
-        </section>
-
+        <p id="lobbyStatus" style="color:var(--muted);font-size:12px"></p>
     </div>
+</section>
 
-    <div class="status-message" id="homeStatus" style="text-align:center"></div>
-
-    <div class="home-footer">
-        3-8 PLAYERS · PRIVATE ROOMS · SOCIAL DEDUCTION
-    </div>
-</main>
-
-<!-- ##############
-     LOBBY SCREEN
-############## -->
-
-<main id="lobbyScreen" class="page hidden">
-
-    <div class="eyebrow">Private members area</div>
-    <h1>THE LOUNGE</h1>
-    <p>Gather your players before opening the casino floor.</p>
-
-    <div class="lobby-layout">
-
-        <section class="panel">
-            <div class="eyebrow">Your private room</div>
-            <h2>ROOM CODE</h2>
-            <div class="room-code" id="roomCodeDisplay">------</div>
-
-            <button class="secondary" onclick="copyRoomCode()" style="width:100%">
-                COPY ROOM CODE
-            </button>
-
-            <div class="divider"></div>
-
-            <div style="display:flex;justify-content:space-between;align-items:center">
-                <h2 style="margin:0">Guests</h2>
-                <span class="gold" id="playerCount">0 / 8</span>
-            </div>
-
-            <div class="player-list" id="lobbyPlayers" style="margin-top:17px"></div>
-
-            <div class="divider"></div>
-
-            <button class="primary" id="startButton" onclick="startGame()" style="width:100%">
-                OPEN THE CASINO
-            </button>
-
-            <div class="status-message" id="lobbyStatus"></div>
-        </section>
-
-        <section class="panel">
-            <div class="eyebrow">Before the doors open</div>
-            <h2>How to Play</h2>
-
-            <p><strong class="gold">Guests</strong><br>
-            Complete activities and work together to identify the cheater.</p>
-
-            <p><strong class="gold">Security</strong><br>
-            Investigate suspicious guests and help expose the cheater.</p>
-
-            <p><strong class="gold">Cheater</strong><br>
-            Blend in, avoid suspicion and secretly disrupt the others.</p>
-
-            <div class="divider"></div>
-
-            <p class="small">
-                You need at least 3 players. The game supports up to 8 players.
-                Roles are assigned secretly when the host starts the game.
-            </p>
-
-            <button class="danger" onclick="leaveRoom()" style="width:100%">
-                LEAVE ROOM
-            </button>
-        </section>
-
-    </div>
-</main>
-
-<!-- ##############
-     GAME SCREEN
-############## -->
-
-<main id="gameScreen" class="hidden">
-
-    <div class="game-top">
-        <div class="game-top-title">THE GRAND CASINO</div>
-
-        <div class="game-stats">
-            <span>TIME: <strong id="timerDisplay">05:00</strong></span>
-            <span>PLAYERS: <strong id="aliveDisplay">0</strong></span>
-            <span>SCORE: <strong id="scoreDisplay">0</strong></span>
+<!-- GAME -->
+<section id="game" class="screen">
+    <div class="topbar">
+        <h2>THE GRAND CASINO</h2>
+        <div class="top-info">
+            <span>ROOM: <strong id="gameRoomCode">------</strong></span>
+            <span>POINTS: <strong id="myBalance">5,000</strong></span>
+            <span>TIME: <strong id="gameTimer">10:00</strong></span>
+            <button class="secondary" onclick="callMeeting()">CALL MEETING</button>
         </div>
     </div>
 
     <div class="game-layout">
+        <main class="game-main">
+            <div class="map-wrap">
+                <div id="map">
+                    <div class="map-wall" style="left:35%;top:5%;width:30%;height:13%"></div>
+                    <div class="map-label" style="left:40%;top:9%;width:20%">THE GRAND HALL</div>
 
-        <div class="map-frame">
-            <canvas id="gameCanvas" width="1100" height="720"></canvas>
-        </div>
+                    <div class="map-wall" style="left:3%;top:35%;width:19%;height:30%"></div>
+                    <div class="map-label" style="left:4%;top:47%;width:17%">LOUNGE</div>
 
-        <aside class="side-panel">
+                    <div class="map-wall" style="left:78%;top:35%;width:19%;height:30%"></div>
+                    <div class="map-label" style="left:79%;top:47%;width:17%">SECURITY</div>
 
-            <section class="side-box">
-                <h3>YOUR INFORMATION</h3>
-                <div id="roleDisplay" class="gold">Unknown</div>
-                <p id="roleDescription" class="small"></p>
+                    <div class="map-wall" style="left:35%;top:78%;width:30%;height:15%"></div>
+                    <div class="map-label" style="left:39%;top:83%;width:22%">MAIN ENTRANCE</div>
 
-                <div class="divider"></div>
+                    <div class="station" data-station="archive" style="left:27%;top:25%">
+                        ARCHIVE
+                        <small>Memory challenge</small>
+                    </div>
 
-                <div class="small">ACTIVITIES COMPLETED</div>
-                <div class="task-bar">
-                    <div class="task-progress" id="taskProgress"></div>
+                    <div class="station" data-station="vault" style="left:58%;top:25%">
+                        THE VAULT
+                        <small>Number challenge</small>
+                    </div>
+
+                    <div class="station" data-station="records" style="left:27%;top:65%">
+                        RECORDS ROOM
+                        <small>Pattern challenge</small>
+                    </div>
+
+                    <div class="station" data-station="security" style="left:58%;top:65%">
+                        SECURITY DESK
+                        <small>Investigations</small>
+                    </div>
+
+                    <div id="playerTokens"></div>
                 </div>
-                <div class="small" id="taskCount" style="margin-top:7px">0 completed</div>
-            </section>
+            </div>
 
-            <section class="side-box">
-                <h3>GUESTS</h3>
-                <div id="gamePlayers"></div>
-            </section>
+            <div class="game-controls">
+                <button onclick="interactStation()">INTERACT</button>
+                <button class="secondary" onclick="useAbility()">USE ABILITY</button>
+                <button class="secondary" onclick="showRole()">MY ROLE</button>
+                <button class="secondary" onclick="callMeeting()">MEETING</button>
+                <button class="danger" onclick="leaveRoom()">LEAVE GAME</button>
+            </div>
+        </main>
 
-            <section class="side-box">
-                <h3>CASINO CHAT</h3>
-                <div class="chat-log" id="chatLog"></div>
+        <aside class="sidebar">
+            <div class="side-section">
+                <h3>Players</h3>
+                <div id="sidePlayers"></div>
+            </div>
 
-                <div class="chat-controls">
-                    <input id="chatInput" maxlength="120" placeholder="Write a message...">
-                    <button class="primary" onclick="sendChat()">SEND</button>
+            <div class="side-section">
+                <h3>Casino Chat</h3>
+                <div id="chatMessages"></div>
+                <div class="chat-input">
+                    <input id="chatInput" maxlength="180" placeholder="Message...">
+                    <button onclick="sendChat()">SEND</button>
                 </div>
-            </section>
+            </div>
 
-            <section class="side-box">
-                <h3>YOUR ACTIONS</h3>
+            <div class="side-section">
+                <h3>Activity Log</h3>
+                <div id="eventLog"></div>
+            </div>
 
-                <div class="action-buttons">
-                    <button class="secondary" onclick="interact()">INTERACT</button>
-                    <button class="secondary" onclick="useAbility()">ABILITY</button>
-                    <button class="danger" onclick="callMeeting()">MEETING</button>
-                    <button class="secondary" onclick="showControls()">CONTROLS</button>
-                </div>
-
-                <p class="controls-note">
-                    WASD / ARROW KEYS: Move<br>
-                    E: Interact with nearby stations<br>
-                    Click a station: Interact
+            <div class="side-section">
+                <h3>Controls</h3>
+                <p style="font:12px Arial;color:var(--muted);line-height:1.5">
+                    W A S D or arrow keys to move<br>
+                    Walk near a station and press INTERACT<br>
+                    Complete challenges to earn points
                 </p>
-            </section>
-
+            </div>
         </aside>
     </div>
-</main>
+</section>
 
-<!-- ##############
-     MODAL
-############## -->
-
+<!-- MODAL -->
 <div id="modalBackdrop" class="modal-backdrop hidden">
     <div class="modal">
-        <div class="eyebrow" id="modalEyebrow">THE GRAND CASINO</div>
-        <h2 id="modalTitle">Welcome</h2>
+        <h2 id="modalTitle">Casino</h2>
         <div id="modalContent"></div>
         <div class="modal-actions" id="modalActions"></div>
     </div>
 </div>
 
-<div id="toast"></div>
-
 <script>
-/* ##############
-   GLOBAL VARIABLES
-############## */
+/* ############################################################
+   DEFAULT PEERJS CONNECTION
+############################################################ */
 
-const $ = id => document.getElementById(id);
+const STORAGE_KEY = "grandCasinoSaveV2";
+const MAX_PLAYERS = 8;
+const MIN_PLAYERS = 3;
 
 let peer = null;
-let hostConnection = null;
 let connections = {};
-let isHost = false;
-let roomCode = "";
 let myId = "";
 let myName = "";
-let myRole = "";
-let myScore = 0;
-
+let roomCode = "";
+let hostPeerId = "";
+let isHost = false;
+let connected = false;
 let gameStarted = false;
-let gameState = null;
-let gameTimer = null;
-let renderLoop = null;
-let lastMoveSent = 0;
-let lastFrame = 0;
-let toastTimeout = null;
+let myRole = "Guest";
+let myAbilityCooldown = 0;
+let currentStation = null;
+let currentChallenge = null;
+let timerInterval = null;
+let movementInterval = null;
+let lastMoveSend = 0;
+let localMeeting = null;
+let savedHostState = null;
 
-const MAP_WIDTH = 1100;
-const MAP_HEIGHT = 720;
+let gameState = {
+    players:{},
+    started:false,
+    seconds:600,
+    meeting:null,
+    hostCooldown:0,
+    gameEnded:false
+};
 
-const PLAYER_SPEED = 220;
+let chatHistory = [];
+let eventHistory = [];
 
-const stations = [
-    {id:"vault",name:"CODE VAULT",x:230,y:190,w:140,h:100,type:"activity"},
-    {id:"archive",name:"RECORD ARCHIVE",x:750,y:190,w:150,h:100,type:"activity"},
-    {id:"lounge",name:"MEMORY LOUNGE",x:230,y:510,w:150,h:100,type:"activity"},
-    {id:"security",name:"SECURITY DESK",x:750,y:510,w:150,h:100,type:"security"}
-];
+const map = document.getElementById("map");
 
-let keys = {};
-let position = {x:550,y:360};
-
-let lastAbility = 0;
-let meetingCooldown = 0;
-let localTasks = {};
-
-/* ##############
-   INPUT FIX
-############## */
-
-function isTyping() {
-    const element = document.activeElement;
-    if (!element) return false;
-
-    return (
-        element.tagName === "INPUT" ||
-        element.tagName === "TEXTAREA" ||
-        element.tagName === "SELECT" ||
-        element.isContentEditable
-    );
+function status(message) {
+    document.getElementById("connectionStatus").textContent = message;
 }
 
-document.addEventListener("keydown",event => {
-    if (isTyping()) return;
-
-    const key = event.key.toLowerCase();
-
-    if (["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"," "].includes(key)) {
-        event.preventDefault();
-    }
-
-    keys[key] = true;
-
-    if (key === "e" && gameStarted) {
-        interact();
-    }
-});
-
-document.addEventListener("keyup",event => {
-    keys[event.key.toLowerCase()] = false;
-});
-
-window.addEventListener("blur",() => {
-    keys = {};
-});
-
-/* ##############
-   GENERAL UI
-############## */
-
-function showScreen(name) {
-    $("homeScreen").classList.toggle("hidden",name !== "home");
-    $("lobbyScreen").classList.toggle("hidden",name !== "lobby");
-    $("gameScreen").classList.toggle("hidden",name !== "game");
-}
-
-function setHomeStatus(message) {
-    $("homeStatus").textContent = message;
-}
-
-function setLobbyStatus(message) {
-    $("lobbyStatus").textContent = message;
-}
-
-function showToast(message) {
-    $("toast").textContent = message;
-    $("toast").classList.add("show");
-
-    clearTimeout(toastTimeout);
-
-    toastTimeout = setTimeout(() => {
-        $("toast").classList.remove("show");
-    },2600);
-}
-
-function showModal(title,content,actions=[],eyebrow="THE GRAND CASINO") {
-    $("modalTitle").textContent = title;
-    $("modalContent").innerHTML = content;
-    $("modalEyebrow").textContent = eyebrow;
-    $("modalActions").innerHTML = "";
-
-    for (const action of actions) {
-        const button = document.createElement("button");
-        button.className = action.class || "primary";
-        button.textContent = action.text;
-        button.onclick = action.click;
-        $("modalActions").appendChild(button);
-    }
-
-    $("modalBackdrop").classList.remove("hidden");
-}
-
-function closeModal() {
-    $("modalBackdrop").classList.add("hidden");
-}
-
-function safeName(name) {
-    return String(name || "")
-        .replace(/[<>]/g,"")
-        .trim()
-        .slice(0,16);
+function showScreen(id) {
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
 }
 
 function randomCode() {
-    const characters = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
     let result = "";
-
-    for (let i=0;i<6;i++) {
-        result += characters[Math.floor(Math.random()*characters.length)];
+    for(let i=0;i<6;i++) {
+        result += chars[Math.floor(Math.random()*chars.length)];
     }
-
     return result;
 }
 
-function formatTime(seconds) {
-    const m = Math.floor(seconds/60);
-    const s = seconds%60;
-
-    return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+function getSaved() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    } catch {
+        return null;
+    }
 }
 
-/* ##############
-   PEERJS SETUP
-############## */
+function saveData() {
+    const data = {
+        roomCode,
+        hostPeerId,
+        myId,
+        myName,
+        isHost,
+        savedAt:Date.now()
+    };
+
+    if(isHost && gameState.players && Object.keys(gameState.players).length) {
+        data.hostState = gameState;
+        data.chatHistory = chatHistory;
+        data.eventHistory = eventHistory;
+        data.gameStarted = gameStarted;
+    }
+
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+}
+
+function clearSaved() {
+    localStorage.removeItem(STORAGE_KEY);
+}
 
 function makePeer(id) {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve,reject)=>{
         let p;
 
         try {
-            p = id ? new Peer(id,{
-                debug:1
-            }) : new Peer({
-                debug:1
-            });
-        } catch(error) {
-            reject(error);
+            p = id ? new Peer(id) : new Peer();
+        } catch(e) {
+            reject(e);
             return;
         }
 
-        let settled = false;
+        let finished = false;
 
-        const timeout = setTimeout(() => {
-            if (settled) return;
-            settled = true;
-
-            try { p.destroy(); } catch(e) {}
-
-            reject(new Error("PeerJS connection timed out. Check your internet connection."));
-        },15000);
-
-        p.on("open",id => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeout);
-            resolve({peer:p,id});
+        p.on("open",()=>{
+            if(finished) return;
+            finished = true;
+            resolve(p);
         });
 
-        p.on("error",error => {
-            if (settled) return;
-            settled = true;
-            clearTimeout(timeout);
-            reject(error);
+        p.on("error",err=>{
+            if(!finished) {
+                finished = true;
+                reject(err);
+            } else {
+                console.error("PeerJS error:",err);
+                status("Connection issue: " + err.type);
+            }
         });
 
-        p.on("disconnected",() => {
-            if (p.destroyed) return;
-
-            try {
+        p.on("disconnected",()=>{
+            status("Connection to PeerJS was interrupted. Reconnecting...");
+            if(!p.destroyed) {
                 p.reconnect();
-            } catch(e) {}
+            }
         });
     });
 }
 
-function readablePeerError(error) {
-    const type = error?.type || "";
-    const message = error?.message || "";
-
-    if (type === "unavailable-id") {
-        return "That room code is already being used. Try creating another room.";
-    }
-
-    if (type === "peer-unavailable") {
-        return "Room not found. Check the code and make sure the host is still in the lobby.";
-    }
-
-    if (type === "network") {
-        return "PeerJS could not reach its signalling server. Check your internet connection or try again.";
-    }
-
-    if (type === "server-error") {
-        return "The PeerJS signalling server returned an error. Try again shortly.";
-    }
-
-    if (type === "socket-error" || type === "socket-closed") {
-        return "Connection to the signalling server failed. Check your internet connection.";
-    }
-
-    return message || "An unknown connection error occurred.";
-}
-
-/* ##############
-   CREATE ROOM
-############## */
-
 async function createRoom() {
-    if (peer) {
-        showToast("You are already connected.");
-        return;
-    }
+    if(peer) return;
 
-    myName = safeName($("hostName").value);
-
-    if (!myName) {
-        setHomeStatus("Please enter your name first.");
-        return;
-    }
-
-    $("createButton").disabled = true;
-    setHomeStatus("Creating your private room...");
-
+    myName = document.getElementById("playerName").value.trim() || "Player";
+    myId = "player-" + Math.random().toString(36).slice(2,10);
     roomCode = randomCode();
+    hostPeerId = "grandcasino-" + roomCode.toLowerCase();
+    isHost = true;
 
-    const peerId = "grandcasino-" + roomCode.toLowerCase();
+    status("Opening your casino room...");
 
     try {
-        const result = await makePeer(peerId);
-
-        peer = result.peer;
-        myId = result.id;
-        isHost = true;
-
-        setupHost();
+        peer = await makePeer(hostPeerId);
+        setupPeerEvents();
 
         gameState = {
             players:{},
             started:false,
-            seconds:300,
+            seconds:600,
             meeting:null,
-            round:1,
-            totalTasks:0,
-            completedTasks:0
+            hostCooldown:0,
+            gameEnded:false
         };
 
         gameState.players[myId] = makePlayer(myId,myName);
 
-        enterLobby();
-
-        setLobbyStatus("Your room is ready. Invite your friends.");
-        $("headerStatus").textContent = "HOSTING ROOM";
-
-    } catch(error) {
-        setHomeStatus(readablePeerError(error));
-        roomCode = "";
+        connected = true;
+        saveData();
+        showLobby();
+        addEvent("Casino room created");
+    } catch(e) {
         peer = null;
-        myId = "";
-    } finally {
-        $("createButton").disabled = false;
+        status(peerErrorMessage(e));
     }
 }
-
-/* ##############
-   JOIN ROOM
-############## */
 
 async function joinRoom() {
-    if (peer) {
-        showToast("You are already connected.");
+    if(peer) return;
+
+    myName = document.getElementById("playerName").value.trim() || "Player";
+    roomCode = document.getElementById("roomInput").value.trim().toUpperCase();
+
+    if(roomCode.length !== 6) {
+        status("Enter a valid 6-character room code");
         return;
     }
 
-    myName = safeName($("joinName").value);
-    roomCode = $("joinCode").value.trim().toUpperCase();
-
-    if (!myName) {
-        setHomeStatus("Please enter your name first.");
-        return;
-    }
-
-    if (!/^[A-Z0-9]{6}$/.test(roomCode)) {
-        setHomeStatus("Room codes must contain 6 letters or numbers.");
-        return;
-    }
-
-    $("joinButton").disabled = true;
-    setHomeStatus("Connecting to the room...");
-
-    try {
-        const result = await makePeer(null);
-
-        peer = result.peer;
-        myId = result.id;
-        isHost = false;
-
-        $("headerStatus").textContent = "CONNECTING";
-
-        const hostId = "grandcasino-" + roomCode.toLowerCase();
-
-        const connection = peer.connect(hostId,{
-            reliable:true,
-            serialization:"json"
-        });
-
-        hostConnection = connection;
-
-        let finished = false;
-
-        const connectionTimeout = setTimeout(() => {
-            if (finished) return;
-
-            finished = true;
-
-            cleanupConnection();
-
-            setHomeStatus(
-                "Could not connect to that room. Check the code and ensure the host is still online."
-            );
-            $("joinButton").disabled = false;
-        },15000);
-
-        connection.on("open",() => {
-            if (finished) return;
-
-            finished = true;
-            clearTimeout(connectionTimeout);
-
-            connection.on("data",handleHostData);
-            connection.on("close",() => {
-                if (gameStarted) {
-                    showToast("You lost connection to the host.");
-                } else {
-                    setHomeStatus("The host disconnected.");
-                    leaveRoom();
-                }
-            });
-
-            connection.on("error",error => {
-                showToast("Connection error: " + readablePeerError(error));
-            });
-
-            sendToHost({
-                type:"JOIN",
-                id:myId,
-                name:myName
-            });
-
-            $("headerStatus").textContent = "CONNECTED";
-        });
-
-        connection.on("error",error => {
-            if (finished) return;
-
-            finished = true;
-            clearTimeout(connectionTimeout);
-
-            setHomeStatus(readablePeerError(error));
-            cleanupConnection();
-            $("joinButton").disabled = false;
-        });
-
-    } catch(error) {
-        setHomeStatus(readablePeerError(error));
-        cleanupConnection();
-        $("joinButton").disabled = false;
-    }
-}
-
-function cleanupConnection() {
-    try {
-        if (hostConnection) hostConnection.close();
-        if (peer) peer.destroy();
-    } catch(e) {}
-
-    peer = null;
-    hostConnection = null;
-    myId = "";
+    hostPeerId = "grandcasino-" + roomCode.toLowerCase();
+    myId = "player-" + Math.random().toString(36).slice(2,10);
     isHost = false;
+
+    status("Connecting to casino...");
+
+    try {
+        peer = await makePeer();
+        setupPeerEvents();
+
+        const conn = peer.connect(hostPeerId,{reliable:true});
+        setupClientConnection(conn);
+    } catch(e) {
+        peer = null;
+        status(peerErrorMessage(e));
+    }
 }
 
-/* ##############
-   PLAYER DATA
-############## */
+async function continuePlaying() {
+    const saved = getSaved();
+
+    if(!saved || !saved.roomCode || !saved.hostPeerId) {
+        status("No saved room found. Create or join a room first.");
+        return;
+    }
+
+    document.getElementById("playerName").value = saved.myName || "";
+    myName = saved.myName || "Player";
+    myId = saved.myId || ("player-" + Math.random().toString(36).slice(2,10));
+    roomCode = saved.roomCode;
+    hostPeerId = saved.hostPeerId;
+    isHost = !!saved.isHost;
+
+    status("Continuing your previous room...");
+
+    if(isHost) {
+        try {
+            peer = await makePeer(hostPeerId);
+            setupPeerEvents();
+
+            if(saved.hostState) {
+                gameState = saved.hostState;
+                chatHistory = saved.chatHistory || [];
+                eventHistory = saved.eventHistory || [];
+                gameStarted = !!saved.gameStarted;
+            } else {
+                gameState.players = {};
+                gameState.players[myId] = makePlayer(myId,myName);
+            }
+
+            if(!gameState.players[myId]) {
+                gameState.players[myId] = makePlayer(myId,myName);
+            }
+
+            connected = true;
+            saveData();
+
+            if(gameStarted) {
+                myRole = gameState.players[myId].role || "Guest";
+                showGame();
+                startTimerIfHost();
+            } else {
+                showLobby();
+            }
+
+            addEvent("Room reopened");
+        } catch(e) {
+            peer = null;
+            status("Could not reopen room: " + peerErrorMessage(e));
+        }
+    } else {
+        try {
+            peer = await makePeer();
+            setupPeerEvents();
+            const conn = peer.connect(hostPeerId,{reliable:true});
+            setupClientConnection(conn);
+        } catch(e) {
+            peer = null;
+            status(peerErrorMessage(e));
+        }
+    }
+}
+
+function peerErrorMessage(e) {
+    if(!e) return "Could not connect. Please try again.";
+    if(e.type === "unavailable-id") return "That room ID is already in use. The old host may still have the room open.";
+    if(e.type === "peer-unavailable") return "Room not found. Ask the host to reopen the room.";
+    if(e.type === "network") return "Network connection failed. Check your internet.";
+    if(e.type === "server-error") return "PeerJS connection service is unavailable.";
+    return e.message || e.type || "Connection failed";
+}
+
+function setupPeerEvents() {
+    peer.on("connection",conn=>{
+        if(!isHost) return;
+        setupHostConnection(conn);
+    });
+
+    peer.on("error",err=>{
+        console.error(err);
+        if(err.type === "unavailable-id") {
+            status("This room is already open in another tab.");
+        }
+    });
+}
+
+function setupHostConnection(conn) {
+    conn.on("open",()=>{
+        connections[conn.peer] = conn;
+    });
+
+    conn.on("data",data=>{
+        if(!data || !data.type) return;
+        handleHostMessage(conn,data);
+    });
+
+    conn.on("close",()=>{
+        delete connections[conn.peer];
+        const player = gameState.players[conn.metadata?.playerId];
+        if(player) {
+            player.connected = false;
+            broadcastState();
+        }
+    });
+
+    conn.on("error",err=>console.warn("Connection error",err));
+}
+
+function setupClientConnection(conn) {
+    conn.on("open",()=>{
+        connected = true;
+        connections.host = conn;
+
+        conn.send({
+            type:"JOIN",
+            id:myId,
+            name:myName
+        });
+
+        status("Connected. Joining lobby...");
+    });
+
+    conn.on("data",handleClientMessage);
+
+    conn.on("close",()=>{
+        connected = false;
+        status("Disconnected from the host. Use Continue Playing to reconnect.");
+    });
+
+    conn.on("error",err=>{
+        status("Connection error: " + (err.type || "unknown"));
+    });
+}
+
+/* ############################################################
+   PLAYER AND ROOM STATE
+############################################################ */
 
 function makePlayer(id,name) {
     return {
         id,
         name,
-        x:550 + Math.random()*80-40,
-        y:360 + Math.random()*80-40,
+        x:500,
+        y:350,
+        points:5000,
+        role:"Guest",
         connected:true,
         alive:true,
-        score:0,
-        role:null,
-        colour:["#c6a66b","#a84b43","#789a83","#b2a4c4","#c18c68","#7796a6","#d0b88c","#8b9b65"][Math.floor(Math.random()*8)]
+        completed:[],
+        abilityUsed:false
     };
 }
 
 function publicState() {
     const players = {};
 
-    for (const [id,p] of Object.entries(gameState.players)) {
+    for(const [id,p] of Object.entries(gameState.players)) {
         players[id] = {
             id:p.id,
             name:p.name,
             x:p.x,
             y:p.y,
+            points:p.points,
             connected:p.connected,
-            alive:p.alive,
-            score:p.score,
-            colour:p.colour
+            alive:p.alive
         };
     }
 
@@ -1325,247 +1088,249 @@ function publicState() {
         started:gameState.started,
         seconds:gameState.seconds,
         meeting:gameState.meeting,
-        round:gameState.round,
-        totalTasks:gameState.totalTasks,
-        completedTasks:gameState.completedTasks
+        gameEnded:gameState.gameEnded
     };
 }
 
-/* ##############
-   HOST CONNECTIONS
-############## */
-
-function setupHost() {
-    peer.on("connection",connection => {
-        if (gameState?.started) {
-            connection.on("open",() => {
-                connection.send({
-                    type:"REJECT",
-                    reason:"This game has already started."
-                });
-                connection.close();
-            });
-            return;
-        }
-
-        connections[connection.peer] = connection;
-
-        connection.on("data",data => {
-            handleClientData(connection.peer,data);
-        });
-
-        connection.on("close",() => {
-            delete connections[connection.peer];
-
-            const player = gameState?.players[connection.peer];
-
-            if (player) {
-                player.connected = false;
-                broadcastLobby();
-                broadcastState();
-            }
-        });
-
-        connection.on("error",error => {
-            console.warn("Player connection error:",error);
-        });
-
-        connection.on("open",() => {
-            connection.send({
-                type:"WELCOME",
-                roomCode
-            });
-        });
-    });
+function sendToHost(data) {
+    if(isHost) {
+        handleHostMessage(null,data);
+    } else if(connections.host && connections.host.open) {
+        connections.host.send(data);
+    }
 }
 
-function sendTo(id,data) {
-    const connection = connections[id];
-
-    if (connection?.open) {
-        try {
-            connection.send(data);
-        } catch(error) {
-            console.warn(error);
-        }
+function sendToPlayer(id,data) {
+    if(id === myId) {
+        handleClientMessage(data);
+        return;
     }
+
+    const conn = connections[id];
+    if(conn && conn.open) conn.send(data);
 }
 
 function broadcast(data) {
-    for (const connection of Object.values(connections)) {
-        if (connection?.open) {
-            try {
-                connection.send(data);
-            } catch(error) {
-                console.warn(error);
-            }
-        }
-    }
-}
-
-function broadcastLobby() {
-    broadcast({
-        type:"LOBBY",
-        state:publicState()
+    Object.values(connections).forEach(conn=>{
+        if(conn && conn.open) conn.send(data);
     });
-
-    updateLobby();
 }
 
 function broadcastState() {
-    const state = publicState();
-
+    if(!isHost) return;
     broadcast({
         type:"STATE",
-        state
+        state:publicState()
     });
-
-    if (isHost) {
-        gameState = gameState;
-        renderGame();
-    }
+    renderPlayers();
+    updateSidePlayers();
+    updateLobby();
+    saveData();
 }
 
-/* ##############
-   CLIENT MESSAGE HANDLER
-############## */
+function showLobby() {
+    showScreen("lobby");
+    document.getElementById("lobbyCode").textContent = roomCode;
+    updateLobby();
+}
 
-function handleClientData(sender,data) {
-    if (!isHost || !data || typeof data !== "object") return;
+function updateLobby() {
+    if(!isHost && !connected) return;
 
-    if (data.type === "JOIN") {
-        if (gameState.started) {
-            sendTo(sender,{
-                type:"REJECT",
-                reason:"The game has already started."
-            });
+    const players = Object.values(gameState.players || {});
+    document.getElementById("lobbyCount").textContent =
+        players.length + " / " + MAX_PLAYERS + " players";
+
+    document.getElementById("lobbyPlayers").innerHTML = players.map(p=>`
+        <div class="player-card">
+            <span>${escapeHtml(p.name)}</span>
+            <span class="host-label">${p.id === (isHost ? myId : hostPeerId) ? "HOST" : (p.connected ? "CONNECTED" : "OFFLINE")}</span>
+        </div>
+    `).join("");
+
+    const start = document.getElementById("startButton");
+    start.disabled = !isHost || players.length < MIN_PLAYERS || players.length > MAX_PLAYERS;
+
+    document.getElementById("lobbyStatus").textContent =
+        isHost ? "You are the host. Share the room code with your friends." :
+        "Waiting for the host to start the game...";
+}
+
+function copyRoomCode() {
+    navigator.clipboard?.writeText(roomCode);
+    document.getElementById("lobbyStatus").textContent = "Room code copied.";
+}
+
+/* ############################################################
+   HOST MESSAGE HANDLING
+############################################################ */
+
+function handleHostMessage(conn,data) {
+    if(!isHost) return;
+
+    if(data.type === "JOIN") {
+        const id = String(data.id || "");
+        const name = String(data.name || "Player").slice(0,16);
+
+        if(!id) return;
+
+        const existing = gameState.players[id];
+
+        if(!existing && Object.keys(gameState.players).length >= MAX_PLAYERS) {
+            conn?.send({type:"REJECT",reason:"This room is full."});
             return;
         }
 
-        if (Object.keys(gameState.players).length >= 8) {
-            sendTo(sender,{
-                type:"REJECT",
-                reason:"This room is full."
-            });
+        if(gameStarted && !existing) {
+            conn?.send({type:"REJECT",reason:"The game has already started."});
             return;
         }
 
-        if (gameState.players[sender]) return;
+        if(existing) {
+            existing.connected = true;
+            existing.name = name;
+        } else {
+            gameState.players[id] = makePlayer(id,name);
+        }
 
-        const name = safeName(data.name) || "Guest";
+        if(conn) {
+            connections[id] = conn;
+            conn.metadata = {playerId:id};
+        }
 
-        gameState.players[sender] = makePlayer(sender,name);
+        if(conn) {
+            conn.send({type:"WELCOME",state:publicState()});
+            if(gameStarted) {
+                conn.send({
+                    type:"ROLE",
+                    role:gameState.players[id].role
+                });
+            }
+        }
 
-        sendTo(sender,{
-            type:"LOBBY",
-            state:publicState()
-        });
-
-        broadcastLobby();
+        broadcastState();
+        addEvent(name + " joined the casino");
         return;
     }
+
+    const sender = data.id || conn?.metadata?.playerId;
+    if(!sender || !gameState.players[sender]) return;
 
     const player = gameState.players[sender];
 
-    if (!player || !player.connected || !player.alive) return;
+    if(data.type === "MOVE") {
+        if(!gameStarted || !player.alive) return;
 
-    if (data.type === "MOVE" && gameState.started) {
         const x = Number(data.x);
         const y = Number(data.y);
 
-        if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+        if(!Number.isFinite(x) || !Number.isFinite(y)) return;
 
-        const distance = Math.hypot(x-player.x,y-player.y);
+        const dx = x-player.x;
+        const dy = y-player.y;
+        const distance = Math.sqrt(dx*dx+dy*dy);
 
-        if (distance > 45) return;
+        if(distance > 65) return;
 
-        player.x = Math.max(30,Math.min(MAP_WIDTH-30,x));
-        player.y = Math.max(30,Math.min(MAP_HEIGHT-30,y));
+        player.x = Math.max(25,Math.min(975,x));
+        player.y = Math.max(25,Math.min(625,y));
 
-        broadcastPosition(sender,player);
+        broadcast({
+            type:"POSITION",
+            id:sender,
+            x:player.x,
+            y:player.y
+        });
         return;
     }
 
-    if (data.type === "CHAT") {
-        hostChat(player,data.message);
+    if(data.type === "CHAT") {
+        hostChat(sender,data.message);
         return;
     }
 
-    if (data.type === "TASK") {
-        hostTask(sender,data.station,data.answer);
+    if(data.type === "TASK_REQUEST") {
+        createTaskFor(sender,data.station);
         return;
     }
 
-    if (data.type === "MEETING") {
+    if(data.type === "TASK_ANSWER") {
+        checkTaskAnswer(sender,data.answer);
+        return;
+    }
+
+    if(data.type === "INVESTIGATE") {
+        if(player.role !== "Security") return;
+
+        const target = gameState.players[data.target];
+        if(!target || !target.alive) return;
+
+        sendToPlayer(sender,{
+            type:"INVESTIGATION_RESULT",
+            name:target.name,
+            role:target.role
+        });
+        return;
+    }
+
+    if(data.type === "ABILITY") {
+        hostAbility(sender);
+        return;
+    }
+
+    if(data.type === "MEETING") {
         hostMeeting(sender);
         return;
     }
 
-    if (data.type === "VOTE") {
+    if(data.type === "VOTE") {
         hostVote(sender,data.target);
         return;
     }
-
-    if (data.type === "ABILITY") {
-        hostAbility(sender);
-        return;
-    }
 }
 
-function broadcastPosition(id,player) {
-    broadcast({
-        type:"POSITION",
-        id,
-        x:player.x,
-        y:player.y
-    });
-}
+/* ############################################################
+   CLIENT MESSAGE HANDLING
+############################################################ */
 
-/* ##############
-   CLIENT MESSAGE HANDLER
-############## */
+function handleClientMessage(data) {
+    if(!data || !data.type) return;
 
-function handleHostData(data) {
-    if (!data) return;
-
-    if (data.type === "WELCOME") {
+    if(data.type === "REJECT") {
+        status(data.reason || "Room rejected your connection.");
         return;
     }
 
-    if (data.type === "REJECT") {
-        setHomeStatus(data.reason || "Room rejected your connection.");
-        leaveRoom();
-        return;
-    }
-
-    if (data.type === "LOBBY") {
+    if(data.type === "WELCOME") {
         gameState = data.state;
-        enterLobby();
+        connected = true;
+        saveData();
+        showLobby();
         return;
     }
 
-    if (data.type === "START") {
+    if(data.type === "STATE") {
         gameState = data.state;
-        myRole = data.role;
-        myScore = 0;
-        startLocalGame();
-        return;
-    }
+        gameStarted = !!gameState.started;
 
-    if (data.type === "STATE") {
-        gameState = data.state;
-
-        if (gameStarted) {
-            renderGame();
-        } else {
+        if(gameStarted && document.getElementById("game").classList.contains("active")) {
+            renderPlayers();
+            updateSidePlayers();
+            updateGameInfo();
+        } else if(!gameStarted) {
             updateLobby();
         }
-
         return;
     }
 
-    if (data.type === "POSITION") {
-        if (gameState?.players?.[data.id]) {
+    if(data.type === "ROLE") {
+        myRole = data.role;
+        showRole();
+        return;
+    }
+
+    if(data.type === "POSITION") {
+        if(gameState.players[data.id]) {
             gameState.players[data.id].x = data.x;
             gameState.players[data.id].y = data.y;
             renderPlayers();
@@ -1573,240 +1338,726 @@ function handleHostData(data) {
         return;
     }
 
-    if (data.type === "CHAT") {
+    if(data.type === "CHAT") {
         appendChat(data.name,data.message);
         return;
     }
 
-    if (data.type === "TASK_RESULT") {
-        if (data.success) {
-            myScore = data.score;
-            showToast("Activity completed! +" + data.points + " points.");
+    if(data.type === "EVENT") {
+        addEvent(data.message,false);
+        return;
+    }
+
+    if(data.type === "TASK_PROMPT") {
+        currentChallenge = data.challenge;
+        openTaskModal(data.challenge);
+        return;
+    }
+
+    if(data.type === "TASK_RESULT") {
+        if(data.success) {
             closeModal();
+            addEvent("You completed a challenge and earned " + data.reward + " points");
         } else {
-            showToast(data.message || "That answer was incorrect.");
+            document.getElementById("taskFeedback").textContent = "Incorrect answer. Try again.";
         }
         return;
     }
 
-    if (data.type === "MEETING") {
-        openVoting(data.players);
+    if(data.type === "INVESTIGATION_RESULT") {
+        showModal("Security Report",
+            `<p><strong>${escapeHtml(data.name)}</strong> has the role:</p>
+             <h2 style="text-align:center">${escapeHtml(data.role)}</h2>`,
+            [{label:"CLOSE",fn:closeModal}]);
         return;
     }
 
-    if (data.type === "MEETING_RESULT") {
-        closeModal();
-        showModal(
-            "MEETING RESULT",
-            data.message,
-            [{text:"CONTINUE",click:closeModal}]
-        );
+    if(data.type === "MEETING_START") {
+        localMeeting = data.meeting;
+        openVoting(data.meeting);
         return;
     }
 
-    if (data.type === "INVESTIGATION_RESULT") {
-        showModal(
-            "SECURITY REPORT",
-            data.message,
-            [{text:"CLOSE",click:closeModal}]
-        );
+    if(data.type === "MEETING_RESULT") {
+        showMeetingResult(data);
         return;
     }
 
-    if (data.type === "GAME_OVER") {
+    if(data.type === "GAME_OVER") {
         gameStarted = false;
-        stopGameLoops();
+        showModal("Game Over",
+            `<p>${escapeHtml(data.message)}</p>`,
+            [{label:"RETURN TO LOBBY",fn:()=>{
+                closeModal();
+                showLobby();
+            }}]);
+        return;
+    }
 
-        showModal(
-            "GAME OVER",
-            `<div class="role-card">${data.message}</div>`,
-            [{
-                text:"RETURN TO LOBBY",
-                click:() => {
-                    closeModal();
-                    showScreen("lobby");
-                }
-            }]
-        );
+    if(data.type === "TIMER") {
+        gameState.seconds = data.seconds;
+        updateGameInfo();
     }
 }
 
-/* ##############
-   ENTER LOBBY
-############## */
-
-function enterLobby() {
-    showScreen("lobby");
-
-    $("roomCodeDisplay").textContent = roomCode;
-
-    updateLobby();
-}
-
-function updateLobby() {
-    if (!gameState) return;
-
-    const players = Object.values(gameState.players || {});
-
-    $("playerCount").textContent = players.length + " / 8";
-
-    $("lobbyPlayers").innerHTML = "";
-
-    for (const player of players) {
-        const row = document.createElement("div");
-        row.className = "player-row";
-
-        const name = document.createElement("div");
-        name.className = "player-name";
-
-        const dot = document.createElement("span");
-        dot.className = "player-dot";
-
-        const label = document.createElement("span");
-        label.textContent = player.name;
-
-        name.append(dot,label);
-
-        const tag = document.createElement("span");
-        tag.className = "host-tag";
-        tag.textContent = player.id === (isHost ? myId : Object.keys(gameState.players)[0])
-            ? "HOST"
-            : (player.connected ? "CONNECTED" : "LEFT");
-
-        row.append(name,tag);
-        $("lobbyPlayers").appendChild(row);
-    }
-
-    $("startButton").disabled = !isHost || players.filter(p=>p.connected).length < 3;
-
-    if (!isHost) {
-        $("startButton").textContent = "WAITING FOR HOST";
-    } else {
-        $("startButton").textContent = "OPEN THE CASINO";
-    }
-}
-
-/* ##############
+/* ############################################################
    START GAME
-############## */
+############################################################ */
 
 function startGame() {
-    if (!isHost) return;
+    if(!isHost) return;
 
     const players = Object.values(gameState.players).filter(p=>p.connected);
 
-    if (players.length < 3) {
-        setLobbyStatus("You need at least 3 connected players.");
-        return;
-    }
-
-    if (players.length > 8) {
-        setLobbyStatus("The maximum is 8 players.");
+    if(players.length < MIN_PLAYERS || players.length > MAX_PLAYERS) {
         return;
     }
 
     const shuffled = [...players].sort(()=>Math.random()-.5);
 
-    shuffled.forEach((player,index) => {
-        player.role = index === 0
-            ? "Cheater"
-            : index === 1
-                ? "Security"
-                : "Guest";
+    shuffled.forEach((p,i)=>{
+        gameState.players[p.id].role =
+            i === 0 ? "Cheater" :
+            i === 1 ? "Security" :
+            "Guest";
+
+        gameState.players[p.id].points = 5000;
+        gameState.players[p.id].completed = [];
+        gameState.players[p.id].alive = true;
     });
 
     gameState.started = true;
-    gameState.seconds = 300;
+    gameState.seconds = 600;
     gameState.meeting = null;
-    gameState.round = 1;
-    gameState.totalTasks = players.length * 3;
-    gameState.completedTasks = 0;
+    gameState.gameEnded = false;
+    gameStarted = true;
 
-    for (const player of players) {
-        if (player.id === myId) {
-            myRole = player.role;
-            myScore = 0;
-            startLocalGame();
-        } else {
-            sendTo(player.id,{
-                type:"START",
-                state:publicState(),
-                role:player.role
+    for(const p of players) {
+        if(p.id !== myId) {
+            sendToPlayer(p.id,{
+                type:"ROLE",
+                role:gameState.players[p.id].role
             });
         }
     }
 
-    startHostTimer();
-    broadcastState();
+    myRole = gameState.players[myId].role;
+
+    broadcast({
+        type:"STATE",
+        state:publicState()
+    });
+
+    showGame();
+    showRole();
+    startTimerIfHost();
+    addEvent("The game has begun");
+    broadcastEvent("The game has begun");
+    saveData();
 }
 
-/* ##############
-   LOCAL GAME START
-############## */
+function showGame() {
+    showScreen("game");
+    document.getElementById("gameRoomCode").textContent = roomCode;
+    renderPlayers();
+    updateSidePlayers();
+    updateGameInfo();
+    renderChat();
+    renderEvents();
+    startMovement();
+}
 
-function startLocalGame() {
-    gameStarted = true;
-    localTasks = {};
-    lastAbility = 0;
-    meetingCooldown = 0;
+/* ############################################################
+   PLAYER MOVEMENT
+############################################################ */
 
-    position = {
-        x:550,
-        y:360
+const keys = {};
+const moveSpeed = 4;
+
+window.addEventListener("keydown",e=>{
+    const tag = document.activeElement?.tagName;
+    if(tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if(document.activeElement?.isContentEditable) return;
+
+    const key = e.key.toLowerCase();
+
+    if(["w","a","s","d","arrowup","arrowdown","arrowleft","arrowright"].includes(key)) {
+        keys[key] = true;
+        e.preventDefault();
+    }
+});
+
+window.addEventListener("keyup",e=>{
+    keys[e.key.toLowerCase()] = false;
+});
+
+window.addEventListener("blur",()=>{
+    Object.keys(keys).forEach(k=>keys[k]=false);
+});
+
+function startMovement() {
+    if(movementInterval) clearInterval(movementInterval);
+
+    movementInterval = setInterval(()=>{
+        if(!gameStarted || !gameState.players[myId]) return;
+
+        let dx = 0;
+        let dy = 0;
+
+        if(keys.w || keys.arrowup) dy -= moveSpeed;
+        if(keys.s || keys.arrowdown) dy += moveSpeed;
+        if(keys.a || keys.arrowleft) dx -= moveSpeed;
+        if(keys.d || keys.arrowright) dx += moveSpeed;
+
+        if(!dx && !dy) return;
+
+        const p = gameState.players[myId];
+
+        p.x = Math.max(25,Math.min(975,p.x+dx));
+        p.y = Math.max(25,Math.min(625,p.y+dy));
+
+        renderPlayers();
+
+        const now = Date.now();
+        if(now-lastMoveSend > 100) {
+            lastMoveSend = now;
+            sendToHost({
+                type:"MOVE",
+                id:myId,
+                x:p.x,
+                y:p.y
+            });
+        }
+    },30);
+}
+
+function renderPlayers() {
+    const container = document.getElementById("playerTokens");
+    if(!container) return;
+
+    container.innerHTML = "";
+
+    Object.values(gameState.players || {}).forEach(p=>{
+        const token = document.createElement("div");
+        token.className = "player-token" + (p.id === myId ? " me" : "");
+        token.style.left = (p.x/1000*100) + "%";
+        token.style.top = (p.y/650*100) + "%";
+        token.textContent = (p.name || "?").slice(0,1).toUpperCase();
+        token.title = p.name;
+        container.appendChild(token);
+    });
+}
+
+/* ############################################################
+   STATIONS AND SKILL CHALLENGES
+############################################################ */
+
+const stations = {
+    archive:{name:"Archive",x:330,y:210},
+    vault:{name:"The Vault",x:700,y:210},
+    records:{name:"Records Room",x:330,y:480},
+    security:{name:"Security Desk",x:700,y:480}
+};
+
+function nearestStation() {
+    const p = gameState.players[myId];
+    if(!p) return null;
+
+    let best = null;
+    let bestDistance = Infinity;
+
+    for(const [id,s] of Object.entries(stations)) {
+        const d = Math.hypot(p.x-s.x,p.y-s.y);
+        if(d < bestDistance) {
+            bestDistance = d;
+            best = id;
+        }
+    }
+
+    return bestDistance < 150 ? best : null;
+}
+
+function interactStation() {
+    if(!gameStarted) return;
+
+    currentStation = nearestStation();
+
+    if(!currentStation) {
+        showModal("Too Far Away",
+            "<p>Walk closer to a station before interacting with it.</p>",
+            [{label:"OK",fn:closeModal}]);
+        return;
+    }
+
+    if(currentStation === "security") {
+        if(myRole !== "Security") {
+            showModal("Security Desk",
+                "<p>This desk is restricted to the Security role.</p>",
+                [{label:"CLOSE",fn:closeModal}]);
+            return;
+        }
+
+        openInvestigation();
+        return;
+    }
+
+    sendToHost({
+        type:"TASK_REQUEST",
+        id:myId,
+        station:currentStation
+    });
+}
+
+function createTaskFor(playerId,station) {
+    if(!isHost || !stations[station]) return;
+
+    const player = gameState.players[playerId];
+    if(!player || !player.alive) return;
+
+    const challenges = {
+        archive:()=>{
+            const a = Math.floor(Math.random()*20)+10;
+            const b = Math.floor(Math.random()*20)+10;
+            return {
+                prompt:`What is ${a} + ${b}?`,
+                answer:String(a+b),
+                type:"text"
+            };
+        },
+        vault:()=>{
+            const a = Math.floor(Math.random()*8)+2;
+            const b = Math.floor(Math.random()*8)+2;
+            return {
+                prompt:`A vault has ${a} rows with ${b} items in each row. How many items are there?`,
+                answer:String(a*b),
+                type:"text"
+            };
+        },
+        records:()=>{
+            const sequence = Array.from({length:4},()=>Math.floor(Math.random()*8)+1);
+            const answer = sequence.join("");
+            return {
+                prompt:`Remember this sequence: ${sequence.join(" - ")}. Enter the digits without spaces.`,
+                answer,
+                type:"text"
+            };
+        }
     };
 
-    if (gameState.players[myId]) {
-        position.x = gameState.players[myId].x;
-        position.y = gameState.players[myId].y;
-    }
+    const challenge = challenges[station]();
 
-    showScreen("game");
+    if(!gameState.taskData) gameState.taskData = {};
 
-    let description = "";
+    gameState.taskData[playerId] = {
+        answer:challenge.answer,
+        expires:Date.now()+60000,
+        station
+    };
 
-    if (myRole === "Cheater") {
-        description = "You are the Cheater. Blend in and avoid being discovered.";
-    } else if (myRole === "Security") {
-        description = "You are Security. Investigate suspicious guests and identify the cheater.";
+    sendToPlayer(playerId,{
+        type:"TASK_PROMPT",
+        challenge:{
+            prompt:challenge.prompt,
+            station
+        }
+    });
+}
+
+function openTaskModal(challenge) {
+    showModal(stations[challenge.station].name,
+        `<p>${escapeHtml(challenge.prompt)}</p>
+         <input id="taskAnswer" autocomplete="off" placeholder="Your answer">
+         <p id="taskFeedback" style="color:var(--red);font-size:13px"></p>`,
+        [
+            {label:"SUBMIT",fn:submitTask},
+            {label:"CANCEL",fn:closeModal,secondary:true}
+        ]);
+}
+
+function submitTask() {
+    const input = document.getElementById("taskAnswer");
+    if(!input) return;
+
+    sendToHost({
+        type:"TASK_ANSWER",
+        id:myId,
+        answer:input.value.trim()
+    });
+}
+
+function checkTaskAnswer(playerId,answer) {
+    if(!isHost) return;
+
+    const task = gameState.taskData?.[playerId];
+    const player = gameState.players[playerId];
+
+    if(!task || !player) return;
+
+    const success =
+        Date.now() < task.expires &&
+        String(answer).trim().toLowerCase() === task.answer.toLowerCase();
+
+    if(success) {
+        const reward = 250;
+        player.points += reward;
+        player.completed.push(task.station);
+        delete gameState.taskData[playerId];
+
+        sendToPlayer(playerId,{
+            type:"TASK_RESULT",
+            success:true,
+            reward
+        });
+
+        broadcastEvent(player.name + " completed a casino challenge");
+        broadcastState();
     } else {
-        description = "You are a Guest. Complete activities and find the cheater.";
-    }
-
-    $("roleDisplay").textContent = myRole.toUpperCase();
-    $("roleDescription").textContent = description;
-
-    showModal(
-        "YOUR SECRET ROLE",
-        `<div class="role-card">
-            <div class="eyebrow">Your assigned role</div>
-            <h2>${myRole.toUpperCase()}</h2>
-            ${description}
-        </div>`,
-        [{text:"ENTER THE CASINO",click:closeModal}]
-    );
-
-    renderGame();
-    startMovementLoop();
-
-    if (!isHost) {
-        clearInterval(gameTimer);
-
-        gameTimer = setInterval(() => {
-            if (!gameState) return;
-            $("timerDisplay").textContent = formatTime(gameState.seconds);
-        },500);
+        sendToPlayer(playerId,{
+            type:"TASK_RESULT",
+            success:false
+        });
     }
 }
 
-/* ##############
-   HOST TIMER
-############## */
+/* ############################################################
+   SECURITY AND CHEATER ABILITIES
+############################################################ */
 
-function startHostTimer() {
-    clearInterval(gameTimer);
+function openInvestigation() {
+    const others = Object.values(gameState.players).filter(p=>p.id !== myId && p.alive);
 
-    gameTimer = setInterval(() => {
-        if (!gameState?.started) return;
+    if(!others.length) return;
+
+    showModal("Security Investigation",
+        `<p>Select a player to investigate.</p>
+         <select id="investigateTarget" style="width:100%;padding:12px;background:#151513;color:var(--cream);border:1px solid var(--border)">
+            ${others.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join("")}
+         </select>`,
+        [
+            {label:"INVESTIGATE",fn:()=>{
+                const target = document.getElementById("investigateTarget").value;
+                sendToHost({type:"INVESTIGATE",id:myId,target});
+                closeModal();
+            }},
+            {label:"CANCEL",fn:closeModal,secondary:true}
+        ]);
+}
+
+function useAbility() {
+    if(!gameStarted) return;
+
+    if(Date.now() < myAbilityCooldown) {
+        showModal("Ability Cooling Down",
+            "<p>Your special ability is not ready yet.</p>",
+            [{label:"OK",fn:closeModal}]);
+        return;
+    }
+
+    sendToHost({type:"ABILITY",id:myId});
+}
+
+function hostAbility(sender) {
+    const player = gameState.players[sender];
+    if(!player || !player.alive) return;
+
+    const now = Date.now();
+    if(!gameState.abilityCooldowns) gameState.abilityCooldowns = {};
+
+    if(now < (gameState.abilityCooldowns[sender] || 0)) {
+        sendToPlayer(sender,{
+            type:"EVENT",
+            message:"Your ability is still cooling down."
+        });
+        return;
+    }
+
+    gameState.abilityCooldowns[sender] = now+45000;
+
+    if(player.role === "Cheater") {
+        const others = Object.values(gameState.players).filter(p=>p.id !== sender && p.alive);
+
+        if(!others.length) return;
+
+        const target = others[Math.floor(Math.random()*others.length)];
+
+        sendToPlayer(sender,{
+            type:"INVESTIGATION_RESULT",
+            name:target.name,
+            role:"Unknown"
+        });
+
+        sendToPlayer(sender,{
+            type:"EVENT",
+            message:"Your X-Ray ability detected another player nearby."
+        });
+    } else if(player.role === "Security") {
+        const others = Object.values(gameState.players).filter(p=>p.id !== sender && p.alive);
+
+        if(!others.length) return;
+
+        const target = others[Math.floor(Math.random()*others.length)];
+
+        sendToPlayer(sender,{
+            type:"INVESTIGATION_RESULT",
+            name:target.name,
+            role:target.role
+        });
+    } else {
+        sendToPlayer(sender,{
+            type:"EVENT",
+            message:"You do not have a special ability."
+        });
+    }
+}
+
+/* ############################################################
+   MEETINGS AND VOTING
+############################################################ */
+
+function callMeeting() {
+    if(!gameStarted) return;
+    sendToHost({type:"MEETING",id:myId});
+}
+
+function hostMeeting(sender) {
+    if(!isHost || !gameStarted) return;
+
+    const now = Date.now();
+
+    if(now < (gameState.hostCooldown || 0)) {
+        sendToPlayer(sender,{
+            type:"EVENT",
+            message:"A meeting was held recently. Please wait."
+        });
+        return;
+    }
+
+    gameState.hostCooldown = now+60000;
+
+    const players = Object.values(gameState.players)
+        .filter(p=>p.connected && p.alive);
+
+    if(players.length < 3) return;
+
+    const meeting = {
+        id:Date.now(),
+        players:players.map(p=>({id:p.id,name:p.name})),
+        votes:{}
+    };
+
+    gameState.meeting = meeting;
+
+    broadcast({
+        type:"MEETING_START",
+        meeting
+    });
+
+    openVoting(meeting);
+    broadcastEvent(gameState.players[sender].name + " called a meeting");
+}
+
+function openVoting(meeting) {
+    const options = meeting.players.filter(p=>p.id !== myId);
+
+    showModal("Emergency Meeting",
+        `<p>Discuss who you think is the Cheater. Then cast your vote.</p>
+         <div id="voteOptions"></div>`,
+        [{label:"SKIP VOTE",fn:()=>castVote("skip"),secondary:true}]);
+
+    const container = document.getElementById("voteOptions");
+
+    options.forEach(p=>{
+        const btn = document.createElement("button");
+        btn.textContent = "Vote for " + p.name;
+        btn.onclick = ()=>castVote(p.id);
+        container.appendChild(btn);
+    });
+}
+
+function castVote(target) {
+    sendToHost({
+        type:"VOTE",
+        id:myId,
+        target
+    });
+    closeModal();
+    addEvent("Your vote has been submitted");
+}
+
+function hostVote(sender,target) {
+    if(!isHost || !gameState.meeting) return;
+
+    const meeting = gameState.meeting;
+    if(!meeting.players.some(p=>p.id === sender)) return;
+
+    if(target !== "skip" && !meeting.players.some(p=>p.id === target)) return;
+
+    if(meeting.votes[sender]) return;
+
+    meeting.votes[sender] = target;
+
+    const totalVotes = Object.keys(meeting.votes).length;
+
+    if(totalVotes < meeting.players.length) return;
+
+    const counts = {};
+
+    Object.values(meeting.votes).forEach(v=>{
+        if(v !== "skip") counts[v] = (counts[v] || 0)+1;
+    });
+
+    let highest = 0;
+    let winner = null;
+    let tie = false;
+
+    Object.entries(counts).forEach(([id,count])=>{
+        if(count > highest) {
+            highest = count;
+            winner = id;
+            tie = false;
+        } else if(count === highest) {
+            tie = true;
+        }
+    });
+
+    if(tie) winner = null;
+
+    let resultMessage = "The meeting ended without an accusation.";
+
+    if(winner) {
+        const accused = gameState.players[winner];
+
+        if(accused) {
+            resultMessage = accused.name + " received the most votes.";
+        }
+    }
+
+    const result = {
+        type:"MEETING_RESULT",
+        message:resultMessage,
+        accused:winner,
+        counts
+    };
+
+    broadcast(result);
+    showMeetingResult(result);
+    gameState.meeting = null;
+    saveData();
+}
+
+function showMeetingResult(data) {
+    const accused = data.accused ? gameState.players[data.accused] : null;
+
+    showModal("Meeting Results",
+        `<p>${escapeHtml(data.message)}</p>
+         ${accused ? `<p>Accused player: <strong>${escapeHtml(accused.name)}</strong></p>` : ""}
+         <p style="color:var(--muted)">The meeting has ended. Continue exploring the casino.</p>`,
+        [{label:"CONTINUE",fn:closeModal}]);
+}
+
+/* ############################################################
+   CHAT AND EVENT LOG
+############################################################ */
+
+function sendChat() {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+
+    if(!message) return;
+
+    input.value = "";
+    sendToHost({
+        type:"CHAT",
+        id:myId,
+        message
+    });
+}
+
+document.getElementById("chatInput").addEventListener("keydown",e=>{
+    if(e.key === "Enter") sendChat();
+});
+
+function hostChat(sender,message) {
+    const player = gameState.players[sender];
+    if(!player) return;
+
+    message = String(message || "").slice(0,180);
+    if(!message.trim()) return;
+
+    const packet = {
+        type:"CHAT",
+        name:player.name,
+        message
+    };
+
+    broadcast(packet);
+    appendChat(packet.name,packet.message);
+}
+
+function appendChat(name,message) {
+    chatHistory.push({name,message});
+    if(chatHistory.length > 80) chatHistory.shift();
+    renderChat();
+    saveData();
+}
+
+function renderChat() {
+    const box = document.getElementById("chatMessages");
+    if(!box) return;
+
+    box.innerHTML = chatHistory.map(c=>
+        `<div class="chat-line"><strong>${escapeHtml(c.name)}:</strong> ${escapeHtml(c.message)}</div>`
+    ).join("");
+
+    box.scrollTop = box.scrollHeight;
+}
+
+function addEvent(message,save=true) {
+    eventHistory.push(message);
+    if(eventHistory.length > 30) eventHistory.shift();
+    renderEvents();
+    if(save) saveData();
+}
+
+function broadcastEvent(message) {
+    broadcast({type:"EVENT",message});
+    addEvent(message);
+}
+
+function renderEvents() {
+    const box = document.getElementById("eventLog");
+    if(!box) return;
+
+    box.innerHTML = eventHistory.map(e=>
+        `<div class="chat-line">${escapeHtml(e)}</div>`
+    ).join("");
+
+    box.scrollTop = box.scrollHeight;
+}
+
+function updateSidePlayers() {
+    const box = document.getElementById("sidePlayers");
+    if(!box) return;
+
+    box.innerHTML = Object.values(gameState.players || {}).map(p=>
+        `<div class="side-player">
+            <span>${escapeHtml(p.name)}${p.id === myId ? " (You)" : ""}</span>
+            <span>${Number(p.points || 0).toLocaleString()} pts</span>
+        </div>`
+    ).join("");
+}
+
+/* ############################################################
+   GAME TIMER
+############################################################ */
+
+function startTimerIfHost() {
+    if(!isHost) return;
+
+    if(timerInterval) clearInterval(timerInterval);
+
+    timerInterval = setInterval(()=>{
+        if(!gameStarted) return;
 
         gameState.seconds = Math.max(0,gameState.seconds-1);
 
@@ -1815,1073 +2066,173 @@ function startHostTimer() {
             seconds:gameState.seconds
         });
 
-        if (gameState.seconds <= 0) {
-            const cheater = Object.values(gameState.players).find(
-                p=>p.role === "Cheater" && p.alive
-            );
+        updateGameInfo();
 
-            if (cheater) {
-                endGame("The Cheater survived! The casino has been fooled.");
-            } else {
-                endGame("The Cheater has been caught. Security wins!");
-            }
-
-            return;
+        if(gameState.seconds <= 0) {
+            endGame("Time is up!");
         }
 
-        if (gameState.seconds % 3 === 0) {
-            broadcastState();
-        }
+        if(gameState.seconds % 10 === 0) saveData();
     },1000);
 }
 
-/* ##############
-   TIMER CLIENT UPDATE
-############## */
+function updateGameInfo() {
+    const seconds = gameState.seconds || 0;
 
-const oldHandleHostData = handleHostData;
+    document.getElementById("gameTimer").textContent =
+        Math.floor(seconds/60) + ":" + String(seconds%60).padStart(2,"0");
 
-handleHostData = function(data) {
-    if (data?.type === "TIMER") {
-        if (gameState) {
-            gameState.seconds = data.seconds;
-            $("timerDisplay").textContent = formatTime(data.seconds);
-        }
-        return;
+    const me = gameState.players[myId];
+
+    if(me) {
+        document.getElementById("myBalance").textContent =
+            Number(me.points || 0).toLocaleString();
     }
 
-    oldHandleHostData(data);
-};
-
-/* ##############
-   MOVEMENT
-############## */
-
-function startMovementLoop() {
-    if (renderLoop) cancelAnimationFrame(renderLoop);
-
-    lastFrame = performance.now();
-
-    function loop(now) {
-        if (!gameStarted) return;
-
-        const delta = Math.min((now-lastFrame)/1000,.05);
-        lastFrame = now;
-
-        updateMovement(delta);
-        drawGame();
-
-        renderLoop = requestAnimationFrame(loop);
-    }
-
-    renderLoop = requestAnimationFrame(loop);
-}
-
-function updateMovement(delta) {
-    if (isTyping() || !gameStarted) return;
-
-    let dx = 0;
-    let dy = 0;
-
-    if (keys.w || keys.arrowup) dy -= 1;
-    if (keys.s || keys.arrowdown) dy += 1;
-    if (keys.a || keys.arrowleft) dx -= 1;
-    if (keys.d || keys.arrowright) dx += 1;
-
-    if (!dx && !dy) return;
-
-    const length = Math.hypot(dx,dy);
-
-    dx /= length;
-    dy /= length;
-
-    position.x = Math.max(30,Math.min(MAP_WIDTH-30,position.x+dx*PLAYER_SPEED*delta));
-    position.y = Math.max(30,Math.min(MAP_HEIGHT-30,position.y+dy*PLAYER_SPEED*delta));
-
-    const now = performance.now();
-
-    if (now-lastMoveSent > 100) {
-        lastMoveSent = now;
-
-        if (isHost) {
-            const player = gameState?.players?.[myId];
-
-            if (player) {
-                player.x = position.x;
-                player.y = position.y;
-                broadcastPosition(myId,player);
-            }
-        } else {
-            sendToHost({
-                type:"MOVE",
-                x:position.x,
-                y:position.y
-            });
-        }
-    }
-}
-
-function sendToHost(data) {
-    if (isHost) {
-        handleClientData(myId,data);
-    } else if (hostConnection?.open) {
-        try {
-            hostConnection.send(data);
-        } catch(error) {
-            showToast("Could not send message.");
-        }
-    }
-}
-
-function stopGameLoops() {
-    gameStarted = false;
-
-    if (renderLoop) {
-        cancelAnimationFrame(renderLoop);
-        renderLoop = null;
-    }
-
-    clearInterval(gameTimer);
-    gameTimer = null;
-}
-
-/* ##############
-   MAP DRAWING
-############## */
-
-function drawGame() {
-    const canvas = $("gameCanvas");
-    const ctx = canvas.getContext("2d");
-
-    ctx.clearRect(0,0,MAP_WIDTH,MAP_HEIGHT);
-
-    // Green felt floor
-    ctx.fillStyle = "#426d51";
-    ctx.fillRect(0,0,MAP_WIDTH,MAP_HEIGHT);
-
-    // Floor texture
-    ctx.strokeStyle = "#527b5e";
-    ctx.lineWidth = 1;
-
-    for (let x=0;x<MAP_WIDTH;x+=55) {
-        ctx.beginPath();
-        ctx.moveTo(x,0);
-        ctx.lineTo(x,MAP_HEIGHT);
-        ctx.stroke();
-    }
-
-    for (let y=0;y<MAP_HEIGHT;y+=55) {
-        ctx.beginPath();
-        ctx.moveTo(0,y);
-        ctx.lineTo(MAP_WIDTH,y);
-        ctx.stroke();
-    }
-
-    // Walls
-    ctx.fillStyle = "#392e22";
-    ctx.fillRect(0,0,MAP_WIDTH,20);
-    ctx.fillRect(0,MAP_HEIGHT-20,MAP_WIDTH,20);
-    ctx.fillRect(0,0,20,MAP_HEIGHT);
-    ctx.fillRect(MAP_WIDTH-20,0,20,MAP_HEIGHT);
-
-    ctx.strokeStyle = "#c6a66b";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(20,20,MAP_WIDTH-40,MAP_HEIGHT-40);
-
-    // Centre carpet
-    ctx.fillStyle = "#773e39";
-    ctx.fillRect(405,260,290,200);
-
-    ctx.strokeStyle = "#c6a66b";
-    ctx.lineWidth = 4;
-    ctx.strokeRect(415,270,270,180);
-
-    ctx.fillStyle = "#e0c48c";
-    ctx.font = "22px Georgia";
-    ctx.textAlign = "center";
-    ctx.fillText("THE GRAND",550,340);
-    ctx.fillText("CASINO",550,370);
-
-    // Tables
-    drawTable(ctx,550,150,150,65,"ROULETTE TABLE");
-    drawTable(ctx,550,570,170,70,"POKER LOUNGE");
-
-    // Decorative seating
-    drawSeat(ctx,100,340);
-    drawSeat(ctx,1000,340);
-    drawSeat(ctx,420,120);
-    drawSeat(ctx,680,120);
-    drawSeat(ctx,420,600);
-    drawSeat(ctx,680,600);
-
-    // Stations
-    for (const station of stations) {
-        drawStation(ctx,station);
-    }
-
-    // Doorways
-    ctx.fillStyle = "#c6a66b";
-    ctx.fillRect(510,20,80,7);
-    ctx.fillRect(510,MAP_HEIGHT-27,80,7);
-
-    // Players
-    drawPlayers(ctx);
-
-    // Nearby station prompt
-    const nearby = getNearbyStation();
-
-    if (nearby) {
-        ctx.fillStyle = "#171716dd";
-        ctx.fillRect(390,665,320,35);
-
-        ctx.fillStyle = "#e0c48c";
-        ctx.font = "13px Arial";
-        ctx.fillText("PRESS E TO INTERACT: "+nearby.name,550,687);
-    }
-}
-
-function drawTable(ctx,x,y,w,h,label) {
-    ctx.fillStyle = "#3a291e";
-    ctx.fillRect(x-w/2-7,y-h/2-7,w+14,h+14);
-
-    ctx.fillStyle = "#244c37";
-    ctx.beginPath();
-    ctx.roundRect(x-w/2,y-h/2,w,h,20);
-    ctx.fill();
-
-    ctx.strokeStyle = "#c6a66b";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    ctx.fillStyle = "#e0c48c";
-    ctx.font = "11px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText(label,x,y+4);
-}
-
-function drawSeat(ctx,x,y) {
-    ctx.fillStyle = "#51372d";
-    ctx.beginPath();
-    ctx.roundRect(x-25,y-16,50,32,7);
-    ctx.fill();
-
-    ctx.strokeStyle = "#c6a66b";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-}
-
-function drawStation(ctx,station) {
-    ctx.fillStyle = "#352a21";
-    ctx.fillRect(station.x-station.w/2-5,station.y-station.h/2-5,station.w+10,station.h+10);
-
-    ctx.fillStyle = station.type === "security" ? "#663b36" : "#2c4937";
-    ctx.fillRect(station.x-station.w/2,station.y-station.h/2,station.w,station.h);
-
-    ctx.strokeStyle = "#c6a66b";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(station.x-station.w/2,station.y-station.h/2,station.w,station.h);
-
-    ctx.fillStyle = "#e0c48c";
-    ctx.font = "12px Georgia";
-    ctx.textAlign = "center";
-    ctx.fillText(station.name,station.x,station.y+5);
-
-    ctx.fillStyle = "#d8cfb9";
-    ctx.font = "10px Arial";
-    ctx.fillText(station.type === "security" ? "INVESTIGATE" : "ACTIVITY",station.x,station.y+22);
-}
-
-function drawPlayers(ctx) {
-    if (!gameState?.players) return;
-
-    for (const player of Object.values(gameState.players)) {
-        if (!player.connected || !player.alive) continue;
-
-        const x = player.id === myId ? position.x : player.x;
-        const y = player.id === myId ? position.y : player.y;
-
-        ctx.beginPath();
-        ctx.fillStyle = "#17171688";
-        ctx.ellipse(x,y+13,13,6,0,0,Math.PI*2);
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.fillStyle = player.colour || "#c6a66b";
-        ctx.arc(x,y,12,0,Math.PI*2);
-        ctx.fill();
-
-        ctx.strokeStyle = player.id === myId ? "#fff0bd" : "#29251e";
-        ctx.lineWidth = player.id === myId ? 3 : 2;
-        ctx.stroke();
-
-        ctx.fillStyle = "#171716";
-        ctx.font = "bold 10px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText(player.name.slice(0,12),x,y-20);
-    }
-}
-
-function renderPlayers() {
-    if (gameStarted) drawGame();
-}
-
-function renderGame() {
-    if (!gameState) return;
-
-    const players = Object.values(gameState.players || {});
-    const alive = players.filter(p=>p.alive && p.connected);
-
-    $("timerDisplay").textContent = formatTime(gameState.seconds);
-    $("aliveDisplay").textContent = alive.length;
-    $("scoreDisplay").textContent = myScore;
-
-    const completed = gameState.completedTasks || 0;
-    const total = gameState.totalTasks || 1;
-
-    $("taskCount").textContent = completed + " / " + total + " activities completed";
-    $("taskProgress").style.width = Math.min(100,completed/total*100)+"%";
-
-    $("gamePlayers").innerHTML = "";
-
-    for (const player of players) {
-        const row = document.createElement("div");
-        row.className = "game-player";
-
-        const name = document.createElement("span");
-        name.textContent = player.name;
-
-        const status = document.createElement("span");
-        status.textContent = !player.connected ? "LEFT" : !player.alive ? "OUT" : "ACTIVE";
-        status.style.color = !player.connected || !player.alive ? "#a84b43" : "#a8b99d";
-
-        row.append(name,status);
-        $("gamePlayers").appendChild(row);
-    }
-}
-
-/* ##############
-   STATION INTERACTION
-############## */
-
-function getNearbyStation() {
-    let closest = null;
-    let closestDistance = Infinity;
-
-    for (const station of stations) {
-        const distance = Math.hypot(position.x-station.x,position.y-station.y);
-
-        if (distance < 105 && distance < closestDistance) {
-            closest = station;
-            closestDistance = distance;
-        }
-    }
-
-    return closest;
-}
-
-function interact() {
-    if (!gameStarted) return;
-
-    const station = getNearbyStation();
-
-    if (!station) {
-        showToast("Move closer to a station.");
-        return;
-    }
-
-    if (station.type === "security") {
-        if (myRole === "Security") {
-            investigate();
-        } else {
-            showModal(
-                "SECURITY DESK",
-                "The security desk is reserved for the security officer.",
-                [{text:"CLOSE",click:closeModal}]
-            );
-        }
-        return;
-    }
-
-    openActivity(station);
-}
-
-/* ##############
-   ACTIVITIES
-############## */
-
-function openActivity(station) {
-    const key = station.id + "-" + gameState.round;
-
-    if (localTasks[key]) {
-        showToast("You already completed this activity.");
-        return;
-    }
-
-    if (station.id === "vault") {
-        const a = Math.floor(Math.random()*8)+4;
-        const b = Math.floor(Math.random()*8)+3;
-        const answer = a*b;
-
-        showModal(
-            "THE CODE VAULT",
-            `<p>Enter the correct code to complete the vault activity.</p>
-             <div class="role-card" style="text-align:center;font-size:24px">
-                ${a} × ${b} = ?
-             </div>
-             <input id="activityAnswer" type="number" placeholder="Enter answer">`,
-            [
-                {text:"SUBMIT",click:() => submitActivity(station.id,String(answer))},
-                {text:"CANCEL",class:"secondary",click:closeModal}
-            ]
-        );
-    }
-
-    if (station.id === "archive") {
-        const numbers = Array.from({length:4},()=>Math.floor(Math.random()*9)+1);
-        const answer = numbers.join("");
-
-        showModal(
-            "THE RECORD ARCHIVE",
-            `<p>Memorise the sequence and enter it below.</p>
-             <div class="role-card" style="text-align:center;font-size:28px;letter-spacing:9px" id="sequenceDisplay">
-                ${answer}
-             </div>
-             <input id="activityAnswer" placeholder="Enter sequence" autocomplete="off">`,
-            [
-                {text:"HIDE SEQUENCE",click:() => {
-                    $("sequenceDisplay").textContent = "????";
-                    $("activityAnswer").focus();
-                }},
-                {text:"SUBMIT",click:() => submitActivity(station.id,answer)}
-            ]
-        );
-    }
-
-    if (station.id === "lounge") {
-        const options = ["GOLD","GREEN","RED","BLUE"];
-        const correct = options[Math.floor(Math.random()*options.length)];
-
-        showModal(
-            "THE MEMORY LOUNGE",
-            `<p>Which colour is shown below?</p>
-             <div class="role-card" style="text-align:center;font-size:28px;color:${correct.toLowerCase()}">
-                ${correct}
-             </div>
-             <p>Type the colour's name below.</p>
-             <input id="activityAnswer" placeholder="Your answer">`,
-            [
-                {text:"SUBMIT",click:() => submitActivity(station.id,correct)},
-                {text:"CANCEL",class:"secondary",click:closeModal}
-            ]
-        );
-    }
-}
-
-function submitActivity(station,answer) {
-    const input = $("activityAnswer");
-
-    if (!input) return;
-
-    const entered = input.value.trim().toUpperCase();
-
-    if (!entered) {
-        showToast("Enter an answer first.");
-        return;
-    }
-
-    sendToHost({
-        type:"TASK",
-        station,
-        answer:entered
-    });
-
-    if (isHost) {
-        return;
-    }
-
-    // Host validates the activity.
-}
-
-/* ##############
-   HOST TASK VALIDATION
-############## */
-
-function hostTask(sender,station,answer) {
-    const player = gameState.players[sender];
-
-    if (!player || !player.alive) return;
-
-    const stationInfo = stations.find(s=>s.id === station);
-
-    if (!stationInfo || stationInfo.type !== "activity") return;
-
-    const distance = Math.hypot(
-        player.x-stationInfo.x,
-        player.y-stationInfo.y
-    );
-
-    if (distance > 140) {
-        sendTo(sender,{
-            type:"TASK_RESULT",
-            success:false,
-            message:"You need to be closer to the station."
-        });
-        return;
-    }
-
-    const key = sender+"-"+station+"-"+gameState.round;
-
-    if (localTasks[key]) {
-        sendTo(sender,{
-            type:"TASK_RESULT",
-            success:false,
-            message:"This activity has already been completed."
-        });
-        return;
-    }
-
-    // Activities are validated by the client challenge.
-    // The host checks the station and prevents repeat rewards.
-    if (typeof answer !== "string" || answer.length > 20) return;
-
-    localTasks[key] = true;
-
-    player.score += 100;
-    gameState.completedTasks++;
-
-    if (sender === myId) {
-        myScore = player.score;
-        closeModal();
-        showToast("Activity completed! +100 points.");
-    } else {
-        sendTo(sender,{
-            type:"TASK_RESULT",
-            success:true,
-            score:player.score,
-            points:100
-        });
-    }
-
-    broadcastState();
-}
-
-/* ##############
-   ABILITIES
-############## */
-
-function useAbility() {
-    if (!gameStarted) return;
-
-    if (Date.now()-lastAbility < 20000) {
-        showToast("Your ability is still recharging.");
-        return;
-    }
-
-    sendToHost({
-        type:"ABILITY"
-    });
-
-    if (isHost) {
-        return;
-    }
-
-    lastAbility = Date.now();
-}
-
-function hostAbility(sender) {
-    const player = gameState.players[sender];
-
-    if (!player) return;
-
-    if (player.role === "Cheater") {
-        const targets = Object.values(gameState.players)
-            .filter(p=>p.connected && p.alive && p.id !== sender);
-
-        if (targets.length) {
-            const target = targets[Math.floor(Math.random()*targets.length)];
-
-            sendTo(sender,{
-                type:"INVESTIGATION_RESULT",
-                message:"Your X-ray ability has identified another active guest: "+target.name+"."
-            });
-        }
-    } else if (player.role === "Security") {
-        const targets = Object.values(gameState.players)
-            .filter(p=>p.connected && p.alive && p.id !== sender);
-
-        if (targets.length) {
-            const target = targets[Math.floor(Math.random()*targets.length)];
-
-            sendTo(sender,{
-                type:"INVESTIGATION_RESULT",
-                message:"Security has checked "+target.name+". Their role is "+target.role+"."
-            });
-        }
-    } else {
-        sendTo(sender,{
-            type:"INVESTIGATION_RESULT",
-            message:"Guests do not have a special ability. Complete activities and attend meetings."
-        });
-    }
-}
-
-/* ##############
-   SECURITY INVESTIGATION
-############## */
-
-function investigate() {
-    if (myRole !== "Security") {
-        showToast("Only Security can investigate.");
-        return;
-    }
-
-    const others = Object.values(gameState.players)
-        .filter(p=>p.alive && p.connected && p.id !== myId);
-
-    if (!others.length) {
-        showToast("Nobody else is available.");
-        return;
-    }
-
-    const content = document.createElement("div");
-    content.innerHTML = "<p>Select a guest to investigate.</p>";
-
-    const actions = [];
-
-    for (const player of others) {
-        actions.push({
-            text:player.name,
-            class:"secondary",
-            click:() => {
-                sendToHost({
-                    type:"INVESTIGATE",
-                    target:player.id
-                });
-                closeModal();
-            }
-        });
-    }
-
-    showModal("SECURITY INVESTIGATION",content.innerHTML,actions);
-}
-
-/* ##############
-   CHAT
-############## */
-
-function sendChat() {
-    const input = $("chatInput");
-    const message = input.value.trim();
-
-    if (!message || !gameStarted) return;
-
-    input.value = "";
-
-    sendToHost({
-        type:"CHAT",
-        message
-    });
-}
-
-$("chatInput").addEventListener("keydown",event => {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        sendChat();
-    }
-});
-
-function hostChat(player,message) {
-    const clean = String(message || "")
-        .replace(/[<>]/g,"")
-        .slice(0,120);
-
-    if (!clean.trim()) return;
-
-    broadcast({
-        type:"CHAT",
-        name:player.name,
-        message:clean
-    });
-
-    appendChat(player.name,clean);
-}
-
-function appendChat(name,message) {
-    const line = document.createElement("div");
-    line.className = "chat-line";
-
-    const bold = document.createElement("b");
-    bold.textContent = name + ": ";
-
-    const text = document.createElement("span");
-    text.textContent = message;
-
-    line.append(bold,text);
-
-    $("chatLog").appendChild(line);
-    $("chatLog").scrollTop = $("chatLog").scrollHeight;
-}
-
-/* ##############
-   MEETINGS
-############## */
-
-function callMeeting() {
-    if (!gameStarted) return;
-
-    if (Date.now()-meetingCooldown < 45000) {
-        showToast("Meetings are temporarily unavailable.");
-        return;
-    }
-
-    sendToHost({
-        type:"MEETING"
-    });
-}
-
-function hostMeeting(sender) {
-    if (gameState.meeting) {
-        sendTo(sender,{
-            type:"INVESTIGATION_RESULT",
-            message:"A meeting is already taking place."
-        });
-        return;
-    }
-
-    const players = Object.values(gameState.players)
-        .filter(p=>p.alive && p.connected)
-        .map(p=>({id:p.id,name:p.name}));
-
-    gameState.meeting = {
-        players,
-        votes:{}
-    };
-
-    broadcast({
-        type:"MEETING",
-        players
-    });
-
-    if (sender === myId) {
-        openVoting(players);
-    }
-
-    broadcastState();
-}
-
-function openVoting(players) {
-    const choices = players
-        .filter(p=>p.id !== myId)
-        .map(p=>`
-            <button class="vote-choice" onclick="castVote('${p.id}')">
-                ${escapeHTML(p.name)}
-            </button>
-        `).join("");
-
-    showModal(
-        "EMERGENCY MEETING",
-        `<p>Discuss who you believe is the cheater. Then cast your vote.</p>
-         <div class="vote-list">
-            ${choices}
-            <button class="vote-choice" onclick="castVote('skip')">SKIP VOTE</button>
-         </div>`,
-        [],
-        "EMERGENCY MEETING"
-    );
-}
-
-function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g,char=>({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#39;"
-    })[char]);
-}
-
-function castVote(target) {
-    sendToHost({
-        type:"VOTE",
-        target
-    });
-
-    closeModal();
-    showToast("Your vote has been submitted.");
-}
-
-function hostVote(sender,target) {
-    if (!gameState.meeting) return;
-
-    if (!gameState.meeting.players.some(p=>p.id === sender)) return;
-
-    if (target !== "skip" && !gameState.meeting.players.some(p=>p.id === target)) return;
-
-    gameState.meeting.votes[sender] = target;
-
-    const eligible = gameState.meeting.players.filter(p=>{
-        return gameState.players[p.id]?.connected;
-    });
-
-    const votes = gameState.meeting.votes;
-
-    if (eligible.every(p=>votes[p.id] !== undefined)) {
-        const counts = {};
-
-        for (const vote of Object.values(votes)) {
-            if (vote !== "skip") {
-                counts[vote] = (counts[vote] || 0)+1;
-            }
-        }
-
-        const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
-
-        let message = "The group skipped the vote.";
-
-        if (sorted.length && (!sorted[1] || sorted[0][1] > sorted[1][1])) {
-            const removed = gameState.players[sorted[0][0]];
-
-            if (removed) {
-                removed.alive = false;
-
-                message = removed.name + " was voted out.";
-
-                if (removed.role === "Cheater") {
-                    message += " They were the Cheater!";
-                } else {
-                    message += " They were not the Cheater.";
-                }
-            }
-        } else if (sorted.length) {
-            message = "The vote was tied. Nobody was removed.";
-        }
-
-        gameState.meeting = null;
-        gameState.round++;
-
-        broadcast({
-            type:"MEETING_RESULT",
-            message
-        });
-
-        if (sender === myId) {
-            showModal("MEETING RESULT",message,[
-                {text:"CONTINUE",click:closeModal}
-            ]);
-        }
-
-        broadcastState();
-        checkWinCondition();
-    }
-}
-
-/* ##############
-   WIN CONDITIONS
-############## */
-
-function checkWinCondition() {
-    if (!isHost) return;
-
-    const players = Object.values(gameState.players).filter(p=>p.alive && p.connected);
-    const cheater = players.find(p=>p.role === "Cheater");
-
-    if (!cheater) {
-        endGame("The Cheater has been caught! Security and the guests win.");
-        return;
-    }
-
-    const others = players.filter(p=>p.role !== "Cheater");
-
-    if (others.length <= 1) {
-        endGame("The Cheater has taken over the casino!");
-    }
+    updateSidePlayers();
 }
 
 function endGame(message) {
-    if (!isHost) return;
+    if(!isHost) return;
 
+    gameStarted = false;
     gameState.started = false;
+    gameState.gameEnded = true;
 
-    clearInterval(gameTimer);
-    gameTimer = null;
+    if(timerInterval) clearInterval(timerInterval);
 
     broadcast({
         type:"GAME_OVER",
         message
     });
 
-    gameStarted = false;
-    stopGameLoops();
+    showModal("Game Over",
+        `<p>${escapeHtml(message)}</p>
+         <p>The casino round has finished.</p>`,
+        [{label:"RETURN TO LOBBY",fn:()=>{
+            closeModal();
+            showLobby();
+        }}]);
 
-    showModal(
-        "GAME OVER",
-        `<div class="role-card">${escapeHTML(message)}</div>`,
-        [{
-            text:"RETURN TO LOBBY",
-            click:() => {
-                closeModal();
-                showScreen("lobby");
-            }
-        }]
-    );
+    saveData();
 }
 
-/* ##############
-   CONTROLS
-############## */
+/* ############################################################
+   ROLE DISPLAY
+############################################################ */
 
-function showControls() {
-    showModal(
-        "CASINO CONTROLS",
-        `<div class="role-card">
-            <strong>W A S D</strong> or arrow keys: Move around<br><br>
-            <strong>E</strong>: Interact with nearby stations<br><br>
-            <strong>INTERACT</strong>: Use nearby activities<br><br>
-            <strong>ABILITY</strong>: Use your special role ability<br><br>
-            <strong>MEETING</strong>: Call an emergency meeting
-        </div>`,
-        [{text:"GOT IT",click:closeModal}]
-    );
-}
+function showRole() {
+    let description = "";
 
-/* ##############
-   ROOM CODE
-############## */
-
-function copyRoomCode() {
-    if (!roomCode) return;
-
-    if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(roomCode)
-            .then(()=>showToast("Room code copied!"))
-            .catch(()=>showToast("Your room code is: "+roomCode));
+    if(myRole === "Cheater") {
+        description = "Your goal is to deceive the other players. Use your special X-Ray ability and avoid being identified.";
+    } else if(myRole === "Security") {
+        description = "Your job is to identify the Cheater. Investigate other players and use your special ability.";
     } else {
-        showToast("Your room code is: "+roomCode);
+        description = "You are a Guest. Complete skill challenges, watch the other players and help identify the Cheater.";
     }
+
+    showModal("Your Secret Role",
+        `<div id="roleName">${escapeHtml(myRole)}</div>
+         <p id="roleDescription">${escapeHtml(description)}</p>`,
+        [{label:"UNDERSTOOD",fn:closeModal}]);
 }
 
-/* ##############
-   LEAVE ROOM
-############## */
+/* ############################################################
+   MODAL HELPERS
+############################################################ */
+
+function showModal(title,content,actions=[]) {
+    document.getElementById("modalTitle").textContent = title;
+    document.getElementById("modalContent").innerHTML = content;
+
+    const actionBox = document.getElementById("modalActions");
+    actionBox.innerHTML = "";
+
+    actions.forEach(action=>{
+        const button = document.createElement("button");
+        button.textContent = action.label;
+        if(action.secondary) button.className = "secondary";
+        button.onclick = action.fn;
+        actionBox.appendChild(button);
+    });
+
+    document.getElementById("modalBackdrop").classList.remove("hidden");
+}
+
+function closeModal() {
+    document.getElementById("modalBackdrop").classList.add("hidden");
+}
+
+function escapeHtml(value) {
+    return String(value ?? "").replace(/[&<>"']/g,char=>({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;",
+        "'":"&#039;"
+    })[char]);
+}
+
+/* ############################################################
+   LEAVING AND RECONNECTING
+############################################################ */
 
 function leaveRoom() {
-    stopGameLoops();
+    if(timerInterval) clearInterval(timerInterval);
+    if(movementInterval) clearInterval(movementInterval);
 
-    clearInterval(gameTimer);
-
-    try {
-        for (const connection of Object.values(connections)) {
-            connection.close();
-        }
-
-        connections = {};
-
-        if (hostConnection) {
-            hostConnection.close();
-        }
-
-        if (peer) {
+    if(peer) {
+        try {
+            Object.values(connections).forEach(conn=>{
+                try { conn.close(); } catch {}
+            });
             peer.destroy();
-        }
-    } catch(error) {
-        console.warn(error);
+        } catch {}
     }
 
     peer = null;
-    hostConnection = null;
-    gameState = null;
-
-    isHost = false;
+    connections = {};
+    connected = false;
     gameStarted = false;
-    myRole = "";
-    myId = "";
-    myScore = 0;
-    roomCode = "";
+    isHost = false;
+    myRole = "Guest";
+    localMeeting = null;
 
-    $("headerStatus").textContent = "OFFLINE";
+    clearSaved();
 
+    gameState = {
+        players:{},
+        started:false,
+        seconds:600,
+        meeting:null,
+        hostCooldown:0,
+        gameEnded:false
+    };
+
+    chatHistory = [];
+    eventHistory = [];
+
+    closeModal();
     showScreen("home");
+    status("You have left the room.");
 }
 
-/* ##############
-   HOST-SIDE ACTION ROUTING
-############## */
+/* ############################################################
+   INITIAL SETUP
+############################################################ */
 
-const originalHandleClientData = handleClientData;
+(function initialise() {
+    const saved = getSaved();
 
-handleClientData = function(sender,data) {
-    if (data?.type === "INVESTIGATE") {
-        const investigator = gameState?.players?.[sender];
-        const target = gameState?.players?.[data.target];
-
-        if (!investigator || investigator.role !== "Security" || !target || !target.alive) {
-            return;
-        }
-
-        sendTo(sender,{
-            type:"INVESTIGATION_RESULT",
-            message:"Investigation result: "+target.name+" is a "+target.role+"."
-        });
-
-        return;
+    if(saved) {
+        document.getElementById("playerName").value = saved.myName || "";
+        document.getElementById("roomInput").value = saved.roomCode || "";
+        status("Saved room found. Press CONTINUE PLAYING to reconnect.");
+    } else {
+        status("Ready to connect");
     }
-
-    originalHandleClientData(sender,data);
-
-    if (data?.type === "VOTE") {
-        hostVote(sender,data.target);
-    }
-};
-
-/* ##############
-   FIX HOST VOTING
-############## */
-
-const originalHostVote = hostVote;
-
-hostVote = function(sender,target) {
-    originalHostVote(sender,target);
-};
-
-/* ##############
-   CANVAS CLICK
-############## */
-
-$("gameCanvas").addEventListener("click",event => {
-    if (!gameStarted) return;
-
-    const canvas = $("gameCanvas");
-    const rect = canvas.getBoundingClientRect();
-
-    const x = (event.clientX-rect.left)*(canvas.width/rect.width);
-    const y = (event.clientY-rect.top)*(canvas.height/rect.height);
-
-    const station = stations.find(s=>
-        Math.abs(x-s.x) < s.w/2+15 &&
-        Math.abs(y-s.y) < s.h/2+15
-    );
-
-    if (!station) return;
-
-    const distance = Math.hypot(position.x-station.x,position.y-station.y);
-
-    if (distance > 140) {
-        showToast("Move closer to that station first.");
-        return;
-    }
-
-    interact();
-});
-
-/* ##############
-   INITIALISE
-############## */
-
-showScreen("home");
-$("headerStatus").textContent = "OFFLINE";
-
-console.log("The Grand Casino loaded.");
+})();
 </script>
-
 </body>
 </html>
